@@ -1,0 +1,210 @@
+********************************************************
+JsonMapper - map nested JSON structures onto PHP classes
+********************************************************
+
+Takes data retrieved from a JSON__ web service and converts them
+into nested object and arrays - using your own model classes.
+
+Starting from a base object, it maps JSON data on class properties,
+converting them into the correct simple types or objects.
+
+It's a bit like the native SOAP parameter mapping PHP's ``SoapClient``
+gives you, but for JSON.
+Note that it does not rely on any schema, only your class definitions.
+
+Type detection works by parsing ``@var`` docblock annotations of
+class properties, as well as type hints in setter methods.
+
+You do not have to modify your model classes by adding JSON specific code;
+it works automatically by parsing already-existing docblocks.
+
+__ http://json.org/
+
+
+.. contents::
+
+============
+Pro & contra
+============
+
+Benefits
+========
+- Autocompletion in IDEs
+- It's easy to add comfort methods to data model classes
+- Your JSON API may change, but your models can stay the same - not
+  breaking applications that use the model classes.
+
+Drawbacks
+=========
+- Model classes need to be written by hand
+
+  Since JsonMapper does not rely on any schema information
+  (e.g. from `json-schema`__), model classes cannot be generated
+  automatically.
+
+__ http://json-schema.org/
+
+
+=====
+Usage
+=====
+
+Example
+=======
+JSON from a address book web service:
+
+.. code:: javascript
+
+    {
+        'name':'Sheldon Cooper',
+        'address': {
+            'street': '2311 N. Los Robles Avenue',
+            'city': 'Pasadena'
+        }
+    }
+
+Your local ``Contact`` class:
+
+.. code:: php
+
+    <?php
+    class Contact
+    {
+        /**
+         * Full name
+         * @var string
+         */
+        public $name;
+
+        /**
+         * @var Address
+         */
+        public $address;
+    }
+    ?>
+
+Your local ``Address`` class:
+
+.. code:: php
+
+    <?php
+    class Address
+    {
+        public $street;
+        public $city;
+
+        public function getGeoCoords()
+        {
+            //do something with the $street and $city
+        }
+    }
+    ?>
+
+Your application code:
+
+.. code:: php
+
+    <?php
+    $json = json_decode(file_get_contents('http://example.org/bigbang.json'));
+    $mapper = new JsonMapper();
+    $contact = $mapper->map($json, new Contact());
+
+    echo "Geo coordinates for " . $contact->name . ": "
+        . var_export($contact->address->getCoords(), true);
+    ?>
+
+
+Property type documentation
+===========================
+``JsonMapper`` uses several source to detect the correct type of
+a property:
+
+#. ``@var $type`` docblock annotation of class properties::
+
+    /**
+     * @var \my\application\model\Contact
+     */
+    public $person;
+
+#. If the property does not exist, the setter method
+   (``set`` + ``ucfirst($propertyname)``) is inspected
+
+   #. If it has a type hint in the method signature, this type used::
+
+        public function setPerson(Contact $person) {...}
+
+   #. The method's docblock is inspected for ``@param $type`` annotations::
+
+        /**
+         * @param Contact $person Main contact for this application
+         */
+        public function setPerson($person) {...}
+
+#. If all fails, the plain JSON data is set to the property
+
+Supported type names:
+
+- Simple types:
+
+  - ``string``
+  - ``bool``, ``boolean``
+  - ``int``, ``integer``
+  - ``float``
+  - ``array``
+  - ``object``
+- Class names, with and without namespaces
+- Arrays of simple types and class names:
+
+  - ``int[]``
+  - ``Contact[]``
+- ArrayObjects of simple types and class names:
+
+  - ``ContactList[Contact]``
+  - ``NumberList[int]``
+
+ArrayObjects and extending classes are treated as arrays.
+
+See `phpdoc's type documentation`__ for more information.
+
+__ http://phpdoc.org/docs/latest/references/phpdoc/types.html
+
+
+Logging
+=======
+JsonMapper's ``setLogger()`` method supports all PSR-3__ compatible
+logger instances.
+
+Events that get logged:
+
+- JSON data contain a key, but the class does not have a property
+  or setter method for it.
+
+__ http://www.php-fig.org/psr/psr-3/
+
+
+
+================
+Related software
+================
+- `Jackson's data binding`__ for Java
+
+__ http://wiki.fasterxml.com/JacksonDataBinding
+
+
+================
+About JsonMapper
+================
+
+License
+=======
+JsonMapper is licensed under the `AGPL v3`__ or later.
+
+__ http://www.gnu.org/licenses/agpl
+
+
+Author
+======
+`Christian Weiske`__, `Netresearch GmbH & Co KG`__
+
+__ mailto:christian.weiske@netresearch.de
+__ http://www.netresearch.de/
