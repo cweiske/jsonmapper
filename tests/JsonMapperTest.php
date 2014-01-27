@@ -12,6 +12,7 @@ declare(encoding = 'UTF-8');
  * @link     http://www.netresearch.de/
  */
 require_once 'JsonMapperTest/Simple.php';
+require_once 'JsonMapperTest/Logger.php';
 
 /**
  * Unit tests for JsonMapper
@@ -249,6 +250,34 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals(
             'stringvalue', $sn->internalData['notype']->str
+        );
+    }
+
+    /**
+     * Test for protected properties that have no setter method
+     */
+    public function testMapProtectedWithoutSetterMethod()
+    {
+        $jm = new JsonMapper();
+        $logger = new JsonMapperTest_Logger();
+        $jm->setLogger($logger);
+        $sn = $jm->map(
+            json_decode('{"protectedStrNoSetter":"stringvalue"}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertInternalType('null', $sn->getProtectedStrNoSetter());
+        $this->assertEquals(
+            array(
+                array(
+                    'error',
+                    'Property {class}::{property} cannot be set from outside',
+                    array(
+                        'class' => 'JsonMapperTest_Simple',
+                        'property' => 'protectedStrNoSetter'
+                    )
+                )
+            ),
+            $logger->log
         );
     }
 }

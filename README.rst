@@ -209,6 +209,8 @@ Events that get logged:
 
 - JSON data contain a key, but the class does not have a property
   or setter method for it.
+- Neither setter nor property can be set from outside because they
+  are protected or private
 
 __ http://www.php-fig.org/psr/psr-3/
 

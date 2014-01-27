@@ -187,11 +187,20 @@ class JsonMapper
      */
     protected function setProperty($object, $name, $value)
     {
+        $rc = new ReflectionClass($object);
         $setter = 'set' . ucfirst($name);
-        if (method_exists($object, $setter)) {
+        if (method_exists($object, $setter)
+            && $rc->getMethod($setter)->isPublic()
+        ) {
             $object->$setter($value);
-        } else {
+        } else if ($rc->getProperty($name)->isPublic()) {
             $object->$name = $value;
+        } else {
+            $this->log(
+                'error',
+                'Property {class}::{property} cannot be set from outside',
+                array('property' => $name, 'class' => get_class($object))
+            );
         }
     }
 

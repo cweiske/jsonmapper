@@ -59,6 +59,11 @@ class JsonMapperTest_Simple
     public $notype;
 
     /**
+     * @var string A protected property without a setter method
+     */
+    protected $protectedStrNoSetter;
+
+    /**
      * @var JsonMapperTest_Simple[]
      * @see http://phpdoc.org/docs/latest/references/phpdoc/types.html#arrays
      */
@@ -99,6 +104,11 @@ class JsonMapperTest_Simple
     public function setSimpleSetterOnlyNoType($s)
     {
         $this->internalData['notype'] = $s;
+    }
+
+    public function getProtectedStrNoSetter()
+    {
+        return $this->protectedStrNoSetter;
     }
 }
 ?>
