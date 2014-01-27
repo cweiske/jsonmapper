@@ -49,6 +49,37 @@ __ http://json-schema.org/
 Usage
 =====
 
+Basic usage
+===========
+#. Register an autoloader that can load `PSR-0`__ compatible classes.
+#. Create a ``JsonMapper`` object instance
+#. Call the ``map`` or ``mapArray`` method, depending on your data
+
+Map a normal object:
+
+.. code:: php
+
+    <?php
+    require 'autoload.php';
+    $mapper = new JsonMapper();
+    $contactObject = $mapper->map($jsonContact, new Contact());
+    ?>
+
+Map an array of objects:
+
+.. code:: php
+
+    <?php
+    require 'autoload.php';
+    $mapper = new JsonMapper();
+    $contactsArray = $mapper->mapArray(
+        $jsonContacts, new ArrayObject(), 'Contact'
+    );
+    ?>
+
+__ http://www.php-fig.org/psr/psr-0/
+
+
 Example
 =======
 JSON from a address book web service:
