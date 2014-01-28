@@ -216,6 +216,34 @@ __ http://www.php-fig.org/psr/psr-3/
 
 
 
+============
+Installation
+============
+
+via PEAR
+========
+::
+
+    $ pear channel-discover pear.nrdev.de
+    $ pear install nr/jsonmapper-alpha
+
+via composer
+============
+Add the following to your ``composer.json``:
+
+.. code:: javascript
+
+    {
+        "require": {
+            "netresearch/jsonmapper": "0.*@alpha"
+        }
+    }
+
+Then run::
+
+    $ php composer.phar install
+
+
 ================
 Related software
 ================
