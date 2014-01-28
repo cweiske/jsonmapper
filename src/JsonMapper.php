@@ -92,6 +92,13 @@ class JsonMapper
             }
 
             if ($array !== null) {
+                if ($subtype{0} != '\\') {
+                    //create a full qualified namespace
+                    $ns = $rc->getNamespaceName();
+                    if ($ns != '') {
+                        $subtype = $ns . '\\' . $subtype;
+                    }
+                }
                 $child = $this->mapArray($jvalue, $array, $subtype);
             } else {
                 $child = new $type();
