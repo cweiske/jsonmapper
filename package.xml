@@ -25,7 +25,7 @@
  <time>00:00:00</time>
 
  <version>
-  <release>0.1.0</release>
+  <release>0.1.1</release>
   <api>0.1.0</api>
  </version>
 
@@ -37,7 +37,7 @@
  <license uri="http://www.gnu.org/licenses/agpl.html">AGPL</license>
 
  <notes>
-   First release
+   Properly resolve namespace for array subtypes
  </notes>
 
  <contents>
@@ -60,6 +60,11 @@
        <dir name="JsonMapperTest">
          <file role="test" name="Logger.php" />
          <file role="test" name="Simple.php" />
+       </dir>
+       <dir name="namespacetest">
+         <file role="test" name="NamespaceTest.php" />
+         <file role="test" name="Unit.php" />
+         <file role="test" name="UnitData.php" />
        </dir>
      </dir>
    </dir>
@@ -86,6 +91,22 @@
  </phprelease>
 
  <changelog>
+
+  <release>
+   <version>
+    <release>0.1.1</release>
+    <api>0.1.0</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2014-01-28</date>
+   <license uri="http://www.gnu.org/licenses/agpl.html">AGPL</license>
+   <notes>
+     Properly resolve namespace for array subtypes
+   </notes>
+  </release>
 
   <release>
    <version>
