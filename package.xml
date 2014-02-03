@@ -21,11 +21,11 @@
   <active>yes</active>
  </lead>
 
- <date>2014-01-28</date>
+ <date>2014-02-03</date>
  <time>00:00:00</time>
 
  <version>
-  <release>0.1.1</release>
+  <release>0.1.2</release>
   <api>0.1.0</api>
  </version>
 
@@ -37,7 +37,8 @@
  <license uri="http://www.gnu.org/licenses/agpl.html">AGPL</license>
 
  <notes>
-   Properly resolve namespace for array subtypes
+   * Fix issue #2: Namespace is prepended two times
+   * Fix issue #1: Remove declare(encoding="UTF-8") calls
  </notes>
 
  <contents>
@@ -91,6 +92,23 @@
  </phprelease>
 
  <changelog>
+
+  <release>
+   <version>
+    <release>0.1.2</release>
+    <api>0.1.0</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2014-02-03</date>
+   <license uri="http://www.gnu.org/licenses/agpl.html">AGPL</license>
+   <notes>
+    * Fix issue #2: Namespace is prepended two times
+    * Fix issue #1: Remove declare(encoding="UTF-8") calls
+   </notes>
+  </release>
 
   <release>
    <version>

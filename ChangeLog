@@ -2,3 +2,4 @@
 
 	* Fix issue #2: Namespace is prepended two times
 	* Fix issue #1: Remove declare(encoding="UTF-8") calls
+	* Release version 0.1.2
