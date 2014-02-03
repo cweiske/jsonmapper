@@ -1,0 +1,3 @@
+2014-02-03  Christian Weiske  <christian.weiske@netresearch.de>
+
+	* Fix issue #2: Namespace is prepended two times

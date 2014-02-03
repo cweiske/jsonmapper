@@ -71,7 +71,7 @@ class JsonMapper
                 //create a full qualified namespace
                 $ns = $rc->getNamespaceName();
                 if ($ns != '') {
-                    $type = $ns . '\\' . $type;
+                    $type = '\\' . $ns . '\\' . $type;
                 }
             }
 

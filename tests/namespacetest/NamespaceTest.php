@@ -13,5 +13,14 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\namespacetest\UnitData', $res);
         $this->assertInstanceOf('\namespacetest\Unit', $res->data[0]);
     }
+
+    public function testMapSimpleArrayNamespace()
+    {
+        $mapper = new \JsonMapper();
+        $json = '{"units":[{"value":"1.2"}]}';
+        $res = $mapper->map(json_decode($json), new UnitData());
+        $this->assertInstanceOf('\namespacetest\UnitData', $res);
+        $this->assertInstanceOf('\namespacetest\Unit', $res->units[0]);
+    }
 }
 ?>
