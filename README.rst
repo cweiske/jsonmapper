@@ -151,7 +151,7 @@ Your application code:
 
 Property type documentation
 ===========================
-``JsonMapper`` uses several source to detect the correct type of
+``JsonMapper`` uses several sources to detect the correct type of
 a property:
 
 #. ``@var $type`` docblock annotation of class properties::
