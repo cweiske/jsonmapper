@@ -145,7 +145,7 @@ Your application code:
     $contact = $mapper->map($json, new Contact());
 
     echo "Geo coordinates for " . $contact->name . ": "
-        . var_export($contact->address->getCoords(), true);
+        . var_export($contact->address->getGeoCoords(), true);
     ?>
 
 
