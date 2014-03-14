@@ -239,7 +239,7 @@ Add the following to your ``composer.json``:
 
     {
         "require": {
-            "netresearch/jsonmapper": "0.*@alpha"
+            "netresearch/jsonmapper": "0.*"
         }
     }
 
