@@ -10,6 +10,7 @@
  * @license  AGPL https://www.gnu.org/licenses/agpl
  * @link     http://www.netresearch.de/
  */
+require_once 'JsonMapperTest/Broken.php';
 require_once 'JsonMapperTest/Simple.php';
 require_once 'JsonMapperTest/Logger.php';
 
@@ -191,6 +192,42 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('JsonMapperTest_Simple', $sn->pTypedArrayObject[1]);
         $this->assertEquals('stringvalue', $sn->pTypedArrayObject[0]->str);
         $this->assertEquals('1.2', $sn->pTypedArrayObject[1]->fl);
+    }
+
+    /**
+     * The TYPO3 autoloader breaks if we autoload a class with a [ or ]
+     * in its name.
+     *
+     * @runInSeparateProcess
+     */
+    public function testMapTypedArrayObjectDoesNotExist()
+    {
+        $this->assertTrue(
+            spl_autoload_register(
+                array($this, 'mapTypedArrayObjectDoesNotExistAutoloader')
+            )
+        );
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode(
+                '{"pTypedArrayObjectNoClass":[{"str":"stringvalue"}]}'
+            ),
+            new JsonMapperTest_Broken()
+        );
+        $this->assertInstanceOf('ArrayObject', $sn->pTypedArrayObjectNoClass);
+        $this->assertEquals(1, count($sn->pTypedArrayObjectNoClass));
+        $this->assertInstanceOf(
+            'ThisClassDoesNotExist', $sn->pTypedArrayObjectNoClass[0]
+        );
+    }
+
+    public function mapTypedArrayObjectDoesNotExistAutoloader($class)
+    {
+        $this->assertFalse(
+            strpos($class, '['),
+            'class name contains a "[": ' . $class
+        );
+        eval("class $class{}");
     }
 
     /**

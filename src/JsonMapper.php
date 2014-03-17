@@ -81,13 +81,13 @@ class JsonMapper
                 //array
                 $array = array();
                 $subtype = substr($type, 0, -2);
+            } else if (substr($type, -1) == ']') {
+                list($proptype, $subtype) = explode('[', substr($type, 0, -1));
+                $array = new $proptype();
             } else if ($type == 'ArrayObject'
                 || is_subclass_of($type, 'ArrayObject')
             ) {
                 $array = new $type();
-            } else if (substr($type, -1) == ']') {
-                list($proptype, $subtype) = explode('[', substr($type, 0, -1));
-                $array = new $proptype();
             }
 
             if ($array !== null) {
