@@ -58,6 +58,11 @@ class JsonMapperTest_Simple
     public $notype;
 
     /**
+     * @var \DateTime
+     */
+    public $datetime;
+
+    /**
      * @var string A protected property without a setter method
      */
     protected $protectedStrNoSetter;

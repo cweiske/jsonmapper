@@ -74,6 +74,12 @@ class JsonMapper
                 }
             }
 
+            if($type == '\\DateTime'){
+                $child = new \DateTime($jvalue);
+                $this->setProperty($object, $key, $child);
+                continue;
+            }
+
             //FIXME: check if type exists, give detailled error message if not
             $array = null;
             $subtype = null;
