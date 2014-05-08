@@ -1,5 +1,5 @@
 {
-    "name": "netresearch/jsonmapper",
+    "name": "yeroon/jsonmapper",
     "description": "Map nested JSON structures onto PHP classes",
     "license": "AGPL-3.0",
     "autoload": {
