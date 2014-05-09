@@ -316,5 +316,19 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
             $logger->log
         );
     }
+
+    public function testMapDateTime()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"datetime":"2014-04-01T00:00:00+02:00"}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertInstanceOf('DateTime', $sn->datetime);
+        $this->assertEquals(
+            '2014-04-01T00:00:00+02:00',
+            $sn->datetime->format('c')
+        );
+    }
 }
 ?>

@@ -99,6 +99,10 @@ class JsonMapper
                     }
                 }
                 $child = $this->mapArray($jvalue, $array, $subtype);
+            } else if ($this->isFlatType(gettype($jvalue))) {
+                //use constructor parameter if we have a class
+                // but only a flat type (i.e. string, int)
+                $child = new $type($jvalue);
             } else {
                 $child = new $type();
                 $this->map($jvalue, $child);
@@ -223,6 +227,22 @@ class JsonMapper
             || $type == 'boolean' || $type == 'bool'
             || $type == 'integer' || $type == 'int'
             || $type == 'float' || $type == 'array' || $type == 'object';
+    }
+
+    /**
+     * Checks if the given type is a type that is not nested
+     * (simple type except array and object)
+     *
+     * @param string $type type name from gettype()
+     *
+     * @return boolean True if it is a non-nested PHP type
+     */
+    protected function isFlatType($type)
+    {
+        return $type == 'string'
+            || $type == 'boolean' || $type == 'bool'
+            || $type == 'integer' || $type == 'int'
+            || $type == 'float';
     }
 
     /**
