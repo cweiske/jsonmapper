@@ -227,7 +227,15 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
             strpos($class, '['),
             'class name contains a "[": ' . $class
         );
-        eval("class $class{}");
+        $code = '';
+        if (strpos($class, '\\') !== false) {
+            $lpos = strrpos($class, '\\');
+            $namespace = substr($class, 0, $lpos);
+            $class = substr($class, $lpos + 1);
+            $code .= 'namespace ' . $namespace . ";\n";
+        }
+        $code .= 'class ' . $class . '{}';
+        eval($code);
     }
 
     /**
