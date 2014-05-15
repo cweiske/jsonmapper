@@ -1,3 +1,9 @@
+2014-05-15  Christian Weiske  <christian.weiske@netresearch.de>
+
+	* Add support for mapping simple data types onto objects
+	* Fix tests on phpunit 4.x
+	* Release version 0.2.0
+
 2014-03-17  Christian Weiske  <christian.weiske@netresearch.de>
 
 	* Prevent autoloading classes with ] in its name
