@@ -204,6 +204,26 @@ See `phpdoc's type documentation`__ for more information.
 __ http://phpdoc.org/docs/latest/references/phpdoc/types.html
 
 
+Simple type mapping
+-------------------
+When an object shall be created but the JSON contains a simple type
+only (e.g. string, float, boolean), this value is passed to
+the classes' constructor. Example:
+
+PHP code::
+
+    /**
+     * @var DateTime
+     */
+    public $date;
+
+JSON::
+
+    {"date":"2014-05-15"}
+
+This will result in ``new DateTime('2014-05-15')`` being called.
+
+
 Logging
 =======
 JsonMapper's ``setLogger()`` method supports all PSR-3__ compatible

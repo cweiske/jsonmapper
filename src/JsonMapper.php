@@ -131,6 +131,10 @@ class JsonMapper
         foreach ($json as $key => $jvalue) {
             if ($class === null) {
                 $array[$key] = $jvalue;
+            } else if ($this->isFlatType(gettype($jvalue))) {
+                //use constructor parameter if we have a class
+                // but only a flat type (i.e. string, int)
+                $array[$key] = new $class($jvalue);
             } else {
                 $array[$key] = $this->map($jvalue, new $class());
             }

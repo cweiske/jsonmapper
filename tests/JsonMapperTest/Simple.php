@@ -74,6 +74,11 @@ class JsonMapperTest_Simple
     public $typedArray;
 
     /**
+     * @var DateTime[]
+     */
+    public $typedSimpleArray;
+
+    /**
      * @var JsonMapperTest_Simple
      */
     public $simple;
