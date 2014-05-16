@@ -102,7 +102,11 @@ class JsonMapper
             } else if ($this->isFlatType(gettype($jvalue))) {
                 //use constructor parameter if we have a class
                 // but only a flat type (i.e. string, int)
-                $child = new $type($jvalue);
+                if ($jvalue === null) {
+                    $child = null;
+                } else {
+                    $child = new $type($jvalue);
+                }
             } else {
                 $child = new $type();
                 $this->map($jvalue, $child);
@@ -134,7 +138,11 @@ class JsonMapper
             } else if ($this->isFlatType(gettype($jvalue))) {
                 //use constructor parameter if we have a class
                 // but only a flat type (i.e. string, int)
-                $array[$key] = new $class($jvalue);
+                if ($jvalue === null) {
+                    $array[$key] = null;
+                } else {
+                    $array[$key] = new $class($jvalue);
+                }
             } else {
                 $array[$key] = $this->map($jvalue, new $class());
             }
@@ -243,7 +251,8 @@ class JsonMapper
      */
     protected function isFlatType($type)
     {
-        return $type == 'string'
+        return $type == 'NULL'
+            || $type == 'string'
             || $type == 'boolean' || $type == 'bool'
             || $type == 'integer' || $type == 'int'
             || $type == 'float';

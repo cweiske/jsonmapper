@@ -164,18 +164,19 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"typedSimpleArray":["2014-01-02","2014-05-07"]}'),
+            json_decode('{"typedSimpleArray":["2014-01-02",null,"2014-05-07"]}'),
             new JsonMapperTest_Simple()
         );
         $this->assertInternalType('array', $sn->typedSimpleArray);
-        $this->assertEquals(2, count($sn->typedSimpleArray));
+        $this->assertEquals(3, count($sn->typedSimpleArray));
         $this->assertInstanceOf('DateTime', $sn->typedSimpleArray[0]);
-        $this->assertInstanceOf('DateTime', $sn->typedSimpleArray[1]);
+        $this->assertNull($sn->typedSimpleArray[1]);
+        $this->assertInstanceOf('DateTime', $sn->typedSimpleArray[2]);
         $this->assertEquals(
             '2014-01-02', $sn->typedSimpleArray[0]->format('Y-m-d')
         );
         $this->assertEquals(
-            '2014-05-07', $sn->typedSimpleArray[1]->format('Y-m-d')
+            '2014-05-07', $sn->typedSimpleArray[2]->format('Y-m-d')
         );
     }
 
@@ -360,6 +361,16 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
             '2014-04-01T00:00:00+02:00',
             $sn->datetime->format('c')
         );
+    }
+
+    public function testMapDateTimeNull()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"datetime":null}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertNull($sn->datetime);
     }
 }
 ?>
