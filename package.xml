@@ -21,11 +21,11 @@
   <active>yes</active>
  </lead>
 
- <date>2014-05-15</date>
+ <date>2014-05-16</date>
  <time>00:00:00</time>
 
  <version>
-  <release>0.2.0</release>
+  <release>0.2.1</release>
   <api>0.2.0</api>
  </version>
 
@@ -37,8 +37,7 @@
  <license uri="http://www.gnu.org/licenses/agpl.html">AGPL</license>
 
  <notes>
-   * Add support for mapping simple data types onto objects
-   * Fix tests on phpunit 4.x
+   * Handle NULL values when mapping simple data types onto objects
  </notes>
 
  <contents>
@@ -93,6 +92,22 @@
  </phprelease>
 
  <changelog>
+
+  <release>
+   <version>
+    <release>0.2.1</release>
+    <api>0.2.0</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2014-05-16</date>
+   <license uri="http://www.gnu.org/licenses/agpl.html">AGPL</license>
+   <notes>
+     * Handle NULL values when mapping simple data types onto objects
+   </notes>
+  </release>
 
   <release>
    <version>

@@ -1,3 +1,8 @@
+2014-05-16  Christian Weiske  <christian.weiske@netresearch.de>
+
+	* Handle NULL values when mapping simple data types onto objects
+	* Release 0.2.1
+
 2014-05-15  Christian Weiske  <christian.weiske@netresearch.de>
 
 	* Add support for mapping simple data types onto objects
