@@ -239,6 +239,48 @@ Events that get logged:
 __ http://www.php-fig.org/psr/psr-3/
 
 
+Handling invalid or missing data
+================================
+During development, APIs often change.
+To get notified about such changes, JsonMapper may throw exceptions
+in case of either missing or yet unknown data.
+
+
+Unknown properties
+------------------
+When JsonMapper sees properties in the JSON data that are
+not defined in the PHP class, you can let it throw an exception
+by setting ``$bExceptionOnUndefinedProperty``:
+
+.. code:: php
+
+    $jm = new JsonMapper();
+    $jm->bExceptionOnUndefinedProperty = true;
+    $jm->map(...);
+
+
+Missing properties
+------------------
+Properties in your PHP classes can be marked as "required" by
+putting ``@required`` in their docblock:
+
+.. code:: php
+
+    /**
+     * @var string
+     * @required
+     */
+    public $someDatum;
+
+When the JSON data do not contain this property, JsonMapper will throw
+an exception when ``$bExceptionOnMissingData`` is activated:
+
+.. code:: php
+
+    $jm = new JsonMapper();
+    $jm->bExceptionOnMissingData = true;
+    $jm->map(...);
+
 
 ============
 Installation

@@ -31,6 +31,21 @@ class JsonMapper
      */
     protected $logger;
 
+    /**
+     * Throw an exception when JSON data contain a property
+     * that is not defined in the PHP class
+     *
+     * @var boolean
+     */
+    public $bExceptionOnUndefinedProperty = false;
+
+    /**
+     * Throw an exception if the JSON data miss a property
+     * that is marked with @required in the PHP class
+     *
+     * @var boolean
+     */
+    public $bExceptionOnMissingData = false;
 
 
     /**
@@ -45,9 +60,17 @@ class JsonMapper
     public function map($json, $object)
     {
         $rc = new ReflectionClass($object);
+        $providedProperties = array();
         foreach ($json as $key => $jvalue) {
+            $providedProperties[$key] = true;
             list($hasProperty, $type) = $this->inspectProperty($rc, $key);
             if (!$hasProperty) {
+                if ($this->bExceptionOnUndefinedProperty) {
+                    throw new JsonMapper_Exception(
+                        'JSON property "' . $key . '" does not exist'
+                        . ' in object of type ' . get_class($object)
+                    );
+                }
                 $this->log(
                     'info',
                     'Property {property} does not exist in {class}',
@@ -114,7 +137,39 @@ class JsonMapper
             $this->setProperty($object, $key, $child);
         }
 
+        if ($this->bExceptionOnMissingData) {
+            $this->checkMissingData($providedProperties, $rc);
+        }
+
         return $object;
+    }
+
+    /**
+     * Check required properties exist in json
+     *
+     * @param array  $providedProperties array with json properties
+     * @param object $rc                 Reflection class to check
+     *
+     * @throws JsonMapper_Exception
+     *
+     * @return void
+     */
+    protected function checkMissingData($providedProperties, ReflectionClass $rc)
+    {
+        foreach ($rc->getProperties() as $property) {
+            $rprop = $rc->getProperty($property->name);
+            $docblock = $rprop->getDocComment();
+            $annotations = $this->parseAnnotations($docblock);
+            if (isset($annotations['required'])
+                && !isset($providedProperties[$property->name])
+            ) {
+                throw new JsonMapper_Exception(
+                    'Required property "' . $property->name . '" of class '
+                    . $rc->getName()
+                    . ' is missing in JSON data'
+                );
+            }
+        }
     }
 
     /**

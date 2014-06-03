@@ -26,5 +26,12 @@ class JsonMapperTest_Broken
      * @var ArrayObject[ThisClassDoesNotExist]
      */
     public $pTypedArrayObjectNoClass;
+
+    /**
+     *
+     * @var string
+     * @required
+     */
+    public $pMissingData;
 }
 ?>

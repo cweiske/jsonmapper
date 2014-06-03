@@ -372,5 +372,33 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertNull($sn->datetime);
     }
+
+    /**
+     * @expectedException        JsonMapper_Exception
+     * @expectedExceptionMessage Required property "pMissingData" of class JsonMapperTest_Broken is missing in JSON data
+     */
+    public function testMissingDataException()
+    {
+        $jm = new JsonMapper();
+        $jm->bExceptionOnMissingData = true;
+        $sn = $jm->map(
+            json_decode('{}'),
+            new JsonMapperTest_Broken()
+        );
+    }
+
+    /**
+     * @expectedException        JsonMapper_Exception
+     * @expectedExceptionMessage JSON property "undefinedProperty" does not exist in object of type JsonMapperTest_Broken
+     */
+    public function testUndefinedPropertyException()
+    {
+        $jm = new JsonMapper();
+        $jm->bExceptionOnUndefinedProperty = true;
+        $sn = $jm->map(
+            json_decode('{"undefinedProperty":123}'),
+            new JsonMapperTest_Broken()
+        );
+    }
 }
 ?>
