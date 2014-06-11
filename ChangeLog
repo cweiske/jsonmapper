@@ -1,3 +1,8 @@
+2014-06-11  Andre Hähnel  <andre.haehnel@netresearch.de>
+
+	* Optional exceptions for missing or undefined data
+	* Release 0.3.0
+
 2014-05-16  Christian Weiske  <christian.weiske@netresearch.de>
 
 	* Handle NULL values when mapping simple data types onto objects

@@ -21,12 +21,12 @@
   <active>yes</active>
  </lead>
 
- <date>2014-05-16</date>
+ <date>2014-06-11</date>
  <time>00:00:00</time>
 
  <version>
-  <release>0.2.1</release>
-  <api>0.2.0</api>
+  <release>0.3.0</release>
+  <api>0.3.0</api>
  </version>
 
  <stability>
@@ -37,7 +37,7 @@
  <license uri="http://www.gnu.org/licenses/agpl.html">AGPL</license>
 
  <notes>
-   * Handle NULL values when mapping simple data types onto objects
+   * Optional exceptions for missing or undefined data
  </notes>
 
  <contents>
@@ -92,6 +92,22 @@
  </phprelease>
 
  <changelog>
+
+  <release>
+   <version>
+    <release>0.3.0</release>
+    <api>0.3.0</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2014-06-11</date>
+   <license uri="http://www.gnu.org/licenses/agpl.html">AGPL</license>
+   <notes>
+     * Optional exceptions for missing or undefined data
+   </notes>
+  </release>
 
   <release>
    <version>
