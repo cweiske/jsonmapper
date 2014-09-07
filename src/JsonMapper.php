@@ -59,7 +59,9 @@ class JsonMapper
      */
     public function map($json, $object)
     {
+        $strClassName = get_class($object);
         $rc = new ReflectionClass($object);
+        $strNs = $rc->getNamespaceName();
         $providedProperties = array();
         foreach ($json as $key => $jvalue) {
             $providedProperties[$key] = true;
@@ -68,13 +70,13 @@ class JsonMapper
                 if ($this->bExceptionOnUndefinedProperty) {
                     throw new JsonMapper_Exception(
                         'JSON property "' . $key . '" does not exist'
-                        . ' in object of type ' . get_class($object)
+                        . ' in object of type ' . $strClassName
                     );
                 }
                 $this->log(
                     'info',
                     'Property {property} does not exist in {class}',
-                    array('property' => $key, 'class' => get_class($object))
+                    array('property' => $key, 'class' => $strClassName)
                 );
                 continue;
             }
@@ -91,9 +93,8 @@ class JsonMapper
 
             if ($type{0} != '\\') {
                 //create a full qualified namespace
-                $ns = $rc->getNamespaceName();
-                if ($ns != '') {
-                    $type = '\\' . $ns . '\\' . $type;
+                if ($strNs != '') {
+                    $type = '\\' . $strNs . '\\' . $type;
                 }
             }
 
@@ -116,9 +117,8 @@ class JsonMapper
             if ($array !== null) {
                 if ($subtype{0} != '\\') {
                     //create a full qualified namespace
-                    $ns = $rc->getNamespaceName();
-                    if ($ns != '') {
-                        $subtype = $ns . '\\' . $subtype;
+                    if ($strNs != '') {
+                        $subtype = $strNs . '\\' . $subtype;
                     }
                 }
                 $child = $this->mapArray($jvalue, $array, $subtype);
