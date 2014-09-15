@@ -47,6 +47,13 @@ class JsonMapper
      */
     public $bExceptionOnMissingData = false;
 
+    /**
+     * Runtime cache for inspected classes. This is particularly effective if 
+     * mapArray() is called with a large number of objects
+     * 
+     * @var array property inspection result cache 
+     */
+    private $arInspectedClasses = array();
 
     /**
      * Map data all data in $json into the given $object instance.
@@ -65,7 +72,15 @@ class JsonMapper
         $providedProperties = array();
         foreach ($json as $key => $jvalue) {
             $providedProperties[$key] = true;
-            list($hasProperty, $type) = $this->inspectProperty($rc, $key);
+
+            // Store the property inspection results so we don't have to do it 
+            // again for subsequent objects of the same type
+            if (!isset($this->arInspectedClasses[$strClassName][$key])) {
+                $this->arInspectedClasses[$strClassName][$key] = $this->inspectProperty($rc, $key);
+            }
+
+            list($hasProperty, $type) = $this->arInspectedClasses[$strClassName][$key];
+
             if (!$hasProperty) {
                 if ($this->bExceptionOnUndefinedProperty) {
                     throw new JsonMapper_Exception(
