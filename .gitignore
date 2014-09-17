@@ -1,6 +1,7 @@
 /README.html
 /*.tgz
 /dist/
+/vendor/
 .buildpath
 .project
 .settings

@@ -16,5 +16,8 @@
     "support": {
         "email": "christian.weiske@netresearch.de",
         "issues": "https://github.com/netresearch/jsonmapper/issues"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.2.*"
     }
 }
