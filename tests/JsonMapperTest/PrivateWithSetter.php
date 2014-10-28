@@ -8,6 +8,11 @@ class PrivateWithSetter
     private $privateProperty = 0;
 
     /**
+     * @var int
+     */
+    private $privateNoSetter = 0;
+
+    /**
      * @param int $privateProperty
      *
      * @return $this
