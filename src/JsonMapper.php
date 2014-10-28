@@ -235,16 +235,19 @@ class JsonMapper
     {
         if ($rc->hasProperty($name)) {
             $rprop = $rc->getProperty($name);
-            $docblock = $rprop->getDocComment();
-            $annotations = $this->parseAnnotations($docblock);
-            if (!isset($annotations['var'][0])) {
-                return array(true, null, null);
+            
+            if ($rprop->isPublic()) {
+                $docblock = $rprop->getDocComment();
+                $annotations = $this->parseAnnotations($docblock);
+                if (!isset($annotations['var'][0])) {
+                    return array(true, null, null);
+                }
+    
+                //support "@var type description"
+                list($type) = explode(' ', $annotations['var'][0]);
+    
+                return array(true, $type, null);
             }
-
-            //support "@var type description"
-            list($type) = explode(' ', $annotations['var'][0]);
-
-            return array(true, $type, null);
         }
 
         $setter = 'set' . ucfirst($name);
