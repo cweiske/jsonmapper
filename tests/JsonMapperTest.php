@@ -13,6 +13,7 @@
 require_once 'JsonMapperTest/Broken.php';
 require_once 'JsonMapperTest/Simple.php';
 require_once 'JsonMapperTest/Logger.php';
+require_once 'JsonMapperTest/PrivateWithSetter.php';
 
 /**
  * Unit tests for JsonMapper
@@ -399,6 +400,20 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
             json_decode('{"undefinedProperty":123}'),
             new JsonMapperTest_Broken()
         );
+    }
+
+    public function testPrivatePropertyWithPublicSetter()
+    {
+        $jm = new JsonMapper();
+        $jm->bExceptionOnUndefinedProperty = true;
+        $logger = new JsonMapperTest_Logger();
+        $jm->setLogger($logger);
+
+        $json   = '{"privateProperty" : 1}';
+        $result = $jm->map(json_decode($json), new PrivateWithSetter());
+
+        $this->assertEquals(1, $result->getPrivateProperty());
+        $this->assertTrue(empty($logger->log));
     }
 }
 ?>
