@@ -13,6 +13,7 @@
 require_once 'JsonMapperTest/Broken.php';
 require_once 'JsonMapperTest/Simple.php';
 require_once 'JsonMapperTest/Logger.php';
+require_once 'JsonMapperTest/PrivateWithSetter.php';
 
 /**
  * Unit tests for JsonMapper
@@ -273,6 +274,7 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
             json_decode('{"simpleSetterOnlyTypeHint":{"str":"stringvalue"}}'),
             new JsonMapperTest_Simple()
         );
+
         $this->assertInternalType('object', $sn->internalData['typehint']);
         $this->assertInstanceOf(
             'JsonMapperTest_Simple', $sn->internalData['typehint']
@@ -337,8 +339,8 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             array(
                 array(
-                    'error',
-                    'Property {class}::{property} cannot be set from outside',
+                    'info',
+                    'Property {property} has no public setter method in {class}',
                     array(
                         'class' => 'JsonMapperTest_Simple',
                         'property' => 'protectedStrNoSetter'
@@ -400,5 +402,37 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
             new JsonMapperTest_Broken()
         );
     }
+
+    public function testPrivatePropertyWithPublicSetter()
+    {
+        $jm = new JsonMapper();
+        $jm->bExceptionOnUndefinedProperty = true;
+        $logger = new JsonMapperTest_Logger();
+        $jm->setLogger($logger);
+
+        $json   = '{"privateProperty" : 1}';
+        $result = $jm->map(json_decode($json), new PrivateWithSetter());
+
+        $this->assertEquals(1, $result->getPrivateProperty());
+        $this->assertTrue(empty($logger->log));
+    }
+
+    /**
+     * @expectedException        JsonMapper_Exception
+     * @expectedExceptionMessage JSON property "privateNoSetter" has no public setter method in object of type PrivateWithSetter
+     */
+    public function testPrivatePropertyWithNoPublicSetter()
+    {
+        $jm = new JsonMapper();
+        $jm->bExceptionOnUndefinedProperty = true;
+        $logger = new JsonMapperTest_Logger();
+        $jm->setLogger($logger);
+
+        $json   = '{"privateNoSetter" : 1}';
+        $result = $jm->map(json_decode($json), new PrivateWithSetter());
+
+        $this->assertEquals(1, $result->getPrivateProperty());
+        $this->assertTrue(empty($logger->log));
+    }
 }
-?>
+
