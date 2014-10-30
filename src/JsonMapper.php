@@ -106,13 +106,6 @@ class JsonMapper
                 continue;
             }
 
-            if ($type{0} != '\\') {
-                //create a full qualified namespace
-                if ($strNs != '') {
-                    $type = '\\' . $strNs . '\\' . $type;
-                }
-            }
-
             //FIXME: check if type exists, give detailled error message if not
             $array = null;
             $subtype = null;
@@ -130,11 +123,8 @@ class JsonMapper
             }
 
             if ($array !== null) {
-                if ($subtype{0} != '\\') {
-                    //create a full qualified namespace
-                    if ($strNs != '') {
-                        $subtype = $strNs . '\\' . $subtype;
-                    }
+                if (!$this->isSimpleType($subtype)) {
+                    $subtype = $this->getFullNamespace($subtype, $strNs);
                 }
                 $child = $this->mapArray($jvalue, $array, $subtype);
             } else if ($this->isFlatType(gettype($jvalue))) {
@@ -143,6 +133,7 @@ class JsonMapper
                 if ($jvalue === null) {
                     $child = null;
                 } else {
+                    $type = $this->getFullNamespace($type, $strNs);
                     $child = new $type($jvalue);
                 }
             } else {
@@ -157,6 +148,17 @@ class JsonMapper
         }
 
         return $object;
+    }
+
+    protected function getFullNamespace($type, $strNs)
+    {
+        if ($type{0} != '\\') {
+            //create a full qualified namespace
+            if ($strNs != '') {
+                $type = '\\' . $strNs . '\\' . $type;
+            }
+        }
+        return $type;
     }
 
     /**
@@ -211,7 +213,11 @@ class JsonMapper
                 if ($jvalue === null) {
                     $array[$key] = null;
                 } else {
-                    $array[$key] = new $class($jvalue);
+                    if ($this->isSimpleType($class)) {
+                        $array[$key] = $jvalue;
+                    } else {
+                        $array[$key] = new $class($jvalue);
+                    }
                 }
             } else {
                 $array[$key] = $this->map($jvalue, new $class());

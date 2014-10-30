@@ -12,5 +12,10 @@ class UnitData
      * @var Unit[]
      */
     public $units;
+
+    /**
+     * @var string[]
+     */
+    public $messages;
 }
 ?>
