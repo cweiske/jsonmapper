@@ -150,6 +150,14 @@ class JsonMapper
         return $object;
     }
 
+    /**
+     * Convert a type name to a fully namespaced type name.
+     *
+     * @param string $type  Type name (simple type or class name)
+     * @param string $strNs Base namespace that gets prepended to the type name
+     *
+     * @return string Fully-qualified type name with namespace
+     */
     protected function getFullNamespace($type, $strNs)
     {
         if ($type{0} != '\\') {
