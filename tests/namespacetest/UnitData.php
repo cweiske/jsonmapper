@@ -17,5 +17,10 @@ class UnitData
      * @var string[]
      */
     public $messages;
+
+    /**
+     * @var model\User
+     */
+    public $user;
 }
 ?>

@@ -137,6 +137,7 @@ class JsonMapper
                     $child = new $type($jvalue);
                 }
             } else {
+                $type = $this->getFullNamespace($type, $strNs);
                 $child = new $type();
                 $this->map($jvalue, $child);
             }
