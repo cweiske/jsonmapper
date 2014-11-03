@@ -79,7 +79,7 @@ class JsonMapper
                 $this->arInspectedClasses[$strClassName][$key] = $this->inspectProperty($rc, $key);
             }
 
-            list($hasProperty, $type, $setter) = $this->arInspectedClasses[$strClassName][$key];
+            list($hasProperty, $isSettable, $type, $setter) = $this->arInspectedClasses[$strClassName][$key];
 
             if (!$hasProperty) {
                 if ($this->bExceptionOnUndefinedProperty) {
@@ -92,6 +92,21 @@ class JsonMapper
                     'info',
                     'Property {property} does not exist in {class}',
                     array('property' => $key, 'class' => $strClassName)
+                );
+                continue;
+            }
+
+            if (!$isSettable) {
+                if ($this->bExceptionOnUndefinedProperty) {
+                    throw new JsonMapper_Exception(
+                        'JSON property "' . $key . '" has no public setter method'
+                        . ' in object of type ' . $strClassName
+                    );
+                }
+                $this->log(
+                     'info',
+                         'Property {property} has no public setter method in {class}',
+                         array('property' => $key, 'class' => $strClassName)
                 );
                 continue;
             }
@@ -228,45 +243,66 @@ class JsonMapper
      * @param string $name Property name
      *
      * @return array First value: if the property exists
-     *               Second value: type of the property
-     *               Third value: the setter to use, otherwise null
+     *               Second value: is the property settable
+     *               Third value: type of the property
+     *               Fourth value: the setter to use, otherwise null
      */
     protected function inspectProperty(ReflectionClass $rc, $name)
     {
         if ($rc->hasProperty($name)) {
             $rprop = $rc->getProperty($name);
-            $docblock = $rprop->getDocComment();
-            $annotations = $this->parseAnnotations($docblock);
-            if (!isset($annotations['var'][0])) {
-                return array(true, null, null);
-            }
 
-            //support "@var type description"
-            list($type) = explode(' ', $annotations['var'][0]);
+            if ($rprop->isPublic()) {
+                $docblock    = $rprop->getDocComment();
+                $annotations = $this->parseAnnotations($docblock);
 
-            return array(true, $type, null);
-        }
-
-        $setter = 'set' . ucfirst($name);
-        if ($rc->hasMethod($setter)) {
-            $rmeth = $rc->getMethod($setter);
-            $rparams = $rmeth->getParameters();
-            if (count($rparams) > 0) {
-                $pclass = $rparams[0]->getClass();
-                if ($pclass !== null) {
-                    return array(true, $pclass->getName(), $rmeth);
+                if (!isset($annotations['var'][0])) {
+                    return array(true, true, null, null);
                 }
+
+                //support "@var type description"
+                list($type) = explode(' ', $annotations['var'][0]);
+
+                return array(true, true, $type, null);
             }
-            $docblock = $rmeth->getDocComment();
-            $annotations = $this->parseAnnotations($docblock);
-            if (!isset($annotations['param'][0])) {
-                return array(true, null, $rmeth);
-            }
-            list($type) = explode(' ', trim($annotations['param'][0]));
-            return array(true, $type, $rmeth);
         }
 
-        return array(false, null, null);
+        // Parameter could not be directly set, so lets go for setter methods
+        $setter = 'set' . ucfirst($name);
+
+        if (!$rc->hasMethod($setter)) {
+            if ($rc->hasProperty($name)) {
+                //no setter, private property
+                return array(true, false, null, null);
+            }
+            //no setter, no property
+            return array(false, false, null, null);
+        }
+
+        $rmeth = $rc->getMethod($setter);
+        if (!$rmeth->isPublic()) {
+            return array(true, false, null, null);
+        }
+
+        $rparams = $rmeth->getParameters();
+
+        if (count($rparams) > 0) {
+            $pclass = $rparams[0]->getClass();
+            if ($pclass !== null) {
+                return array(true, true, $pclass->getName(), $rmeth);
+            }
+        }
+
+        $docblock    = $rmeth->getDocComment();
+        $annotations = $this->parseAnnotations($docblock);
+
+        if (!isset($annotations['param'][0])) {
+            return array(true, true, null, $rmeth);
+        }
+
+        list($type) = explode(' ', trim($annotations['param'][0]));
+
+        return array(true, true, $type, $rmeth);
     }
 
     /**
