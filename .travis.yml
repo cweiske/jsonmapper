@@ -3,11 +3,8 @@ php:
   - 5.3
   - 5.4
   - 5.5
+  - 5.6
   - hhvm
-
-matrix:
-  allow_failures:
-    - php: hhvm
 
 script:
   - cd tests
