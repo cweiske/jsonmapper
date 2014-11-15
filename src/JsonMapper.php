@@ -141,7 +141,12 @@ class JsonMapper
                 if (!$this->isSimpleType($subtype)) {
                     $subtype = $this->getFullNamespace($subtype, $strNs);
                 }
-                $child = $this->mapArray($jvalue, $array, $subtype);
+                if ($jvalue === null) {
+                    $child = null;
+                } else {
+                    $child = $this->mapArray($jvalue, $array, $subtype);
+                }
+                
             } else if ($this->isFlatType(gettype($jvalue))) {
                 //use constructor parameter if we have a class
                 // but only a flat type (i.e. string, int)
