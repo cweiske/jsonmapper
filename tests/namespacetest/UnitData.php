@@ -22,10 +22,6 @@ class UnitData
      * @var model\User
      */
     public $user;
-
-    /**
-     * @var \namespacetest\UnitObjectArray[Unit]
-     */
-    public $objectAsArray;
+    
 }
 ?>
