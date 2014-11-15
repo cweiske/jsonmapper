@@ -2,7 +2,6 @@
 namespace namespacetest;
 require_once __DIR__ . '/Unit.php';
 require_once __DIR__ . '/UnitData.php';
-require_once __DIR__ . '/UnitObjectArray.php';
 require_once __DIR__ . '/model/User.php';
 
 class NamespaceTest extends \PHPUnit_Framework_TestCase
