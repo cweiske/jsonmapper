@@ -2,6 +2,7 @@
 namespace namespacetest;
 require_once __DIR__ . '/Unit.php';
 require_once __DIR__ . '/UnitData.php';
+require_once __DIR__ . '/UnitObjectArray.php';
 require_once __DIR__ . '/model/User.php';
 
 class NamespaceTest extends \PHPUnit_Framework_TestCase
@@ -49,6 +50,16 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
         $json = '{"user":"John Smith"}';
         $res = $mapper->map(json_decode($json), new UnitData());
         $this->assertInstanceOf('\namespacetest\UnitData', $res);
+        $this->assertInstanceOf('\namespacetest\model\User', $res->user);
+    }
+
+    public function testMapChildObjectArrayNamespace()
+    {
+        $mapper = new \JsonMapper();
+        $json = '{"objectAsArray":null,"user":{"name": "John Smith"}}';
+        /* @var \namespacetest\UnitData $res */
+        $res = $mapper->map(json_decode($json), new UnitData());
+        $this->assertNull($res->objectAsArray);
         $this->assertInstanceOf('\namespacetest\model\User', $res->user);
     }
 }
