@@ -22,5 +22,6 @@ class UnitData
      * @var model\User
      */
     public $user;
+    
 }
 ?>
