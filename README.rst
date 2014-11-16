@@ -293,21 +293,11 @@ via PEAR
     $ pear channel-discover pear.nrdev.de
     $ pear install nr/jsonmapper-alpha
 
-via composer
+via Composer
 ============
-Add the following to your ``composer.json``:
+::
 
-.. code:: javascript
-
-    {
-        "require": {
-            "netresearch/jsonmapper": "0.*"
-        }
-    }
-
-Then run::
-
-    $ php composer.phar install
+    $ composer require netresearch/jsonmapper
 
 
 ================
