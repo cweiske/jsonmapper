@@ -12,4 +12,5 @@ before_script:
 script:
   - cd tests
   - phpunit --coverage-text .
+  - cd ..
   - phpcs --standard=PEAR src/
