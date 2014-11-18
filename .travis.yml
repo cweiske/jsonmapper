@@ -7,10 +7,8 @@ php:
   - hhvm
 
 before_script:
-  - pear install pear/PHP_CodeSniffer
-  - phpenv rehash
+  - composer install --no-interaction --prefer-source --dev
+  
 script:
-  - cd tests
-  - phpunit --coverage-text .
-  - cd ..
-  - phpcs --standard=PEAR src/
+  - ./vendor/bin/phpunit --coverage-text
+  - ./vendor/bin/phpcs --standard=PEAR src/
