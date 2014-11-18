@@ -48,12 +48,12 @@ class JsonMapper
     public $bExceptionOnMissingData = false;
 
     /**
-     * Runtime cache for inspected classes. This is particularly effective if 
+     * Runtime cache for inspected classes. This is particularly effective if
      * mapArray() is called with a large number of objects
-     * 
-     * @var array property inspection result cache 
+     *
+     * @var array property inspection result cache
      */
-    private $arInspectedClasses = array();
+    protected $arInspectedClasses = array();
 
     /**
      * Map data all data in $json into the given $object instance.
@@ -73,13 +73,15 @@ class JsonMapper
         foreach ($json as $key => $jvalue) {
             $providedProperties[$key] = true;
 
-            // Store the property inspection results so we don't have to do it 
+            // Store the property inspection results so we don't have to do it
             // again for subsequent objects of the same type
             if (!isset($this->arInspectedClasses[$strClassName][$key])) {
-                $this->arInspectedClasses[$strClassName][$key] = $this->inspectProperty($rc, $key);
+                $this->arInspectedClasses[$strClassName][$key]
+                    = $this->inspectProperty($rc, $key);
             }
 
-            list($hasProperty, $isSettable, $type, $setter) = $this->arInspectedClasses[$strClassName][$key];
+            list($hasProperty, $isSettable, $type, $setter)
+                = $this->arInspectedClasses[$strClassName][$key];
 
             if (!$hasProperty) {
                 if ($this->bExceptionOnUndefinedProperty) {
@@ -104,9 +106,9 @@ class JsonMapper
                     );
                 }
                 $this->log(
-                     'info',
-                         'Property {property} has no public setter method in {class}',
-                         array('property' => $key, 'class' => $strClassName)
+                    'info',
+                    'Property {property} has no public setter method in {class}',
+                    array('property' => $key, 'class' => $strClassName)
                 );
                 continue;
             }
@@ -330,13 +332,14 @@ class JsonMapper
      * @param object $object Object to set property on
      * @param string $name   Property name
      * @param mixed  $value  Value of property
-     * @param ReflectionMethod $setter the setter to use, null if no setter 
+     * @param object $setter the setter to use, null if no setter
      * should be used
      *
      * @return void
      */
-    protected function setProperty($object, $name, $value, $setter)
-    {
+    protected function setProperty(
+        $object, $name, $value, ReflectionMethod $setter = null
+    ) {
         $rc = new ReflectionClass($object);
         if ($setter === null && $rc->getProperty($name)->isPublic()) {
             $object->$name = $value;
