@@ -6,6 +6,11 @@ php:
   - 5.6
   - hhvm
 
+before_script:
+  - composer install --no-interaction --prefer-source --dev
+  - phpenv rehash
 script:
   - cd tests
   - phpunit --coverage-text .
+  - cd ..
+  - ./vendor/bin/phpcs --standard=PEAR src/
