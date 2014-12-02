@@ -5,4 +5,3 @@ class Unit
 {
     public $value;
 }
-?>

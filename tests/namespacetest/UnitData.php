@@ -23,4 +23,3 @@ class UnitData
      */
     public $user;
 }
-?>

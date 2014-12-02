@@ -85,17 +85,15 @@ class JsonMapper
 
             if (!$hasProperty) {
                 if ($this->bExceptionOnUndefinedProperty) {
-                    throw new JsonMapper_Exception(
+                    $this->log(
+                        'info',
+                        'Property {property} does not exist in {class}',
+                        array('property' => $key, 'class' => $strClassName));
+                    throw  new JsonMapper_Exception(
                         'JSON property "' . $key . '" does not exist'
                         . ' in object of type ' . $strClassName
                     );
                 }
-                $this->log(
-                    'info',
-                    'Property {property} does not exist in {class}',
-                    array('property' => $key, 'class' => $strClassName)
-                );
-                continue;
             }
 
             if (!$isSettable) {
@@ -203,19 +201,23 @@ class JsonMapper
      */
     protected function checkMissingData($providedProperties, ReflectionClass $rc)
     {
-        foreach ($rc->getProperties() as $property) {
-            $rprop = $rc->getProperty($property->name);
-            $docblock = $rprop->getDocComment();
-            $annotations = $this->parseAnnotations($docblock);
-            if (isset($annotations['required'])
-                && !isset($providedProperties[$property->name])
-            ) {
-                throw new JsonMapper_Exception(
-                    'Required property "' . $property->name . '" of class '
-                    . $rc->getName()
-                    . ' is missing in JSON data'
-                );
+        if (!empty($providedProperties)) {
+            foreach ($rc->getProperties() as $property) {
+                $rprop = $rc->getProperty($property->name);
+                $docblock = $rprop->getDocComment();
+                $annotations = $this->parseAnnotations($docblock);
+                if (isset($annotations['required'])
+                    && !isset($providedProperties[$property->name])
+                ) {
+                    throw new JsonMapper_Exception(
+                        'Required property "' . $property->name . '" of class '
+                        . $rc->getName()
+                        . ' is missing in JSON data'
+                    );
+                }
             }
+        } else {
+            throw new JsonMapper_Exception('No properties were provided.');
         }
     }
 
@@ -343,14 +345,8 @@ class JsonMapper
         $rc = new ReflectionClass($object);
         if ($setter === null && $rc->getProperty($name)->isPublic()) {
             $object->$name = $value;
-        } elseif ($setter && $setter->isPublic()) {
-            $object->{$setter->getName()}($value);
         } else {
-            $this->log(
-                'error',
-                'Property {class}::{property} cannot be set from outside',
-                array('property' => $name, 'class' => get_class($object))
-            );
+            $object->{$setter->getName()}($value);
         }
     }
 
@@ -440,4 +436,3 @@ class JsonMapper
         $this->logger = $logger;
     }
 }
-?>

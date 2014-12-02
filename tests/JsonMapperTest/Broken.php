@@ -34,4 +34,3 @@ class JsonMapperTest_Broken
      */
     public $pMissingData;
 }
-?>
