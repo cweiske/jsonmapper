@@ -319,6 +319,13 @@ JsonMapper is licensed under the `AGPL v3`__ or later.
 __ http://www.gnu.org/licenses/agpl
 
 
+Coding style
+============
+JsonMapper follows the `PEAR Coding Standards`__.
+
+__ http://pear.php.net/manual/en/standards.php
+
+
 Author
 ======
 `Christian Weiske`__, `Netresearch GmbH & Co KG`__
