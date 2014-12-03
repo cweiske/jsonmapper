@@ -38,3 +38,4 @@ class JsonMapperTest_Logger
         $this->log[] = array($level, $message, $context);
     }
 }
+?>

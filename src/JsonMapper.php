@@ -88,7 +88,8 @@ class JsonMapper
                     $this->log(
                         'info',
                         'Property {property} does not exist in {class}',
-                        array('property' => $key, 'class' => $strClassName));
+                        array('property' => $key, 'class' => $strClassName)
+                    );
                     throw  new JsonMapper_Exception(
                         'JSON property "' . $key . '" does not exist'
                         . ' in object of type ' . $strClassName
@@ -436,3 +437,4 @@ class JsonMapper
         $this->logger = $logger;
     }
 }
+?>

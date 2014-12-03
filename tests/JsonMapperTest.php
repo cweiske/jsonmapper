@@ -465,3 +465,4 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
 
     }
 }
+?>
