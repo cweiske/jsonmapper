@@ -7,7 +7,7 @@
  * @category Netresearch
  * @package  JsonMapper
  * @author   Christian Weiske <christian.weiske@netresearch.de>
- * @license  AGPL https://www.gnu.org/licenses/agpl
+ * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     http://www.netresearch.de/
  */
 
@@ -17,7 +17,7 @@
  * @category Netresearch
  * @package  JsonMapper
  * @author   Christian Weiske <christian.weiske@netresearch.de>
- * @license  AGPL https://www.gnu.org/licenses/agpl
+ * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     http://www.netresearch.de/
  */
 class JsonMapperTest_Broken
