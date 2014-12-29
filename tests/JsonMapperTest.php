@@ -462,7 +462,6 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
 
         $json   = '{"privatePropertyPrivateSetter" : 1}';
         $result = $jm->map(json_decode($json), new PrivateWithSetter());
-
     }
 }
 ?>
