@@ -7,7 +7,7 @@
  * @category Netresearch
  * @package  JsonMapper
  * @author   Christian Weiske <christian.weiske@netresearch.de>
- * @license  AGPL https://www.gnu.org/licenses/agpl
+ * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     http://www.netresearch.de/
  */
 require_once 'JsonMapperTest/Broken.php';
@@ -21,7 +21,7 @@ require_once 'JsonMapperTest/PrivateWithSetter.php';
  * @category Netresearch
  * @package  JsonMapper
  * @author   Christian Weiske <christian.weiske@netresearch.de>
- * @license  AGPL https://www.gnu.org/licenses/agpl
+ * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     http://www.netresearch.de/
  */
 class JsonMapperTest extends \PHPUnit_Framework_TestCase

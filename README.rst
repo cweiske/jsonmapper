@@ -314,9 +314,16 @@ About JsonMapper
 
 License
 =======
-JsonMapper is licensed under the `AGPL v3`__ or later.
+JsonMapper is licensed under the `OSL 3.0`__.
 
-__ http://www.gnu.org/licenses/agpl
+__ http://opensource.org/licenses/osl-3.0
+
+
+Coding style
+============
+JsonMapper follows the `PEAR Coding Standards`__.
+
+__ http://pear.php.net/manual/en/standards.php
 
 
 Author
