@@ -1,7 +1,19 @@
+2015-01-08  Christian Weiske  <christian.weiske@netresearch.de>
+
+	* Fix bug #23: handle empty variable types
+	* Fix bug #24: Namespaced ArrayObject class with namespaced
+	               value type does not work
+	* Release 0.4.4
+
+2014-12-17  Christian Weiske  <christian.weiske@netresearch.de>
+
+	* Change license from AGPL v3 to OSL-3.0
+	* Release 0.4.3
+
 2014-12-05  Christian Weiske  <christian.weiske@netresearch.de>
 
 	* Fix array mapping when value is NULL by @darkgaro
-	* Version 0.4.2
+	* Release 0.4.2
 
 2014-11-04  Christian Weiske  <christian.weiske@netresearch.de>
 
