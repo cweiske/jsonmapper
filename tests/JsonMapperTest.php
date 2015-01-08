@@ -220,6 +220,23 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test for "@var "
+     *
+     * @expectedException JsonMapper_Exception
+     * @expectedExceptionMessage Empty type at property "JsonMapperTest_Simple::$empty"
+     */
+    public function testMapEmpty()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode(
+                '{"empty":{"a":"b"}}'
+            ),
+            new JsonMapperTest_Simple()
+        );
+    }
+
+    /**
      * The TYPO3 autoloader breaks if we autoload a class with a [ or ]
      * in its name.
      *

@@ -124,6 +124,13 @@ class JsonMapper
             }
 
             //FIXME: check if type exists, give detailled error message if not
+            if ($type === '') {
+                throw new JsonMapper_Exception(
+                    'Empty type at property "'
+                    . $strClassName . '::$' . $key . '"'
+                );
+            }
+
             $array = null;
             $subtype = null;
             if (substr($type, -2) == '[]') {
@@ -182,7 +189,7 @@ class JsonMapper
      */
     protected function getFullNamespace($type, $strNs)
     {
-        if ($type{0} != '\\') {
+        if ($type !== '' && $type{0} != '\\') {
             //create a full qualified namespace
             if ($strNs != '') {
                 $type = '\\' . $strNs . '\\' . $type;
