@@ -304,8 +304,10 @@ via Composer
 Related software
 ================
 - `Jackson's data binding`__ for Java
+- `Johannes Schmitt Serializer`__ for PHP
 
 __ http://wiki.fasterxml.com/JacksonDataBinding
+__ http://jmsyst.com/libs/serializer
 
 
 ================
