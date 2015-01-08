@@ -3,6 +3,7 @@ namespace namespacetest;
 require_once __DIR__ . '/Unit.php';
 require_once __DIR__ . '/UnitData.php';
 require_once __DIR__ . '/model/User.php';
+require_once __DIR__ . '/model/UserList.php';
 
 class NamespaceTest extends \PHPUnit_Framework_TestCase
 {
@@ -72,6 +73,16 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
         $json = '{"empty":{}}';
         /* @var \namespacetest\UnitData $res */
         $res = $mapper->map(json_decode($json), new UnitData());
+    }
+
+    public function testMapCustomArraObjectWithChildType()
+    {
+        $mapper = new \JsonMapper();
+        $json = '{"users":[{"user":"John Smith"}]}';
+        $res = $mapper->map(json_decode($json), new UnitData());
+        $this->assertInstanceOf('\namespacetest\UnitData', $res);
+        $this->assertInstanceOf('\namespacetest\model\UserList', $res->users);
+        $this->assertInstanceOf('\namespacetest\model\User', $res->users[0]);
     }
 }
 ?>

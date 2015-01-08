@@ -27,5 +27,10 @@ class UnitData
      * @var
      */
     public $empty;
+
+    /**
+     * @var model\UserList[model\User]
+     */
+    public $users;
 }
 ?>

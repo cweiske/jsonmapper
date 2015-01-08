@@ -139,6 +139,9 @@ class JsonMapper
                 $subtype = substr($type, 0, -2);
             } else if (substr($type, -1) == ']') {
                 list($proptype, $subtype) = explode('[', substr($type, 0, -1));
+                if (!$this->isSimpleType($proptype)) {
+                    $proptype = $this->getFullNamespace($proptype, $strNs);
+                }
                 $array = new $proptype();
             } else if ($type == 'ArrayObject'
                 || is_subclass_of($type, 'ArrayObject')
