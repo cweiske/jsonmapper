@@ -337,30 +337,26 @@ class JsonMapper
     }
 
     /**
-     * Set a property on a given object to a given value
+     * Set a property on a given object to a given value.
+     *
+     * Checks if the setter or the property are public are made before
+     * calling this method.
      *
      * @param object $object Object to set property on
      * @param string $name   Property name
      * @param mixed  $value  Value of property
-     * @param object $setter the setter to use, null if no setter
-     * should be used
+     * @param object $setter The setter to use, null if no setter
+     *                       should be used
      *
      * @return void
      */
     protected function setProperty(
         $object, $name, $value, ReflectionMethod $setter = null
     ) {
-        $rc = new ReflectionClass($object);
-        if ($setter === null && $rc->getProperty($name)->isPublic()) {
+        if ($setter === null) {
             $object->$name = $value;
-        } elseif ($setter && $setter->isPublic()) {
-            $object->{$setter->getName()}($value);
         } else {
-            $this->log(
-                'error',
-                'Property {class}::{property} cannot be set from outside',
-                array('property' => $name, 'class' => get_class($object))
-            );
+            $object->{$setter->getName()}($value);
         }
     }
 

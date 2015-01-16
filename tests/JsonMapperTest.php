@@ -407,6 +407,20 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * We check that checkMissingData exits cleanly; needed for 100% coverage.
+     */
+    public function testMissingDataNoException()
+    {
+        $jm = new JsonMapper();
+        $jm->bExceptionOnMissingData = true;
+        $sn = $jm->map(
+            json_decode('{"pMissingData":1}'),
+            new JsonMapperTest_Broken()
+        );
+        $this->assertTrue(true);
+    }
+
+    /**
      * @expectedException        JsonMapper_Exception
      * @expectedExceptionMessage JSON property "undefinedProperty" does not exist in object of type JsonMapperTest_Broken
      */
