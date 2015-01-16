@@ -41,6 +41,11 @@ class JsonMapperTest_Simple
      * @var integer
      */
     public $pinteger;
+    
+    /**
+     * @var int|null
+     */
+    public $pnullable;
 
     /**
      * @var float

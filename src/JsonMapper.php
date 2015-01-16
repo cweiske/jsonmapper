@@ -419,7 +419,7 @@ class JsonMapper
             return $type;
         }
 
-        $types = array_udiff(explode('|', $type), ['null'], 'strcasecmp');
+        $types = array_udiff(explode('|', $type), array('null'), 'strcasecmp');
         return implode('|', $types);
     }
 
