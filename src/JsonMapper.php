@@ -177,7 +177,7 @@ class JsonMapper
 
         if ($this->bExceptionOnMissingData) {
             $this->checkMissingData($providedProperties, $rc);
-        }
+        } // @codeCoverageIgnore
 
         return $object;
     }
@@ -213,6 +213,9 @@ class JsonMapper
      */
     protected function checkMissingData($providedProperties, ReflectionClass $rc)
     {
+        if (empty($providedProperties)) {
+            throw new JsonMapper_Exception('No properties were provided.');
+        }
         foreach ($rc->getProperties() as $property) {
             $rprop = $rc->getProperty($property->name);
             $docblock = $rprop->getDocComment();
@@ -227,7 +230,7 @@ class JsonMapper
                 );
             }
         }
-    }
+    } // @codeCoverageIgnore
 
     /**
      * Map an array
@@ -353,14 +356,8 @@ class JsonMapper
         $rc = new ReflectionClass($object);
         if ($setter === null && $rc->getProperty($name)->isPublic()) {
             $object->$name = $value;
-        } elseif ($setter && $setter->isPublic()) {
-            $object->{$setter->getName()}($value);
         } else {
-            $this->log(
-                'error',
-                'Property {class}::{property} cannot be set from outside',
-                array('property' => $name, 'class' => get_class($object))
-            );
+            $object->{$setter->getName()}($value);
         }
     }
 
