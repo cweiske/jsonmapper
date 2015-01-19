@@ -423,7 +423,8 @@ class JsonMapper
     {
         return substr(
             str_ireplace('|null|', '|', '|' . $type . '|'),
-            1, -1);
+            1, -1
+        );
     }
 
     /**
