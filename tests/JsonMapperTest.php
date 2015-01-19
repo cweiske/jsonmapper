@@ -111,6 +111,48 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test for "@var int|null" with int value
+     */
+    public function testMapSimpleNullableInt()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"pnullable":0}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertInternalType('integer', $sn->pnullable);
+        $this->assertEquals(0, $sn->pnullable);
+    }
+
+    /**
+     * Test for "@var int|null" with null value
+     */
+    public function testMapSimpleNullableNull()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"pnullable":null}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertInternalType('null', $sn->pnullable);
+        $this->assertEquals(null, $sn->pnullable);
+    }
+
+    /**
+     * Test for "@var int|null" with string value
+     */
+    public function testMapSimpleNullableWrong()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"pnullable":"12345"}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertInternalType('integer', $sn->pnullable);
+        $this->assertEquals(12345, $sn->pnullable);
+    }
+
+    /**
      * Test for variable with no @var annotation
      */
     public function testMapSimpleNoType()

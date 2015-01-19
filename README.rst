@@ -196,6 +196,10 @@ Supported type names:
 
   - ``ContactList[Contact]``
   - ``NumberList[int]``
+- Nullable types:
+
+  - ``int|null`` - will be ``null`` if the value in JSON is
+    ``null``, otherwise it will be an integer
 
 ArrayObjects and extending classes are treated as arrays.
 
