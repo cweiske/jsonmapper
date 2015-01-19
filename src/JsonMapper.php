@@ -112,6 +112,14 @@ class JsonMapper
                 );
                 continue;
             }
+            
+            if ($this->isNullable($type)) {
+                if ($jvalue === null) {
+                    $this->setProperty($object, $key, null, $setter);
+                    continue;
+                }
+                $type = $this->removeNullable($type);
+            }
 
             if ($this->isNullable($type)) {
                 if ($jvalue === null) {
@@ -398,6 +406,35 @@ class JsonMapper
             || $type == 'boolean' || $type == 'bool'
             || $type == 'integer' || $type == 'int'
             || $type == 'float';
+    }
+    
+    /**
+     * Checks if the given type is nullable
+     *
+     * @param string $type type name from the phpdoc param
+     *
+     * @return boolean True if it is nullable
+     */
+    protected function isNullable($type)
+    {
+        return in_array('null', explode('|', strtolower($type)));
+    }
+
+    /**
+     * Remove the nullable section of a type
+     *
+     * @param string $type type name from the phpdoc param
+     *
+     * @return string The new type value
+     */
+    protected function removeNullable($type)
+    {
+        if (strtolower($type) === 'null') {
+            return $type;
+        }
+
+        $types = array_udiff(explode('|', $type), array('null'), 'strcasecmp');
+        return implode('|', $types);
     }
 
     /**
