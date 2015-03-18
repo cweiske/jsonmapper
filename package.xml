@@ -21,11 +21,11 @@
   <active>yes</active>
  </lead>
 
- <date>2015-01-08</date>
+ <date>2015-03-18</date>
  <time>00:00:00</time>
 
  <version>
-  <release>0.4.4</release>
+  <release>0.5.0</release>
   <api>0.3.0</api>
  </version>
 
@@ -37,8 +37,9 @@
  <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
 
  <notes>
-   * Fix bug #23: handle empty variable types
-   * Fix bug #24: Namespaced ArrayObject class with namespaced value type does not work
+   * Add support for nullable types (int|null) by @barryvdh
+   * Increase test coverage to 100%
+   * Fix float value detection by @sonicgd
  </notes>
 
  <contents>
@@ -98,6 +99,24 @@
  </phprelease>
 
  <changelog>
+
+  <release>
+   <version>
+    <release>0.5.0</release>
+    <api>0.3.0</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2015-03-18</date>
+   <license uri="http://www.gnu.org/licenses/agpl.html">AGPL</license>
+   <notes>
+     * Add support for nullable types (int|null) by @barryvdh
+     * Increase test coverage to 100%
+     * Fix float value detection by @sonicgd
+   </notes>
+  </release>
 
   <release>
    <version>

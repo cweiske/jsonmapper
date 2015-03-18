@@ -1,3 +1,10 @@
+2015-03-18  Christian Weiske  <christian.weiske@netresearch.de>
+
+	* Add support for nullable types (int|null) by @barryvdh
+	* Increase test coverage to 100%
+	* Fix float value detection by @sonicgd
+	* Release 0.5.0
+
 2015-01-08  Christian Weiske  <christian.weiske@netresearch.de>
 
 	* Fix bug #23: handle empty variable types
