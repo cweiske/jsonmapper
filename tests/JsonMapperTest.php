@@ -224,6 +224,23 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test for an array of float "@var float[]"
+     */
+    public function testFlArray()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"flArray":[1.23,3.14,2.048]}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertInternalType('array', $sn->flArray);
+        $this->assertEquals(3, count($sn->flArray));
+        $this->assertTrue(is_float($sn->flArray[0]));
+        $this->assertTrue(is_float($sn->flArray[1]));
+        $this->assertTrue(is_float($sn->flArray[2]));
+    }
+
+    /**
      * Test for "@var ArrayObject"
      */
     public function testMapArrayObject()

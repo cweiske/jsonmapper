@@ -397,7 +397,7 @@ class JsonMapper
             || $type == 'string'
             || $type == 'boolean' || $type == 'bool'
             || $type == 'integer' || $type == 'int'
-            || $type == 'float';
+            || $type == 'double';
     }
 
     /**

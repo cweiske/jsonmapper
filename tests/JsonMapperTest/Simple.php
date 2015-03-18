@@ -53,6 +53,11 @@ class JsonMapperTest_Simple
     public $fl;
 
     /**
+     * @var float[]
+     */
+    public $flArray;
+
+    /**
      * @var string
      */
     public $str;
