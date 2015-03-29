@@ -307,7 +307,7 @@ class JsonMapper
         }
 
         // Parameter could not be directly set, so lets go for setter methods
-        $setter = 'set' . ucfirst($name);
+        $setter = 'set' . preg_replace('/(?:^|_)(.?)/e',"strtoupper('$1')",$name);
 
         if (!$rc->hasMethod($setter)) {
             if ($rc->hasProperty($name)) {
