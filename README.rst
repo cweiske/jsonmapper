@@ -161,6 +161,8 @@ a property:
      */
     public $person;
 
+   Note that the property has to be public to be used directly.
+
 #. If the property does not exist, the setter method
    (``set`` + ``ucfirst($propertyname)``) is inspected
 

@@ -108,6 +108,12 @@ class JsonMapperTest_Simple
     public $internalData;
 
     /**
+     * Variable name with underscore
+     * @var string
+     */
+    public $under_score;
+
+    /**
      * @var
      */
     public $empty;
