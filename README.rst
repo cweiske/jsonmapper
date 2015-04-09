@@ -154,17 +154,7 @@ Property type documentation
 ``JsonMapper`` uses several sources to detect the correct type of
 a property:
 
-#. ``@var $type`` docblock annotation of class properties::
-
-    /**
-     * @var \my\application\model\Contact
-     */
-    public $person;
-
-   Note that the property has to be public to be used directly.
-
-#. If the property does not exist, the setter method
-   (``set`` + ``ucwords($propertyname)``) is inspected.
+#. The setter method (``set`` + ``ucwords($propertyname)``) is inspected.
 
    Underscores make the next letter uppercase, which means that
    for a JSON property ``foo_bar_baz`` a setter method of
@@ -181,7 +171,19 @@ a property:
          */
         public function setPerson($person) {...}
 
-#. If all fails, the plain JSON data is set to the property
+   #. If no type could be detected, the plain JSON value is passed
+      to the setter method.
+
+#. ``@var $type`` docblock annotation of class properties::
+
+    /**
+     * @var \my\application\model\Contact
+     */
+    public $person;
+
+   Note that the property has to be public to be used directly.
+
+   If no type could be detected, the property gets the plain JSON value.
 
 Supported type names:
 
@@ -220,14 +222,18 @@ When an object shall be created but the JSON contains a simple type
 only (e.g. string, float, boolean), this value is passed to
 the classes' constructor. Example:
 
-PHP code::
+PHP code:
+
+.. code:: php
 
     /**
      * @var DateTime
      */
     public $date;
 
-JSON::
+JSON:
+
+.. code:: js
 
     {"date":"2014-05-15"}
 

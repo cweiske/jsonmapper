@@ -288,6 +288,33 @@ class JsonMapper
      */
     protected function inspectProperty(ReflectionClass $rc, $name)
     {
+        //try setter method first
+        $setter = 'set' . str_replace(
+            ' ', '', ucwords(str_replace('_', ' ', $name))
+        );
+        if ($rc->hasMethod($setter)) {
+            $rmeth = $rc->getMethod($setter);
+            if ($rmeth->isPublic()) {
+                $rparams = $rmeth->getParameters();
+                if (count($rparams) > 0) {
+                    $pclass = $rparams[0]->getClass();
+                    if ($pclass !== null) {
+                        return array(true, true, $pclass->getName(), $rmeth);
+                    }
+                }
+
+                $docblock    = $rmeth->getDocComment();
+                $annotations = $this->parseAnnotations($docblock);
+
+                if (!isset($annotations['param'][0])) {
+                    return array(true, true, null, $rmeth);
+                }
+                list($type) = explode(' ', trim($annotations['param'][0]));
+                return array(true, true, $type, $rmeth);
+            }
+        }
+
+        //now try to set the property directly
         if ($rc->hasProperty($name)) {
             $rprop = $rc->getProperty($name);
 
@@ -303,49 +330,14 @@ class JsonMapper
                 list($type) = explode(' ', $annotations['var'][0]);
 
                 return array(true, true, $type, null);
-            }
-        }
-
-        // Parameter could not be directly set, so lets go for setter methods
-        $setter = 'set' . str_replace(
-            ' ',
-            '',
-            ucwords(str_replace('_', ' ', $name))
-        );
-
-        if (!$rc->hasMethod($setter)) {
-            if ($rc->hasProperty($name)) {
+            } else {
                 //no setter, private property
                 return array(true, false, null, null);
             }
-            //no setter, no property
-            return array(false, false, null, null);
         }
 
-        $rmeth = $rc->getMethod($setter);
-        if (!$rmeth->isPublic()) {
-            return array(true, false, null, null);
-        }
-
-        $rparams = $rmeth->getParameters();
-
-        if (count($rparams) > 0) {
-            $pclass = $rparams[0]->getClass();
-            if ($pclass !== null) {
-                return array(true, true, $pclass->getName(), $rmeth);
-            }
-        }
-
-        $docblock    = $rmeth->getDocComment();
-        $annotations = $this->parseAnnotations($docblock);
-
-        if (!isset($annotations['param'][0])) {
-            return array(true, true, null, $rmeth);
-        }
-
-        list($type) = explode(' ', trim($annotations['param'][0]));
-
-        return array(true, true, $type, $rmeth);
+        //no setter, no property
+        return array(false, false, null, null);
     }
 
     /**

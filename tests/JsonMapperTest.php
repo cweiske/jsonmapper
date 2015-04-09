@@ -571,5 +571,18 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
         $json   = '{"privatePropertyPrivateSetter" : 1}';
         $result = $jm->map(json_decode($json), new PrivateWithSetter());
     }
+
+    public function testSetterIsPreferredOverProperty()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"setterPreferredOverProperty":"foo"}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertInternalType('string', $sn->setterPreferredOverProperty);
+        $this->assertEquals(
+            'set via setter: foo', $sn->setterPreferredOverProperty
+        );
+    }
 }
 ?>

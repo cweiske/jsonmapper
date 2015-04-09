@@ -118,6 +118,11 @@ class JsonMapperTest_Simple
      */
     public $empty;
 
+    /**
+     * @var string
+     */
+    public $setterPreferredOverProperty;
+
     public function setSimpleSetterOnlyTypeHint(JsonMapperTest_Simple $s)
     {
         $this->internalData['typehint'] = $s;
@@ -144,6 +149,11 @@ class JsonMapperTest_Simple
     public function setUnderScoreSetter($v)
     {
         $this->internalData['under_score_setter'] = $v;
+    }
+
+    public function setSetterPreferredOverProperty($v)
+    {
+        $this->setterPreferredOverProperty = 'set via setter: ' . $v;
     }
 }
 ?>
