@@ -181,6 +181,24 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Variable with an underscore and a setter method
+     */
+    public function testMapSimpleUnderscoreSetter()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"under_score_setter":"blubb"}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertInternalType(
+            'string', $sn->internalData['under_score_setter']
+        );
+        $this->assertEquals(
+            'blubb', $sn->internalData['under_score_setter']
+        );
+    }
+
+    /**
      * Test for a class name "@var Classname"
      */
     public function testMapObject()

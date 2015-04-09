@@ -164,7 +164,11 @@ a property:
    Note that the property has to be public to be used directly.
 
 #. If the property does not exist, the setter method
-   (``set`` + ``ucfirst($propertyname)``) is inspected
+   (``set`` + ``ucwords($propertyname)``) is inspected.
+
+   Underscores make the next letter uppercase, which means that
+   for a JSON property ``foo_bar_baz`` a setter method of
+   ``setFooBarBaz`` is used.
 
    #. If it has a type hint in the method signature, this type used::
 

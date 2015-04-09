@@ -140,5 +140,10 @@ class JsonMapperTest_Simple
     {
         return $this->protectedStrNoSetter;
     }
+
+    public function setUnderScoreSetter($v)
+    {
+        $this->internalData['under_score_setter'] = $v;
+    }
 }
 ?>
