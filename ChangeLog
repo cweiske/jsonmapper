@@ -1,3 +1,10 @@
+2015-04-09  Christian Weiske  <christian.weiske@netresearch.de>
+
+	* Prefer setter methods over directy property access
+	* Change setter method name calculation for properties
+	  with _ underscores by @msankhala
+	* Release 0.6.0
+
 2015-03-18  Christian Weiske  <christian.weiske@netresearch.de>
 
 	* Add support for nullable types (int|null) by @barryvdh
