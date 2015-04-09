@@ -22,6 +22,8 @@ class properties, as well as type hints in setter methods.
 You do not have to modify your model classes by adding JSON specific code;
 it works automatically by parsing already-existing docblocks.
 
+Keywords: deserialization, hydration
+
 __ http://json.org/
 
 
