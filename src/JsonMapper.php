@@ -299,7 +299,7 @@ class JsonMapper
                 if (count($rparams) > 0) {
                     $pclass = $rparams[0]->getClass();
                     if ($pclass !== null) {
-                        return array(true, true, $pclass->getName(), $rmeth);
+                        return array(true, true, '\\'.$pclass->getName(), $rmeth);
                     }
                 }
 
