@@ -32,5 +32,13 @@ class UnitData
      * @var model\UserList[model\User]
      */
     public $users;
+
+    public $internalData = array();
+
+
+    public function setNamespacedTypeHint(\othernamespace\Foo $foo)
+    {
+        $this->internalData['namespacedTypeHint'] = $foo;
+    }
 }
 ?>

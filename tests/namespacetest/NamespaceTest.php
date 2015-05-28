@@ -4,6 +4,7 @@ require_once __DIR__ . '/Unit.php';
 require_once __DIR__ . '/UnitData.php';
 require_once __DIR__ . '/model/User.php';
 require_once __DIR__ . '/model/UserList.php';
+require_once __DIR__ . '/../othernamespace/Foo.php';
 
 class NamespaceTest extends \PHPUnit_Framework_TestCase
 {
@@ -83,6 +84,24 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\namespacetest\UnitData', $res);
         $this->assertInstanceOf('\namespacetest\model\UserList', $res->users);
         $this->assertInstanceOf('\namespacetest\model\User', $res->users[0]);
+    }
+
+    /**
+     * Test a setter method with a namespaced type hint that
+     * is within another namespace than the object itself.
+     */
+    public function testSetterNamespacedTypeHint()
+    {
+        $mapper = new \JsonMapper();
+        $json = '{"namespacedTypeHint":"Foo"}';
+        $res = $mapper->map(json_decode($json), new UnitData());
+        $this->assertInstanceOf('\namespacetest\UnitData', $res);
+        $this->assertInstanceOf(
+            '\othernamespace\Foo', $res->internalData['namespacedTypeHint']
+        );
+        $this->assertEquals(
+            'Foo', $res->internalData['namespacedTypeHint']->name
+        );
     }
 }
 ?>
