@@ -1,3 +1,8 @@
+2015-05-28  Christian Weiske  <christian.weiske@netresearch.de>
+
+	* Fix namespace error with setter type hints
+	* Release 0.6.1
+
 2015-04-09  Christian Weiske  <christian.weiske@netresearch.de>
 
 	* Prefer setter methods over directy property access
