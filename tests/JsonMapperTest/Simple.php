@@ -58,6 +58,11 @@ class JsonMapperTest_Simple
     public $flArray;
 
     /**
+     * @var mixed
+     */
+    public $mixed;
+
+    /**
      * @var string
      */
     public $str;

@@ -121,7 +121,7 @@ class JsonMapper
                 $type = $this->removeNullable($type);
             }
 
-            if ($type === null) {
+            if ($type === null || $type === 'mixed') {
                 //no given type - simply set the json data
                 $this->setProperty($object, $key, $jvalue, $setter);
                 continue;

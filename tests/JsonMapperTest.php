@@ -111,6 +111,27 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test for "@var mixed"
+     */
+    public function testMapSimpleMixed()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"mixed":12345}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertInternalType('integer', $sn->mixed);
+        $this->assertEquals('12345', $sn->mixed);
+
+        $sn = $jm->map(
+            json_decode('{"mixed":"12345"}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertInternalType('string', $sn->mixed);
+        $this->assertEquals(12345, $sn->mixed);
+    }
+
+    /**
      * Test for "@var int|null" with int value
      */
     public function testMapSimpleNullableInt()
