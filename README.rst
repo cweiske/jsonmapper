@@ -213,6 +213,9 @@ Supported type names:
 
 ArrayObjects and extending classes are treated as arrays.
 
+Variables without a type or with type ``mixed`` will get the
+JSON value set directly without any conversion.
+
 See `phpdoc's type documentation`__ for more information.
 
 __ http://phpdoc.org/docs/latest/references/phpdoc/types.html
