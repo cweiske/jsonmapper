@@ -385,12 +385,12 @@ class JsonMapper
     }
 
     /**
-     * Checks if the given object is of this type or has this type as one of its parents
+     * Checks if the object is of this type or has this type as one of its parents
      *
-     * @param string $type
-     * @param mixed $object
+     * @param string $type   class name of type being required
+     * @param mixed  $object object instance to be tested
      *
-     * @return boolean
+     * @return boolean True if $object has type of $type
      */
     protected function isObjectOfSameType($type, $object)
     {
