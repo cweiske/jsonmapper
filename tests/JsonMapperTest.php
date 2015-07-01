@@ -14,6 +14,7 @@ require_once 'JsonMapperTest/Broken.php';
 require_once 'JsonMapperTest/Simple.php';
 require_once 'JsonMapperTest/Logger.php';
 require_once 'JsonMapperTest/PrivateWithSetter.php';
+require_once 'JsonMapperTest/ValueObject.php';
 
 /**
  * Unit tests for JsonMapper
@@ -604,6 +605,18 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             'set via setter: foo', $sn->setterPreferredOverProperty
         );
+    }
+
+    public function testSettingValueObjects()
+    {
+        $valueObject = new JsonMapperTest_ValueObject('test');
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            array('value_object' => $valueObject),
+            new JsonMapperTest_Simple()
+        );
+
+        $this->assertSame($valueObject, $sn->getValueObject());
     }
 }
 ?>

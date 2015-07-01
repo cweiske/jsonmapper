@@ -125,6 +125,9 @@ class JsonMapper
                 //no given type - simply set the json data
                 $this->setProperty($object, $key, $jvalue, $setter);
                 continue;
+            } else if ($this->isObjectOfSameType($type, $jvalue)) {
+                $this->setProperty($object, $key, $jvalue, $setter);
+                continue;
             } else if ($this->isSimpleType($type)) {
                 settype($jvalue, $type);
                 $this->setProperty($object, $key, $jvalue, $setter);
@@ -379,6 +382,24 @@ class JsonMapper
             || $type == 'boolean' || $type == 'bool'
             || $type == 'integer' || $type == 'int'
             || $type == 'float' || $type == 'array' || $type == 'object';
+    }
+
+    /**
+     * Checks if the object is of this type or has this type as one of its parents
+     *
+     * @param string $type   class name of type being required
+     * @param mixed  $object object instance to be tested
+     *
+     * @return boolean True if $object has type of $type
+     */
+    protected function isObjectOfSameType($type, $object)
+    {
+
+        if (false === is_object($object)) {
+            return false;
+        }
+
+        return is_a($object, $type);
     }
 
     /**
