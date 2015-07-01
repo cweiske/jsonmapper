@@ -121,11 +121,11 @@ class JsonMapper
                 $type = $this->removeNullable($type);
             }
 
-            if ($this->isSameType($type, $jvalue)) {
+            if ($type === null || $type === 'mixed') {
+                //no given type - simply set the json data
                 $this->setProperty($object, $key, $jvalue, $setter);
                 continue;
-            } else if ($type === null || $type === 'mixed') {
-                //no given type - simply set the json data
+            } else if ($this->isObjectOfSameType($type, $jvalue)) {
                 $this->setProperty($object, $key, $jvalue, $setter);
                 continue;
             } else if ($this->isSimpleType($type)) {
@@ -392,7 +392,7 @@ class JsonMapper
      *
      * @return boolean
      */
-    protected function isSameType($type, $object)
+    protected function isObjectOfSameType($type, $object)
     {
 
         if (false === is_object($object)) {
