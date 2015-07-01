@@ -121,7 +121,10 @@ class JsonMapper
                 $type = $this->removeNullable($type);
             }
 
-            if ($type === null || $type === 'mixed') {
+            if ($this->isSameType($type, $jvalue)) {
+                $this->setProperty($object, $key, $jvalue, $setter);
+                continue;
+            } else if ($type === null || $type === 'mixed') {
                 //no given type - simply set the json data
                 $this->setProperty($object, $key, $jvalue, $setter);
                 continue;
@@ -379,6 +382,24 @@ class JsonMapper
             || $type == 'boolean' || $type == 'bool'
             || $type == 'integer' || $type == 'int'
             || $type == 'float' || $type == 'array' || $type == 'object';
+    }
+
+    /**
+     * Checks if the given object is of this type or has this type as one of its parents
+     *
+     * @param string $type
+     * @param mixed $object
+     *
+     * @return boolean
+     */
+    protected function isSameType($type, $object)
+    {
+
+        if (false === is_object($object)) {
+            return false;
+        }
+
+        return is_a($object, $type);
     }
 
     /**

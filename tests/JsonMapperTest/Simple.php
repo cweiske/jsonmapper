@@ -128,6 +128,12 @@ class JsonMapperTest_Simple
      */
     public $setterPreferredOverProperty;
 
+    /**
+     * Value object which needs to be set as an instance (without mapping)
+     * @var JsonMapperTest_ValueObject
+     */
+    public $valueObject;
+
     public function setSimpleSetterOnlyTypeHint(JsonMapperTest_Simple $s)
     {
         $this->internalData['typehint'] = $s;
@@ -159,6 +165,22 @@ class JsonMapperTest_Simple
     public function setSetterPreferredOverProperty($v)
     {
         $this->setterPreferredOverProperty = 'set via setter: ' . $v;
+    }
+
+    /**
+     * @return JsonMapperTest_ValueObject
+     */
+    public function getValueObject()
+    {
+        return $this->valueObject;
+    }
+
+    /**
+     * @param JsonMapperTest_ValueObject $valueObject
+     */
+    public function setValueObject(JsonMapperTest_ValueObject $valueObject)
+    {
+        $this->valueObject = $valueObject;
     }
 }
 ?>
