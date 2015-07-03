@@ -278,6 +278,26 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @expectedException JsonMapper_Exception
+     * @expectedExceptionMessage JsonMapper::map() requires first argument to be an object, NULL given.
+     */
+    public function testMapNullJson()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(null, new JsonMapperTest_Simple());
+    }
+
+    /**
+     * @expectedException JsonMapper_Exception
+     * @expectedExceptionMessage JsonMapper::map() requires second argument to be an object, NULL given.
+     */
+    public function testMapNullObject()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(new stdClass(), null);
+    }
+
+    /**
      * Test for an array of float "@var float[]"
      */
     public function testFlArray()
@@ -612,7 +632,7 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
         $valueObject = new JsonMapperTest_ValueObject('test');
         $jm = new JsonMapper();
         $sn = $jm->map(
-            array('value_object' => $valueObject),
+            (object) array('value_object' => $valueObject),
             new JsonMapperTest_Simple()
         );
 
