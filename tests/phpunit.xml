@@ -1,7 +1,6 @@
 <phpunit backupGlobals="false"
          bootstrap="bootstrap.php"
          colors="true"
-         strict="true"
 >
     <filter>
         <whitelist>
