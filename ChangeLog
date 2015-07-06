@@ -1,3 +1,10 @@
+2015-07-06  Christian Weiske  <christian.weiske@netresearch.de>
+
+	* Add support for seting objects directly if they have
+	  the correct type already by @radmen
+	* Throw exception when a non-object is passed to map()
+	* Release 0.8.0
+
 2015-06-19  Christian Weiske  <christian.weiske@netresearch.de>
 
 	* Support "mixed" variable type (issue #33)
