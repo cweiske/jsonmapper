@@ -67,13 +67,13 @@ class JsonMapper
     public function map($json, $object)
     {
         if (!is_object($json)) {
-            throw new JsonMapper_Exception(
+            throw new InvalidArgumentException(
                 'JsonMapper::map() requires first argument to be an object'
                 . ', ' . gettype($json) . ' given.'
             );
         }
         if (!is_object($object)) {
-            throw new JsonMapper_Exception(
+            throw new InvalidArgumentException(
                 'JsonMapper::map() requires second argument to be an object'
                 . ', ' . gettype($object) . ' given.'
             );

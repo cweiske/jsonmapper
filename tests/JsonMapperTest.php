@@ -278,7 +278,7 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException JsonMapper_Exception
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage JsonMapper::map() requires first argument to be an object, NULL given.
      */
     public function testMapNullJson()
@@ -288,7 +288,7 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException JsonMapper_Exception
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage JsonMapper::map() requires second argument to be an object, NULL given.
      */
     public function testMapNullObject()
