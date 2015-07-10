@@ -1,6 +1,11 @@
 <phpunit backupGlobals="false"
          bootstrap="bootstrap.php"
          colors="true"
+         beStrictAboutChangesToGlobalState="true"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutTestSize="true"
+         beStrictAboutTestsThatDoNotTestAnything="true"
+         checkForUnintentionallyCoveredCode="true"
 >
     <filter>
         <whitelist>
