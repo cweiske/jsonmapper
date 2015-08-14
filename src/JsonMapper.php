@@ -345,7 +345,17 @@ class JsonMapper
         //now try to set the property directly
         if ($rc->hasProperty($name)) {
             $rprop = $rc->getProperty($name);
-
+        } else {
+            //case-insensitive property matching
+            $rprop = null;
+            foreach ($rc->getProperties(ReflectionProperty::IS_PUBLIC) as $p) {
+                if ((strcasecmp($p->name, $name) === 0)) {
+                    $rprop = $p;
+                    break;
+                }
+            }
+        }
+        if ($rprop !== null) {
             if ($rprop->isPublic()) {
                 $docblock    = $rprop->getDocComment();
                 $annotations = $this->parseAnnotations($docblock);

@@ -646,5 +646,16 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame($valueObject, $sn->getValueObject());
     }
+
+    public function testCaseInsensitivePropertyMatching()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            (object) array('PINT' => 2),
+            new JsonMapperTest_Simple()
+        );
+
+        $this->assertSame(2, $sn->pint);
+    }
 }
 ?>

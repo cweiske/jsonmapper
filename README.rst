@@ -187,6 +187,11 @@ a property:
 
    If no type could be detected, the property gets the plain JSON value.
 
+   If a property can not be found, JsonMapper tries to find the property
+   in a case-insensitive manner.
+   A JSON property ``isempty`` would then be mapped to a PHP property
+   ``isEmpty``.
+
 Supported type names:
 
 - Simple types:
