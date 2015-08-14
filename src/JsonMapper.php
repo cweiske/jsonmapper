@@ -103,8 +103,10 @@ class JsonMapper
                     = $this->inspectProperty($rc, $key);
             }
 
-            list($hasProperty, $isSettable, $type, $setter)
+            list($hasProperty, $isSettable, $type, $setter, $altName)
                 = $this->arInspectedClasses[$strClassName][$key];
+
+			$key = (!is_null($altName))? $altName : $key;
 
             if (!$hasProperty) {
                 if ($this->bExceptionOnUndefinedProperty) {
@@ -311,6 +313,7 @@ class JsonMapper
      *               Second value: is the property settable
      *               Third value: type of the property
      *               Fourth value: the setter to use, otherwise null
+     *               Fifth value: Alternate property name to use
      */
     protected function inspectProperty(ReflectionClass $rc, $name)
     {
@@ -326,7 +329,7 @@ class JsonMapper
                     $pclass = $rparams[0]->getClass();
                     if ($pclass !== null) {
                         return array(
-                            true, true, '\\' . $pclass->getName(), $rmeth
+                            true, true, '\\' . $pclass->getName(), $rmeth, null
                         );
                     }
                 }
@@ -335,37 +338,37 @@ class JsonMapper
                 $annotations = $this->parseAnnotations($docblock);
 
                 if (!isset($annotations['param'][0])) {
-                    return array(true, true, null, $rmeth);
+                    return array(true, true, null, $rmeth, null);
                 }
                 list($type) = explode(' ', trim($annotations['param'][0]));
-                return array(true, true, $type, $rmeth);
+                return array(true, true, $type, $rmeth, null);
             }
         }
 
+		$rprop = $this->findPropCaseInsenstive($rc, $name);
         //now try to set the property directly
-        if ($rc->hasProperty($name)) {
-            $rprop = $rc->getProperty($name);
+        if ($rprop) {
 
-            if ($rprop->isPublic()) {
+			if ($rprop->isPublic()) {
                 $docblock    = $rprop->getDocComment();
                 $annotations = $this->parseAnnotations($docblock);
 
                 if (!isset($annotations['var'][0])) {
-                    return array(true, true, null, null);
+                    return array(true, true, null, null, $rprop->name);
                 }
 
                 //support "@var type description"
                 list($type) = explode(' ', $annotations['var'][0]);
 
-                return array(true, true, $type, null);
+                return array(true, true, $type, null, $rprop->name);
             } else {
                 //no setter, private property
-                return array(true, false, null, null);
+                return array(true, false, null, null, $rprop->name);
             }
         }
 
         //no setter, no property
-        return array(false, false, null, null);
+        return array(false, false, null, null, null);
     }
 
     /**
@@ -521,5 +524,22 @@ class JsonMapper
     {
         $this->logger = $logger;
     }
+	
+	
+	public function findPropCaseInsenstive(\ReflectionClass $rc, $name) {
+		$result = null;
+		if (!($rc->hasProperty($name))) {
+			foreach ($rc->getProperties() as $prop) {
+				/* @var $prop \ReflectionProperty */
+				if ((strcasecmp($prop->name, $name) == 0)) {
+					$result = $prop;
+					break;
+				}
+			}
+		} else {
+			$result = $rc->getProperty($name);
+		}
+		return $result;
+	}
 }
 ?>
