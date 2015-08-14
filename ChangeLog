@@ -1,3 +1,9 @@
+2015-08-14  Christian Weiske  <christian.weiske@netresearch.de>
+
+	* Add case-insensitive property matching (issue #40)
+	* Add option to disable map() parameter type enforcement (issue #37)
+	* Release 0.9.0
+
 2015-07-06  Christian Weiske  <christian.weiske@netresearch.de>
 
 	* Add support for seting objects directly if they have
