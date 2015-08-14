@@ -303,6 +303,25 @@ an exception when ``$bExceptionOnMissingData`` is activated:
     $jm->map(...);
 
 
+Passing arrays to ``map()``
+---------------------------
+You may wish to pass array data into ``map()`` that you got by calling
+
+.. code:: php
+
+    json_decode($jsonString, true)
+
+By default, JsonMapper will throw an exception because ``map()`` requires
+an object as first parameter.
+You can circumvent that by setting ``$bEnforceMapType`` to ``false``:
+
+.. code:: php
+
+    $jm = new JsonMapper();
+    $jm->bEnforceMapType = false;
+    $jm->map(...);
+
+
 ============
 Installation
 ============

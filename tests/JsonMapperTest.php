@@ -297,6 +297,14 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
         $sn = $jm->map(new stdClass(), null);
     }
 
+    public function testMapArrayJsonNoTypeEnforcement()
+    {
+        $jm = new JsonMapper();
+        $jm->bEnforceMapType = false;
+        $sn = $jm->map(array(), new JsonMapperTest_Simple());
+        $this->assertInstanceOf('JsonMapperTest_Simple', $sn);
+    }
+
     /**
      * Test for an array of float "@var float[]"
      */

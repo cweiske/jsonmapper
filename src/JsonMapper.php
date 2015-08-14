@@ -48,6 +48,16 @@ class JsonMapper
     public $bExceptionOnMissingData = false;
 
     /**
+     * If the types of map() parameters shall be checked.
+     * You have to disable it if you're using the json_decode "assoc" parameter.
+     *
+     *     json_decode($str, false)
+     *
+     * @var boolean
+     */
+    public $bEnforceMapType = true;
+
+    /**
      * Runtime cache for inspected classes. This is particularly effective if
      * mapArray() is called with a large number of objects
      *
@@ -66,7 +76,7 @@ class JsonMapper
      */
     public function map($json, $object)
     {
-        if (!is_object($json)) {
+        if ($this->bEnforceMapType && !is_object($json)) {
             throw new InvalidArgumentException(
                 'JsonMapper::map() requires first argument to be an object'
                 . ', ' . gettype($json) . ' given.'
