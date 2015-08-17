@@ -333,16 +333,21 @@ Installation
 
 via PEAR
 ========
-::
+From our `PEAR channel`__::
 
     $ pear channel-discover pear.nrdev.de
     $ pear install nr/jsonmapper-alpha
 
+__ http://pear.nrdev.de/
+
+
 via Composer
 ============
-::
+From Packagist__::
 
     $ composer require netresearch/jsonmapper
+
+__ https://packagist.org/packages/netresearch/jsonmapper
 
 
 ================
