@@ -10,6 +10,7 @@
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     http://www.netresearch.de/
  */
+require_once 'JsonMapperTest/Array.php';
 require_once 'JsonMapperTest/Broken.php';
 require_once 'JsonMapperTest/Simple.php';
 require_once 'JsonMapperTest/Logger.php';
@@ -243,7 +244,7 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"typedArray":[{"str":"stringvalue"},{"fl":"1.2"}]}'),
-            new JsonMapperTest_Simple()
+            new JsonMapperTest_Array()
         );
         $this->assertInternalType('array', $sn->typedArray);
         $this->assertEquals(2, count($sn->typedArray));
@@ -262,7 +263,7 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"typedSimpleArray":["2014-01-02",null,"2014-05-07"]}'),
-            new JsonMapperTest_Simple()
+            new JsonMapperTest_Array()
         );
         $this->assertInternalType('array', $sn->typedSimpleArray);
         $this->assertEquals(3, count($sn->typedSimpleArray));
@@ -313,7 +314,7 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"flArray":[1.23,3.14,2.048]}'),
-            new JsonMapperTest_Simple()
+            new JsonMapperTest_Array()
         );
         $this->assertInternalType('array', $sn->flArray);
         $this->assertEquals(3, count($sn->flArray));
@@ -330,7 +331,7 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"pArrayObject":[{"str":"stringvalue"},{"fl":"1.2"}]}'),
-            new JsonMapperTest_Simple()
+            new JsonMapperTest_Array()
         );
         $this->assertInstanceOf('ArrayObject', $sn->pArrayObject);
         $this->assertEquals(2, count($sn->pArrayObject));
@@ -350,7 +351,7 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
             json_decode(
                 '{"pTypedArrayObject":[{"str":"stringvalue"},{"fl":"1.2"}]}'
             ),
-            new JsonMapperTest_Simple()
+            new JsonMapperTest_Array()
         );
         $this->assertInstanceOf('ArrayObject', $sn->pTypedArrayObject);
         $this->assertEquals(2, count($sn->pTypedArrayObject));

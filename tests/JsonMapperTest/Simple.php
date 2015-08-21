@@ -53,11 +53,6 @@ class JsonMapperTest_Simple
     public $fl;
 
     /**
-     * @var float[]
-     */
-    public $flArray;
-
-    /**
      * @var mixed
      */
     public $mixed;
@@ -81,34 +76,10 @@ class JsonMapperTest_Simple
      * @var string A protected property without a setter method
      */
     protected $protectedStrNoSetter;
-
-    /**
-     * @var JsonMapperTest_Simple[]
-     * @see http://phpdoc.org/docs/latest/references/phpdoc/types.html#arrays
-     */
-    public $typedArray;
-
-    /**
-     * @var DateTime[]
-     */
-    public $typedSimpleArray;
-
     /**
      * @var JsonMapperTest_Simple
      */
     public $simple;
-
-    /**
-     * This generates an array object with original json values
-     * @var ArrayObject
-     */
-    public $pArrayObject;
-
-    /**
-     * This generates an array object with JsonMapperTest_Simple instances
-     * @var ArrayObject[JsonMapperTest_Simple]
-     */
-    public $pTypedArrayObject;
 
     public $internalData;
 
