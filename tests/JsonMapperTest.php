@@ -324,6 +324,23 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test for an array of strings - "@var string[]"
+     */
+    public function testStrArray()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"strArray":["str",false,2.048]}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertInternalType('array', $sn->strArray);
+        $this->assertEquals(3, count($sn->strArray));
+        $this->assertInternalType('string', $sn->strArray[0]);
+        $this->assertInternalType('string', $sn->strArray[1]);
+        $this->assertInternalType('string', $sn->strArray[2]);
+    }
+
+    /**
      * Test for "@var ArrayObject"
      */
     public function testMapArrayObject()

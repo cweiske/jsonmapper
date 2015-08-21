@@ -288,6 +288,7 @@ class JsonMapper
                     $array[$key] = null;
                 } else {
                     if ($this->isSimpleType($class)) {
+                        settype($jvalue, $class);
                         $array[$key] = $jvalue;
                     } else {
                         $array[$key] = new $class($jvalue);

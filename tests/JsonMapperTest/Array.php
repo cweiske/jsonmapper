@@ -29,6 +29,11 @@ class JsonMapperTest_Array
     public $flArray;
 
     /**
+     * @var string[]
+     */
+    public $strArray;
+
+    /**
      * @var JsonMapperTest_Simple[]
      * @see http://phpdoc.org/docs/latest/references/phpdoc/types.html#arrays
      */
