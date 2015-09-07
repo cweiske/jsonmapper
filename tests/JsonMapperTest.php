@@ -379,6 +379,26 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test for "@var ArrayObject[int]"
+     */
+    public function testMapSimpleArrayObject()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode(
+                '{"pSimpleArrayObject":{"eins":"1","zwei":"1.2"}}'
+            ),
+            new JsonMapperTest_Array()
+        );
+        $this->assertInstanceOf('ArrayObject', $sn->pSimpleArrayObject);
+        $this->assertEquals(2, count($sn->pSimpleArrayObject));
+        $this->assertInternalType('int', $sn->pSimpleArrayObject['eins']);
+        $this->assertInternalType('int', $sn->pSimpleArrayObject['zwei']);
+        $this->assertEquals(1, $sn->pSimpleArrayObject['eins']);
+        $this->assertEquals(1, $sn->pSimpleArrayObject['zwei']);
+    }
+
+    /**
      * Test for "@var "
      *
      * @expectedException JsonMapper_Exception

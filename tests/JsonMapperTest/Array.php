@@ -56,5 +56,10 @@ class JsonMapperTest_Array
      */
     public $pTypedArrayObject;
 
+    /**
+     * @var ArrayObject[int]
+     */
+    public $pSimpleArrayObject;
+
 }
 ?>
