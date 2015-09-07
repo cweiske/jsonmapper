@@ -176,11 +176,11 @@ class JsonMapper
                 if (!$this->isSimpleType($proptype)) {
                     $proptype = $this->getFullNamespace($proptype, $strNs);
                 }
-                $array = new $proptype();
+                $array = $this->createInstance($proptype);
             } else if ($type == 'ArrayObject'
                 || is_subclass_of($type, 'ArrayObject')
             ) {
-                $array = new $type();
+                $array = $this->createInstance($type);
             }
 
             if ($array !== null) {
@@ -199,11 +199,11 @@ class JsonMapper
                     $child = null;
                 } else {
                     $type = $this->getFullNamespace($type, $strNs);
-                    $child = new $type($jvalue);
+                    $child = $this->createInstance($type, true, $jvalue);
                 }
             } else {
                 $type = $this->getFullNamespace($type, $strNs);
-                $child = new $type();
+                $child = $this->createInstance($type);
                 $this->map($jvalue, $child);
             }
             $this->setProperty($object, $accessor, $child);
@@ -291,11 +291,15 @@ class JsonMapper
                         settype($jvalue, $class);
                         $array[$key] = $jvalue;
                     } else {
-                        $array[$key] = new $class($jvalue);
+                        $array[$key] = $this->createInstance(
+                            $class, true, $jvalue
+                        );
                     }
                 }
             } else {
-                $array[$key] = $this->map($jvalue, new $class());
+                $array[$key] = $this->map(
+                    $jvalue, $this->createInstance($class)
+                );
             }
         }
         return $array;
@@ -398,6 +402,28 @@ class JsonMapper
             $object->{$accessor->getName()} = $value;
         } else {
             $object->{$accessor->getName()}($value);
+        }
+    }
+
+    /**
+     * Create a new object of the given type.
+     *
+     * This method exists to be overwritten in child classes,
+     * so you can do dependency injection or so.
+     *
+     * @param string  $class        Class name to instantiate
+     * @param boolean $useParameter Pass $parameter to the constructor or not
+     * @param mixed   $parameter    Constructor parameter
+     *
+     * @return object Freshly created object
+     */
+    public function createInstance(
+        $class, $useParameter = false, $parameter = null
+    ) {
+        if ($useParameter) {
+            return new $class($parameter);
+        } else {
+            return new $class();
         }
     }
 

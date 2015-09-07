@@ -59,10 +59,13 @@
        <file role="test" name="phpunit.xml" />
        <file role="test" name="JsonMapperTest.php" />
        <dir name="JsonMapperTest">
+         <file role="test" name="Array.php" />
          <file role="test" name="Broken.php" />
+         <file role="test" name="DependencyInjector.php" />
          <file role="test" name="Logger.php" />
          <file role="test" name="PrivateWithSetter.php" />
          <file role="test" name="Simple.php" />
+         <file role="test" name="ValueObject.php" />
        </dir>
        <dir name="namespacetest">
          <file role="test" name="NamespaceTest.php" />

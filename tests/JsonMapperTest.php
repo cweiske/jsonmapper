@@ -12,6 +12,7 @@
  */
 require_once 'JsonMapperTest/Array.php';
 require_once 'JsonMapperTest/Broken.php';
+require_once 'JsonMapperTest/DependencyInjector.php';
 require_once 'JsonMapperTest/Simple.php';
 require_once 'JsonMapperTest/Logger.php';
 require_once 'JsonMapperTest/PrivateWithSetter.php';
@@ -694,6 +695,27 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertSame(2, $sn->pint);
+    }
+
+    public function testDependencyInjection()
+    {
+        $jm = new JsonMapperTest_DependencyInjector();
+
+        $sn = $jm->map(
+            (object) array(
+                'str' => 'first level',
+                'simple' => (object) array(
+                    'str' => 'second level'
+                )
+            ),
+            $jm->createInstance('JsonMapperTest_Simple')
+        );
+
+        $this->assertEquals('first level', $sn->str);
+        $this->assertEquals('database', $sn->db);
+
+        $this->assertEquals('second level', $sn->simple->str);
+        $this->assertEquals('database', $sn->simple->db);
     }
 }
 ?>
