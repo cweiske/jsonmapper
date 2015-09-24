@@ -1,3 +1,9 @@
+2015-09-24  Christian Weiske  <christian.weiske@netresearch.de>
+
+	* Add dependency injection support (issue #42)
+	* Fix casting of arrays of simple types
+	* Version 0.10.0
+
 2015-08-14  Christian Weiske  <christian.weiske@netresearch.de>
 
 	* Add case-insensitive property matching (issue #40)

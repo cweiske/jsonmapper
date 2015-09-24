@@ -21,24 +21,24 @@
   <active>yes</active>
  </lead>
 
- <date>2015-08-14</date>
+ <date>2015-09-24</date>
  <time>00:00:00</time>
 
  <version>
-  <release>0.9.0</release>
-  <api>0.9.0</api>
+  <release>0.10.0</release>
+  <api>0.10.0</api>
  </version>
 
  <stability>
-  <release>alpha</release>
-  <api>alpha</api>
+  <release>beta</release>
+  <api>beta</api>
  </stability>
 
  <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
 
  <notes>
-  * Add case-insensitive property matching (issue #40)
-  * Add option to disable map() parameter type enforcement (issue #37)
+   * Add dependency injection support (issue #42)
+   * Fix casting of arrays of simple types
  </notes>
 
  <contents>
@@ -104,6 +104,23 @@
  </phprelease>
 
  <changelog>
+
+  <release>
+   <version>
+    <release>0.10.0</release>
+    <api>0.10.0</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <date>2015-09-24</date>
+   <license uri="http://www.gnu.org/licenses/agpl.html">AGPL</license>
+   <notes>
+     * Add dependency injection support (issue #42)
+     * Fix casting of arrays of simple types
+   </notes>
+  </release>
 
   <release>
    <version>
