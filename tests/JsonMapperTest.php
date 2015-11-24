@@ -400,6 +400,19 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @expectedException JsonMapper_Exception
+     * @expectedExceptionMessage JSON property "flArray" must be of type array, integer given
+     */
+    public function testInvalidArray()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"flArray": 4 }'),
+            new JsonMapperTest_Array()
+        );
+    }
+
+    /**
      * Test for "@var "
      *
      * @expectedException JsonMapper_Exception
