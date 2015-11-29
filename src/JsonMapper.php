@@ -184,13 +184,14 @@ class JsonMapper
             }
 
             if ($array !== null) {
-				if(is_array($array) && !is_array($jvalue)) {
-					throw new JsonMapper_Exception(
+                if (is_array($array) && !is_array($jvalue)) {
+                    throw new JsonMapper_Exception(
                         'JSON property "' . $key . '" must be of type array, '
-                        . (is_object($jvalue) ? get_class($jvalue) : gettype($jvalue)) . ' given'
+                        . is_object($jvalue) ? get_class($jvalue) : gettype($jvalue)
+                        . ' given'
                     );
-				}
-				
+                }
+
                 if (!$this->isSimpleType($subtype)) {
                     $subtype = $this->getFullNamespace($subtype, $strNs);
                 }
