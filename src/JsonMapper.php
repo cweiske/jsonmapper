@@ -187,7 +187,7 @@ class JsonMapper
                 if (is_array($array) && !is_array($jvalue)) {
                     throw new JsonMapper_Exception(
                         'JSON property "' . $key . '" must be of type array, '
-                        . (is_object($jvalue) ? get_class($jvalue) : gettype($jvalue))
+                        . $this->_getTypeOfVariable($jvalue)
                         . ' given'
                     );
                 }
@@ -563,6 +563,18 @@ class JsonMapper
     public function setLogger($logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * Gets the type of the content of a variable
+     *
+     * @param mixed $variable Variable which type is to be determined
+     *
+     * @return string
+     */
+    private function _getTypeOfVariable($variable)
+    {
+        return (is_object($variable) ? get_class($variable) : gettype($variable));
     }
 }
 ?>
