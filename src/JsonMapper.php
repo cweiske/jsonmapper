@@ -187,7 +187,7 @@ class JsonMapper
                 if (is_array($array) && !is_array($jvalue)) {
                     throw new JsonMapper_Exception(
                         'JSON property "' . $key . '" must be of type array, '
-                        . is_object($jvalue) ? get_class($jvalue) : gettype($jvalue)
+                        . (is_object($jvalue) ? get_class($jvalue) : gettype($jvalue))
                         . ' given'
                     );
                 }
