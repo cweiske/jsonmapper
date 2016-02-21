@@ -79,7 +79,7 @@ Map an array of objects:
     require 'autoload.php';
     $mapper = new JsonMapper();
     $contactsArray = $mapper->mapArray(
-        $jsonContacts, new ArrayObject(), 'Contact'
+        $jsonContacts, array(), 'Contact'
     );
     ?>
 
