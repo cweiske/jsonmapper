@@ -79,9 +79,11 @@ Map an array of objects:
     require 'autoload.php';
     $mapper = new JsonMapper();
     $contactsArray = $mapper->mapArray(
-        $jsonContacts, new ArrayObject(), 'Contact'
+        $jsonContacts, array(), 'Contact'
     );
     ?>
+
+Instead of ``array()`` you may also use ``ArrayObject`` and descending classes.
 
 __ http://www.php-fig.org/psr/psr-0/
 
