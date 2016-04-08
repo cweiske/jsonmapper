@@ -23,7 +23,7 @@ namespace apimatic\jsonmapper;
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     http://www.netresearch.de/
  */
-class JsonMapperException extends Exception
+class JsonMapperException extends \Exception
 {
 }
 ?>

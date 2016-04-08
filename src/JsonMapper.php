@@ -80,20 +80,20 @@ class JsonMapper
     public function map($json, $object)
     {
         if ($this->bEnforceMapType && !is_object($json)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 'JsonMapper::map() requires first argument to be an object'
                 . ', ' . gettype($json) . ' given.'
             );
         }
         if (!is_object($object)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 'JsonMapper::map() requires second argument to be an object'
                 . ', ' . gettype($object) . ' given.'
             );
         }
 
         $strClassName = get_class($object);
-        $rc = new ReflectionClass($object);
+        $rc = new \ReflectionClass($object);
         $strNs = $rc->getNamespaceName();
         $providedProperties = array();
         foreach ($json as $key => $jvalue) {
@@ -248,7 +248,7 @@ class JsonMapper
      *
      * @return void
      */
-    protected function checkMissingData($providedProperties, ReflectionClass $rc)
+    protected function checkMissingData($providedProperties, \ReflectionClass $rc)
     {
         foreach ($rc->getProperties() as $property) {
             $rprop = $rc->getProperty($property->name);
@@ -320,7 +320,7 @@ class JsonMapper
      *                 ReflectionMethod or ReflectionProperty, or null)
      *               Third value: type of the property
      */
-    protected function inspectProperty(ReflectionClass $rc, $name)
+    protected function inspectProperty(\ReflectionClass $rc, $name)
     {
         //try setter method first
         $setter = 'set' . str_replace(
@@ -356,7 +356,7 @@ class JsonMapper
         } else {
             //case-insensitive property matching
             $rprop = null;
-            foreach ($rc->getProperties(ReflectionProperty::IS_PUBLIC) as $p) {
+            foreach ($rc->getProperties(\ReflectionProperty::IS_PUBLIC) as $p) {
                 if ((strcasecmp($p->name, $name) === 0)) {
                     $rprop = $p;
                     break;
@@ -401,7 +401,7 @@ class JsonMapper
     protected function setProperty(
         $object, $accessor, $value
     ) {
-        if ($accessor instanceof ReflectionProperty) {
+        if ($accessor instanceof \ReflectionProperty) {
             $object->{$accessor->getName()} = $value;
         } else {
             $object->{$accessor->getName()}($value);
