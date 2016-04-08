@@ -1,6 +1,6 @@
 <?php
 
-namespace \apimatic\jsonmapper;
+namespace apimatic\jsonmapper;
 
 /**
  * Part of JsonMapper
