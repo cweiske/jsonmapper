@@ -1,4 +1,7 @@
 <?php
+
+namespace \apimatic\jsonmapper;
+
 /**
  * Part of JsonMapper
  *
@@ -108,7 +111,7 @@ class JsonMapper
 
             if (!$hasProperty) {
                 if ($this->bExceptionOnUndefinedProperty) {
-                    throw new JsonMapper_Exception(
+                    throw new JsonMapperException(
                         'JSON property "' . $key . '" does not exist'
                         . ' in object of type ' . $strClassName
                     );
@@ -123,7 +126,7 @@ class JsonMapper
 
             if ($accessor === null) {
                 if ($this->bExceptionOnUndefinedProperty) {
-                    throw new JsonMapper_Exception(
+                    throw new JsonMapperException(
                         'JSON property "' . $key . '" has no public setter method'
                         . ' in object of type ' . $strClassName
                     );
@@ -159,7 +162,7 @@ class JsonMapper
 
             //FIXME: check if type exists, give detailled error message if not
             if ($type === '') {
-                throw new JsonMapper_Exception(
+                throw new JsonMapperException(
                     'Empty type at property "'
                     . $strClassName . '::$' . $key . '"'
                 );
@@ -241,7 +244,7 @@ class JsonMapper
      * @param array  $providedProperties array with json properties
      * @param object $rc                 Reflection class to check
      *
-     * @throws JsonMapper_Exception
+     * @throws JsonMapperException
      *
      * @return void
      */
@@ -254,7 +257,7 @@ class JsonMapper
             if (isset($annotations['required'])
                 && !isset($providedProperties[$property->name])
             ) {
-                throw new JsonMapper_Exception(
+                throw new JsonMapperException(
                     'Required property "' . $property->name . '" of class '
                     . $rc->getName()
                     . ' is missing in JSON data'
