@@ -319,7 +319,7 @@ class JsonMapper
                 );
             }
         }
-        return list($array, $additionalProperties);
+        return array($array, $additionalProperties);
     }
 
     /**
