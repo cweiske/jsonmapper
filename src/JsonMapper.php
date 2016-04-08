@@ -74,7 +74,9 @@ class JsonMapper
      * @param object $json   JSON object structure from json_decode()
      * @param object $object Object to map $json data into
      *
-     * @return object Mapped object is returned.
+     * @return Array An array having $object as the first element and 
+     *               any additional properties contained in the JSON
+     *               but not present in the class as the second element.
      * @see    mapArray()
      */
     public function map($json, $object)
@@ -96,8 +98,11 @@ class JsonMapper
         $rc = new \ReflectionClass($object);
         $strNs = $rc->getNamespaceName();
         $providedProperties = array();
+        $additionalProperties = array();
+
         foreach ($json as $key => $jvalue) {
             $providedProperties[$key] = true;
+            $isAdditional = false;
 
             // Store the property inspection results so we don't have to do it
             // again for subsequent objects of the same type
@@ -116,12 +121,12 @@ class JsonMapper
                         . ' in object of type ' . $strClassName
                     );
                 }
+                $isAdditional = true;
                 $this->log(
                     'info',
                     'Property {property} does not exist in {class}',
                     array('property' => $key, 'class' => $strClassName)
                 );
-                continue;
             }
 
             if ($accessor === null) {
@@ -131,11 +136,16 @@ class JsonMapper
                         . ' in object of type ' . $strClassName
                     );
                 }
+                $isAdditional = true;
                 $this->log(
                     'info',
                     'Property {property} has no public setter method in {class}',
                     array('property' => $key, 'class' => $strClassName)
                 );
+            }
+
+            if($isAdditional) {
+                $additionalProperties[$key] = $jvalue;
                 continue;
             }
 
@@ -216,7 +226,7 @@ class JsonMapper
             $this->checkMissingData($providedProperties, $rc);
         }
 
-        return $object;
+        return array($object, $additionalProperties);
     }
 
     /**
@@ -277,10 +287,14 @@ class JsonMapper
      *                      Supports class names and simple types
      *                      like "string".
      *
-     * @return mixed Mapped $array is returned
+     * @return array An array containing $array as first element and an array of 
+     *               any additional properties for each $array object element as 
+     *               the second element.
      */
     public function mapArray($json, $array, $class = null)
     {
+        $additionalProperties = array();
+
         foreach ($json as $key => $jvalue) {
             if ($class === null) {
                 $array[$key] = $jvalue;
@@ -300,12 +314,12 @@ class JsonMapper
                     }
                 }
             } else {
-                $array[$key] = $this->map(
+                list($array[$key], $additionalProperties[$key]) = $this->map(
                     $jvalue, $this->createInstance($class)
                 );
             }
         }
-        return $array;
+        return list($array, $additionalProperties);
     }
 
     /**
