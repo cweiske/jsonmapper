@@ -108,7 +108,7 @@ class JsonMapper
         $additionalPropertiesMethod = $this->getAdditionalPropertiesMethod($rc);
 
         foreach ($json as $key => $jvalue) {
-            $providedProperties[$key] = true;
+            // $providedProperties[$key] = true;
             $isAdditional = false;
 
             // Store the property inspection results so we don't have to do it
@@ -120,6 +120,9 @@ class JsonMapper
 
             list($hasProperty, $accessor, $type)
                 = $this->arInspectedClasses[$strClassName][$key];
+
+            if($accessor !== null)
+                $providedProperties[$accessor->getName()] = true;
 
             if (!$hasProperty) {
                 if ($this->bExceptionOnUndefinedProperty) {
@@ -403,19 +406,31 @@ class JsonMapper
             }
         }
 
-        //now try to set the property directly
-        if ($rc->hasProperty($name)) {
-            $rprop = $rc->getProperty($name);
-        } else {
-            //case-insensitive property matching
-            $rprop = null;
-            foreach ($rc->getProperties(\ReflectionProperty::IS_PUBLIC) as $p) {
-                if ((strcasecmp($p->name, $name) === 0)) {
-                    $rprop = $p;
-                    break;
-                }
+        $rprop = null;
+        // check for @maps annotation for hints
+        foreach ($rc->getProperties(\ReflectionProperty::IS_PUBLIC) as $p) {
+            $mappedName = $this->getMapAnnotation($p);
+            if($mappedName !== null && $name == $mappedName) {
+                $rprop = $p;
+                break;
             }
         }
+
+        //now try to set the property directly
+        if($rprop === null) {
+            if ($rc->hasProperty($name) && $this->getMapAnnotation($rc->getProperty($name)) === null) {
+                $rprop = $rc->getProperty($name);
+            } else {
+                //case-insensitive property matching
+                foreach ($rc->getProperties(\ReflectionProperty::IS_PUBLIC) as $p) {
+                    if ((strcasecmp($p->name, $name) === 0) && $this->getMapAnnotation($p) === null) {
+                        $rprop = $p;
+                        break;
+                    }
+                }                
+            }
+        }
+
         if ($rprop !== null) {
             if ($rprop->isPublic()) {
                 $docblock    = $rprop->getDocComment();
@@ -437,6 +452,15 @@ class JsonMapper
 
         //no setter, no property
         return array(false, null, null);
+    }
+
+    protected function getMapAnnotation($property)
+    {
+        $annotations = $this->parseAnnotations($property->getDocComment());
+        if(isset($annotations['maps'][0])) {
+            return $annotations['maps'][0];
+        }
+        return null;
     }
 
     /**
