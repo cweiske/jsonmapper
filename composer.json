@@ -1,9 +1,9 @@
 {
-    "name": "netresearch/jsonmapper",
+    "name": "apimatic/jsonmapper",
     "description": "Map nested JSON structures onto PHP classes",
     "license": "OSL-3.0",
     "autoload": {
-        "psr-0": {"": "src/"}
+        "psr-4": {"apimatic\\jsonmapper": "src/"}
     },
     "authors": [
         {
