@@ -43,6 +43,15 @@ class JsonMapper
     public $bExceptionOnUndefinedProperty = false;
 
     /**
+     * Calls this method on the PHP class when an undefined property
+     * is found. This method should receive two arguments, $key
+     * and $value for the property key and value. Only works if
+     * $bExceptionOnUndefinedProperty is set to false.
+     * @var string
+     */
+    public $sAdditionalPropertiesCollectionMethod = null;
+
+    /**
      * Throw an exception if the JSON data miss a property
      * that is marked with @required in the PHP class
      *
@@ -74,9 +83,7 @@ class JsonMapper
      * @param object $json   JSON object structure from json_decode()
      * @param object $object Object to map $json data into
      *
-     * @return Array An array having $object as the first element and 
-     *               any additional properties contained in the JSON
-     *               but not present in the class as the second element.
+     * @return object Mapped object is returned.
      * @see    mapArray()
      */
     public function map($json, $object)
@@ -98,7 +105,7 @@ class JsonMapper
         $rc = new \ReflectionClass($object);
         $strNs = $rc->getNamespaceName();
         $providedProperties = array();
-        $additionalProperties = array();
+        $additionalPropertiesMethod = $this->getAdditionalPropertiesMethod($rc);
 
         foreach ($json as $key => $jvalue) {
             $providedProperties[$key] = true;
@@ -145,7 +152,8 @@ class JsonMapper
             }
 
             if($isAdditional) {
-                $additionalProperties[$key] = $jvalue;
+                if($additionalPropertiesMethod !== null)
+                    $additionalPropertiesMethod->invoke($object, $key , $jvalue);
                 continue;
             }
 
@@ -226,7 +234,7 @@ class JsonMapper
             $this->checkMissingData($providedProperties, $rc);
         }
 
-        return array($object, $additionalProperties);
+        return $object;
     }
 
     /**
@@ -277,6 +285,41 @@ class JsonMapper
     }
 
     /**
+     * Get additional properties setter method for the class. 
+     * @param  \ReflectionClass $rc Reflection class to check
+     * @return \ReflectionMethod    Method or null if disabled.
+     */
+    protected function getAdditionalPropertiesMethod(\ReflectionClass $rc)
+    {
+        if($this->bExceptionOnUndefinedProperty === false 
+            && $this->sAdditionalPropertiesCollectionMethod !== null) 
+        {
+            $additionalPropertiesMethod = null;
+            try {
+                $additionalPropertiesMethod = $rc->getMethod($this->sAdditionalPropertiesCollectionMethod);
+                if(!$additionalPropertiesMethod->isPublic())
+                    throw new  \InvalidArgumentException(
+                        $this->sAdditionalPropertiesCollectionMethod . " method is not public"
+                        . " on the given class."
+                    );
+                if($additionalPropertiesMethod->getNumberOfParameters() < 2)
+                    throw new  \InvalidArgumentException(
+                        $this->sAdditionalPropertiesCollectionMethod . " method does not receive"
+                        . "two arguments, $key and $value."
+                    );
+            } catch (\ReflectionException $e) {
+                throw new  \InvalidArgumentException(
+                    $this->sAdditionalPropertiesCollectionMethod . " method is not available"
+                    . " on the given class."
+                );
+            }
+            return $additionalPropertiesMethod;
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Map an array
      *
      * @param array  $json  JSON array structure from json_decode()
@@ -287,14 +330,10 @@ class JsonMapper
      *                      Supports class names and simple types
      *                      like "string".
      *
-     * @return array An array containing $array as first element and an array of 
-     *               any additional properties for each $array object element as 
-     *               the second element.
+     * @return mixed Mapped $array is returned
      */
     public function mapArray($json, $array, $class = null)
     {
-        $additionalProperties = array();
-
         foreach ($json as $key => $jvalue) {
             if ($class === null) {
                 $array[$key] = $jvalue;
@@ -314,12 +353,12 @@ class JsonMapper
                     }
                 }
             } else {
-                list($array[$key], $additionalProperties[$key]) = $this->map(
+                $array[$key] = $this->map(
                     $jvalue, $this->createInstance($class)
                 );
             }
         }
-        return array($array, $additionalProperties);
+        return $array;
     }
 
     /**
