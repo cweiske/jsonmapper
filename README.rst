@@ -256,6 +256,24 @@ JSON:
 This will result in ``new DateTime('2014-05-15')`` being called.
 
 
+Class map
+---------
+When variables as defined as objects ofabstract classes or interfaces,
+JsonMapper would normally try to instantiate those directly and crash.
+
+Using JsonMapper's ``$classMap`` property, you can specify which classes
+shall get instantiated instead:
+
+.. code:: php
+
+    $jm = new JsonMapper();
+    $jm->classMap['Foo'] = 'Bar';
+    $jm->map(...);
+
+This would create objects of type ``Bar`` when a variable is defined to be
+of type ``Foo``.
+
+
 Logging
 =======
 JsonMapper's ``setLogger()`` method supports all PSR-3__ compatible

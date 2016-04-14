@@ -133,5 +133,22 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertInternalType('null', $sn->pValueObjectNullable);
     }
+
+    public function testClassMap()
+    {
+        $jm = new JsonMapper();
+        $jm->classMap['JsonMapperTest_PlainObject'] = 'DateTime';
+        $sn = $jm->map(
+            json_decode('{"pPlainObject":"2016-04-14T23:15:42+02:00"}'),
+            new JsonMapperTest_Object()
+        );
+
+        $this->assertInternalType('object', $sn->pPlainObject);
+        $this->assertInstanceOf('DateTime', $sn->pPlainObject);
+        $this->assertEquals(
+            '2016-04-14T23:15:42+02:00',
+            $sn->pPlainObject->format('c')
+        );
+    }
 }
 ?>

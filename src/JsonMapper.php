@@ -60,8 +60,18 @@ class JsonMapper
     /**
      * Throw an exception when an object is expected but the JSON contains
      * a non-object type.
+     *
+     * @var boolean
      */
     public $bStrictObjectTypeChecking = false;
+
+    /**
+     * Override class names that JsonMapper uses to create objects.
+     * Useful when your setter methods accept abstract classes or interfaces.
+     *
+     * @var array
+     */
+    public $classMap = array();
 
     /**
      * Runtime cache for inspected classes. This is particularly effective if
@@ -441,6 +451,9 @@ class JsonMapper
     public function createInstance(
         $class, $useParameter = false, $parameter = null
     ) {
+        if (isset($this->classMap[$class])) {
+            $class = $this->classMap[$class];
+        }
         if ($useParameter) {
             return new $class($parameter);
         } else {
