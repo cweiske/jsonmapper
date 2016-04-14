@@ -12,6 +12,7 @@
  */
 require_once 'JsonMapperTest/Simple.php';
 require_once 'JsonMapperTest/Object.php';
+require_once 'JsonMapperTest/PlainObject.php';
 require_once 'JsonMapperTest/ValueObject.php';
 
 /**
@@ -74,6 +75,34 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertSame($valueObject, $sn->getValueObject());
+    }
+
+    public function testStrictTypeCheckingObject()
+    {
+        $jm = new JsonMapper();
+        $jm->bStrictObjectTypeChecking = true;
+        $sn = $jm->map(
+            json_decode('{"pPlainObject":{"pStr":"abc"}}'),
+            new JsonMapperTest_Object()
+        );
+
+        $this->assertInternalType('object', $sn->pPlainObject);
+        $this->assertInstanceOf('JsonMapperTest_PlainObject', $sn->pPlainObject);
+        $this->assertEquals('abc', $sn->pPlainObject->pStr);
+    }
+
+    /**
+     * @expectedException JsonMapper_Exception
+     * @expectedExceptionMessage JSON property "pValueObject" must be an object, string given
+     */
+    public function testStrictTypeCheckingObjectError()
+    {
+        $jm = new JsonMapper();
+        $jm->bStrictObjectTypeChecking = true;
+        $sn = $jm->map(
+            json_decode('{"pValueObject":"abc"}'),
+            new JsonMapperTest_Object()
+        );
     }
 
     /**

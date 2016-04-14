@@ -314,6 +314,22 @@ an exception when ``$bExceptionOnMissingData`` is activated:
     $jm->map(...);
 
 
+Simple types instead of objects
+-------------------------------
+When a variable's type is a class and JSON data is a simple type
+like ``string``, JsonMapper passes this value to the class' constructor.
+
+If you do not want this, set ``$bStrictObjectTypeChecking`` to ``true``:
+
+.. code:: php
+
+    $jm = new JsonMapper();
+    $jm->bStrictObjectTypeChecking = true;
+    $jm->map(...);
+
+An exception is thrown then in such cases.
+
+
 Passing arrays to ``map()``
 ---------------------------
 You may wish to pass array data into ``map()`` that you got by calling

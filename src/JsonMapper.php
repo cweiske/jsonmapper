@@ -213,6 +213,12 @@ class JsonMapper
             } else if ($this->isFlatType(gettype($jvalue))) {
                 //use constructor parameter if we have a class
                 // but only a flat type (i.e. string, int)
+                if ($this->bStrictObjectTypeChecking) {
+                    throw new JsonMapper_Exception(
+                        'JSON property "' . $key . '" must be an object, '
+                        . gettype($jvalue) . ' given'
+                    );
+                }
                 $type = $this->getFullNamespace($type, $strNs);
                 $child = $this->createInstance($type, true, $jvalue);
             } else {

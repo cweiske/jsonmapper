@@ -16,5 +16,10 @@ class JsonMapperTest_Object
      * @var JsonMapperTest_ValueObject|null
      */
     public $pValueObjectNullable;
+
+    /**
+     * @var JsonMapperTest_PlainObject
+     */
+    public $pPlainObject;
 }
 ?>
