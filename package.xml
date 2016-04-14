@@ -115,7 +115,7 @@
     <api>beta</api>
    </stability>
    <date>2015-09-24</date>
-   <license uri="http://www.gnu.org/licenses/agpl.html">AGPL</license>
+   <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
    <notes>
      * Add dependency injection support (issue #42)
      * Fix casting of arrays of simple types
@@ -132,7 +132,7 @@
     <api>alpha</api>
    </stability>
    <date>2015-08-14</date>
-   <license uri="http://www.gnu.org/licenses/agpl.html">AGPL</license>
+   <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
    <notes>
      * Add case-insensitive property matching (issue #40)
      * Add option to disable map() parameter type enforcement (issue #37)
@@ -149,7 +149,7 @@
     <api>alpha</api>
    </stability>
    <date>2015-07-06</date>
-   <license uri="http://www.gnu.org/licenses/agpl.html">AGPL</license>
+   <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
    <notes>
      * Add support for seting objects directly if they have the correct type already by @radmen
      * Throw exception when a non-object is passed to map()
@@ -166,7 +166,7 @@
     <api>alpha</api>
    </stability>
    <date>2015-06-19</date>
-   <license uri="http://www.gnu.org/licenses/agpl.html">AGPL</license>
+   <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
    <notes>
      * Support "mixed" variable type (issue #33)
    </notes>
@@ -182,7 +182,7 @@
     <api>alpha</api>
    </stability>
    <date>2015-05-28</date>
-   <license uri="http://www.gnu.org/licenses/agpl.html">AGPL</license>
+   <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
    <notes>
      * Fix namespace error with setter type hints
    </notes>
@@ -198,7 +198,7 @@
     <api>alpha</api>
    </stability>
    <date>2015-04-09</date>
-   <license uri="http://www.gnu.org/licenses/agpl.html">AGPL</license>
+   <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
    <notes>
     * Prefer setter methods over directy property access
     * Change setter method name calculation for properties
@@ -216,7 +216,7 @@
     <api>alpha</api>
    </stability>
    <date>2015-03-18</date>
-   <license uri="http://www.gnu.org/licenses/agpl.html">AGPL</license>
+   <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
    <notes>
      * Add support for nullable types (int|null) by @barryvdh
      * Increase test coverage to 100%
@@ -234,7 +234,7 @@
     <api>alpha</api>
    </stability>
    <date>2015-01-08</date>
-   <license uri="http://www.gnu.org/licenses/agpl.html">AGPL</license>
+   <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
    <notes>
      * Fix bug #23: handle empty variable types
      * Fix bug #24: Namespaced ArrayObject class with namespaced value type does not work
@@ -251,7 +251,7 @@
     <api>alpha</api>
    </stability>
    <date>2014-12-17</date>
-   <license uri="http://www.gnu.org/licenses/agpl.html">AGPL</license>
+   <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
    <notes>
      * Change license from AGPL 3.0 to OSL 3.0
    </notes>
