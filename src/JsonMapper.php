@@ -49,6 +49,7 @@ class JsonMapper
 
     /**
      * If the types of map() parameters shall be checked.
+     *
      * You have to disable it if you're using the json_decode "assoc" parameter.
      *
      *     json_decode($str, false)
@@ -69,9 +70,23 @@ class JsonMapper
      * Override class names that JsonMapper uses to create objects.
      * Useful when your setter methods accept abstract classes or interfaces.
      *
+     * Works only when $bExceptionOnUndefinedProperty is disabled.
+     *
+     * Parameters to this function are:
+     * 1. Object that is being filled
+     * 2. Name of the unknown JSON property
+     * 3. JSON value of the property
+     *
      * @var array
      */
     public $classMap = array();
+
+    /**
+     * Callback used when an undefined property is found.
+     *
+     * @var callable
+     */
+    public $undefinedPropertyHandler = null;
 
     /**
      * Runtime cache for inspected classes. This is particularly effective if
@@ -128,12 +143,18 @@ class JsonMapper
                         'JSON property "' . $key . '" does not exist'
                         . ' in object of type ' . $strClassName
                     );
+                } else if ($this->undefinedPropertyHandler !== null) {
+                    call_user_func(
+                        $this->undefinedPropertyHandler,
+                        $object, $key, $jvalue
+                    );
+                } else {
+                    $this->log(
+                        'info',
+                        'Property {property} does not exist in {class}',
+                        array('property' => $key, 'class' => $strClassName)
+                    );
                 }
-                $this->log(
-                    'info',
-                    'Property {property} does not exist in {class}',
-                    array('property' => $key, 'class' => $strClassName)
-                );
                 continue;
             }
 

@@ -196,6 +196,23 @@ class OtherTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testUndefinedPropertyHandler()
+    {
+        $jm = new JsonMapper();
+        $jm->undefinedPropertyHandler = array($this, 'setUnknownProperty');
+        $sn = $jm->map(
+            json_decode('{"undefinedProperty":123}'),
+            new JsonMapperTest_Broken()
+        );
+
+        $this->assertEquals(123, $sn->ADDundefinedProperty);
+    }
+
+    public function setUnknownProperty($object, $propName, $jsonValue)
+    {
+        $object->{'ADD' . $propName} = $jsonValue;
+    }
+
     public function testPrivatePropertyWithPublicSetter()
     {
         $jm = new JsonMapper();

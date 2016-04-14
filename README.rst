@@ -308,6 +308,31 @@ by setting ``$bExceptionOnUndefinedProperty``:
     $jm->bExceptionOnUndefinedProperty = true;
     $jm->map(...);
 
+You may also choose to handle those properties yourself by setting
+a callable__ to ``$undefinedPropertyHandler``:
+
+__ http://php.net/manual/en/language.types.callable.php
+
+.. code:: php
+
+    /**
+     * Handle undefined properties during JsonMapper::map()
+     *
+     * @param object $object    Object that is being filled
+     * @param string $propName  Name of the unknown JSON property
+     * @param mixed  $jsonValue JSON value of the property
+     *
+     * @return void
+     */
+    function setUndefinedProperty($object, $propName, $jsonValue)
+    {
+        $object->{'UNDEF' . $propName} = $jsonValue;
+    }
+
+    $jm = new JsonMapper();
+    $jm->undefinedPropertyHandler = 'setUndefinedProperty';
+    $jm->map(...);
+
 
 Missing properties
 ------------------
