@@ -386,7 +386,7 @@ __ http://pear.php.net/manual/en/standards.php
 
 Author
 ======
-`Christian Weiske`__, `Netresearch GmbH & Co KG`__
+`Christian Weiske`__, `cweiske.de`__
 
-__ mailto:christian.weiske@netresearch.de
-__ http://www.netresearch.de/
+__ mailto:cweiske@cweiske.de
+__ http://cweiske.de/
