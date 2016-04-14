@@ -1,3 +1,19 @@
+2016-04-14  Christian Weiske  <cweiske@cweiske.de>
+
+	* Add $undefinedPropertyHandler (issue #51)
+	* Add $classMap to override class names (issue #53)
+	* Add option to enable strict object type checks (issue #50)
+	* Add composer autoloader performance improvement
+	* Add exception when an array is expected, but simple type given
+	  (issue #44)
+	* Fix non-nullable object handling: Exception is now thrown when
+	  NULL is given and an object was expected.
+
+	  THIS WILL PROBABLY BREAK YOUR CODE
+
+	  Add "|null" to all your "@var ClassName" lines to fix that.
+	* Version 0.11.0
+
 2015-09-24  Christian Weiske  <christian.weiske@netresearch.de>
 
 	* Add dependency injection support (issue #42)
