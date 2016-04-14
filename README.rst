@@ -2,8 +2,8 @@
 JsonMapper - map nested JSON structures onto PHP classes
 ********************************************************
 
-.. image:: https://api.travis-ci.org/netresearch/jsonmapper.png
-   :target: https://travis-ci.org/netresearch/jsonmapper
+.. image:: https://api.travis-ci.org/cweiske/jsonmapper.png
+   :target: https://travis-ci.org/cweiske/jsonmapper
    :align: right
 
 Takes data retrieved from a JSON__ web service and converts them
@@ -353,8 +353,20 @@ You can circumvent that by setting ``$bEnforceMapType`` to ``false``:
 Installation
 ============
 
+via Composer
+============
+From Packagist__::
+
+    $ composer require netresearch/jsonmapper
+
+__ https://packagist.org/packages/netresearch/jsonmapper
+
+
 via PEAR
 ========
+.. warning::
+   Version 0.10.0 was the last version released on this PEAR channel.
+
 From our `PEAR channel`__::
 
     $ pear channel-discover pear.nrdev.de
@@ -363,13 +375,6 @@ From our `PEAR channel`__::
 __ http://pear.nrdev.de/
 
 
-via Composer
-============
-From Packagist__::
-
-    $ composer require netresearch/jsonmapper
-
-__ https://packagist.org/packages/netresearch/jsonmapper
 
 
 ================
