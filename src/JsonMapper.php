@@ -184,6 +184,13 @@ class JsonMapper
             }
 
             if ($array !== null) {
+                if (!is_array($jvalue) && $this->isFlatType(gettype($jvalue))) {
+                    throw new JsonMapper_Exception(
+                        'JSON property "' . $key . '" must be an array, '
+                        . gettype($jvalue) . ' given'
+                    );
+                }
+
                 if (!$this->isSimpleType($subtype)) {
                     $subtype = $this->getFullNamespace($subtype, $strNs);
                 }

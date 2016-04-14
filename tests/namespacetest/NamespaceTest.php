@@ -57,10 +57,10 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
     public function testMapChildObjectArrayNamespace()
     {
         $mapper = new \JsonMapper();
-        $json = '{"data":null,"user":{"name": "John Smith"}}';
+        $json = '{"data":[],"user":{"name": "John Smith"}}';
         /* @var \namespacetest\UnitData $res */
         $res = $mapper->map(json_decode($json), new UnitData());
-        $this->assertNull($res->data);
+        $this->assertInstanceOf('\\ArrayObject', $res->data);
         $this->assertInstanceOf('\namespacetest\model\User', $res->user);
     }
 
