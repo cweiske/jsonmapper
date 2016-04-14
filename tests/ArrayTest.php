@@ -19,7 +19,7 @@ require_once 'JsonMapperTest/Simple.php';
  *
  * @category Tools
  * @package  JsonMapper
- * @author   Christian Weiske <cweiske@cweiske.de
+ * @author   Christian Weiske <cweiske@cweiske.de>
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
  */

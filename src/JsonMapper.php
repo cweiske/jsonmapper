@@ -58,6 +58,12 @@ class JsonMapper
     public $bEnforceMapType = true;
 
     /**
+     * Throw an exception when an object is expected but the JSON contains
+     * a non-object type.
+     */
+    public $bStrictObjectTypeChecking = false;
+
+    /**
      * Runtime cache for inspected classes. This is particularly effective if
      * mapArray() is called with a large number of objects
      *
