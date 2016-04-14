@@ -3,7 +3,7 @@
     "description": "Map nested JSON structures onto PHP classes",
     "license": "OSL-3.0",
     "autoload": {
-        "psr-0": {"": "src/"}
+        "psr-0": {"JsonMapper": "src/"}
     },
     "authors": [
         {
