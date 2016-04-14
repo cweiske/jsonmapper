@@ -381,9 +381,16 @@ class JsonMapper
                 $rparams = $rmeth->getParameters();
                 if (count($rparams) > 0) {
                     $pclass = $rparams[0]->getClass();
+                    $nullability = '';
+                    if ($rparams[0]->isOptional()) {
+                        if ($rparams[0]->getDefaultValue() === null) {
+                            $nullability = '|null';
+                        }
+                    }
                     if ($pclass !== null) {
                         return array(
-                            true, $rmeth, '\\' . $pclass->getName()
+                            true, $rmeth,
+                            '\\' . $pclass->getName() . $nullability
                         );
                     }
                 }

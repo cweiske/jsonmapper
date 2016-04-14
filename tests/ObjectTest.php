@@ -119,6 +119,32 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test for "Object $obj = null" with null value
+     */
+    public function testObjectSetterNullable()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"nullableObject":null}'),
+            new JsonMapperTest_Object()
+        );
+        $this->assertNull($sn->nullableObject);
+    }
+
+    /**
+     * Test for "@param object|null" with null value
+     */
+    public function testObjectSetterDockblockNullable()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"docblockNullableObject":null}'),
+            new JsonMapperTest_Object()
+        );
+        $this->assertNull($sn->docblockNullableObject);
+    }
+
+    /**
      * Test for "@var object" with null value
      *
      * @expectedException JsonMapper_Exception

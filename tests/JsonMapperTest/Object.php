@@ -21,5 +21,18 @@ class JsonMapperTest_Object
      * @var JsonMapperTest_PlainObject
      */
     public $pPlainObject;
+
+    public function setNullableObject(JsonMapperTest_PlainObject $obj = null)
+    {
+        $this->nullableObject = $obj;
+    }
+
+    /**
+     * @param JsonMapperTest_PlainObject|null $obj
+     */
+    public function setDocblockNullableObject($obj)
+    {
+        $this->docblockNullableObject = $obj;
+    }
 }
 ?>
