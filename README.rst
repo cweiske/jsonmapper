@@ -205,6 +205,8 @@ Supported type names:
   - ``array``
   - ``object``
 - Class names, with and without namespaces
+
+  - ``Contact`` - will throw exception if JSON value is NULL
 - Arrays of simple types and class names:
 
   - ``int[]``
@@ -217,6 +219,8 @@ Supported type names:
 
   - ``int|null`` - will be ``null`` if the value in JSON is
     ``null``, otherwise it will be an integer
+  - ``Contact|null`` - will be ``null`` if the value in JSON is
+    ``null``, otherwise it will be an object of type ``Contact``
 
 ArrayObjects and extending classes are treated as arrays.
 

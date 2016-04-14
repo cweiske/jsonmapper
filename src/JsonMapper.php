@@ -142,6 +142,10 @@ class JsonMapper
                     continue;
                 }
                 $type = $this->removeNullable($type);
+            } else if ($jvalue === null) {
+                throw new JsonMapper_Exception(
+                    'JSON property "' . $key . '" must not be NULL'
+                );
             }
 
             if ($type === null || $type === 'mixed') {
@@ -176,7 +180,11 @@ class JsonMapper
                 if (!$this->isSimpleType($proptype)) {
                     $proptype = $this->getFullNamespace($proptype, $strNs);
                 }
-                $array = $this->createInstance($proptype);
+                if ($proptype == 'array') {
+                    $array = array();
+                } else {
+                    $array = $this->createInstance($proptype);
+                }
             } else if ($type == 'ArrayObject'
                 || is_subclass_of($type, 'ArrayObject')
             ) {
@@ -191,23 +199,16 @@ class JsonMapper
                     );
                 }
 
-                if (!$this->isSimpleType($subtype)) {
-                    $subtype = $this->getFullNamespace($subtype, $strNs);
+                $cleanSubtype = $this->removeNullable($subtype);
+                if (!$this->isSimpleType($cleanSubtype)) {
+                    $subtype = $this->getFullNamespace($cleanSubtype, $strNs);
                 }
-                if ($jvalue === null) {
-                    $child = null;
-                } else {
-                    $child = $this->mapArray($jvalue, $array, $subtype);
-                }
+                $child = $this->mapArray($jvalue, $array, $subtype);
             } else if ($this->isFlatType(gettype($jvalue))) {
                 //use constructor parameter if we have a class
                 // but only a flat type (i.e. string, int)
-                if ($jvalue === null) {
-                    $child = null;
-                } else {
-                    $type = $this->getFullNamespace($type, $strNs);
-                    $child = $this->createInstance($type, true, $jvalue);
-                }
+                $type = $this->getFullNamespace($type, $strNs);
+                $child = $this->createInstance($type, true, $jvalue);
             } else {
                 $type = $this->getFullNamespace($type, $strNs);
                 $child = $this->createInstance($type);
@@ -279,7 +280,8 @@ class JsonMapper
      * @param string $class Class name for children objects.
      *                      All children will get mapped onto this type.
      *                      Supports class names and simple types
-     *                      like "string".
+     *                      like "string" and nullability "string|null".
+     *                      Pass "null" to not convert any values
      *
      * @return mixed Mapped $array is returned
      */
@@ -504,6 +506,9 @@ class JsonMapper
      */
     protected function removeNullable($type)
     {
+        if ($type === null) {
+            return null;
+        }
         return substr(
             str_ireplace('|null|', '|', '|' . $type . '|'),
             1, -1

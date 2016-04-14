@@ -22,7 +22,6 @@
  */
 class JsonMapperTest_Array
 {
-
     /**
      * @var float[]
      */
@@ -32,6 +31,11 @@ class JsonMapperTest_Array
      * @var string[]
      */
     public $strArray;
+
+    /**
+     * @var array[string]
+     */
+    public $strArrayV2;
 
     /**
      * @var JsonMapperTest_Simple[]
@@ -45,10 +49,22 @@ class JsonMapperTest_Array
     public $typedSimpleArray;
 
     /**
+     * @var string[]|null
+     */
+    public $nullableSimpleArray;
+
+    /**
      * This generates an array object with original json values
      * @var ArrayObject
      */
     public $pArrayObject;
+
+    /**
+     * This generates an array object with original json values,
+     * and may be NULL
+     * @var ArrayObject|null
+     */
+    public $pNullableArrayObject;
 
     /**
      * This generates an array object with JsonMapperTest_Simple instances

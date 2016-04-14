@@ -45,7 +45,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test for an array of classes "@var ClassName[]" with
-     * flat/simple json values (string, float)
+     * flat/simple json values (string)
      */
     public function testMapTypedSimpleArray()
     {
@@ -65,6 +65,19 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             '2014-05-07', $sn->typedSimpleArray[2]->format('Y-m-d')
         );
+    }
+
+    /**
+     * Test for an array that is nullable - "@var string[]|null"
+     */
+    public function testNullableSimple()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"nullableSimpleArray":null}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertNull($sn->nullableSimpleArray);
     }
 
     public function testMapArrayJsonNoTypeEnforcement()
@@ -124,6 +137,23 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('string', $sn->strArray[0]);
         $this->assertInternalType('string', $sn->strArray[1]);
         $this->assertInternalType('string', $sn->strArray[2]);
+    }
+
+    /**
+     * Test for an array of strings - "@var array[string]"
+     */
+    public function testStrArrayV2()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"strArrayV2":["str",false,2.048]}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertInternalType('array', $sn->strArrayV2);
+        $this->assertEquals(3, count($sn->strArrayV2));
+        $this->assertInternalType('string', $sn->strArrayV2[0]);
+        $this->assertInternalType('string', $sn->strArrayV2[1]);
+        $this->assertInternalType('string', $sn->strArrayV2[2]);
     }
 
     /**
@@ -206,6 +236,34 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"pArrayObject": 4.2 }'),
+            new JsonMapperTest_Array()
+        );
+    }
+
+    /**
+     * A nullable ArrayObject which is null.
+     */
+    public function testArrayObjectNullable()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"pNullableArrayObject": null}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertNull($sn->pNullableArrayObject);
+    }
+
+    /**
+     * An ArrayObject which may not be null but is.
+     *
+     * @expectedException JsonMapper_Exception
+     * @expectedExceptionMessage JSON property "pArrayObject" must not be NULL
+     */
+    public function testArrayObjectInvalidNull()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"pArrayObject": null}'),
             new JsonMapperTest_Array()
         );
     }

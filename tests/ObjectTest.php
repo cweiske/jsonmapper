@@ -11,6 +11,7 @@
  * @link     https://github.com/cweiske/jsonmapper
  */
 require_once 'JsonMapperTest/Simple.php';
+require_once 'JsonMapperTest/Object.php';
 require_once 'JsonMapperTest/ValueObject.php';
 
 /**
@@ -24,7 +25,6 @@ require_once 'JsonMapperTest/ValueObject.php';
  */
 class ObjectTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * Test for a class name "@var Classname"
      */
@@ -45,7 +45,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"datetime":"2014-04-01T00:00:00+02:00"}'),
-            new JsonMapperTest_Simple()
+            new JsonMapperTest_Object()
         );
         $this->assertInstanceOf('DateTime', $sn->datetime);
         $this->assertEquals(
@@ -59,7 +59,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"datetime":null}'),
-            new JsonMapperTest_Simple()
+            new JsonMapperTest_Object()
         );
         $this->assertNull($sn->datetime);
     }
@@ -74,6 +74,35 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertSame($valueObject, $sn->getValueObject());
+    }
+
+    /**
+     * Test for "@var object|null" with null value
+     */
+    public function testObjectNullable()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"pValueObjectNullable":null}'),
+            new JsonMapperTest_Object()
+        );
+        $this->assertNull($sn->pValueObjectNullable);
+    }
+
+    /**
+     * Test for "@var object" with null value
+     *
+     * @expectedException JsonMapper_Exception
+     * @expectedExceptionMessage JSON property "pValueObject" must not be NULL
+     */
+    public function testObjectInvalidNull()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"pValueObject":null}'),
+            new JsonMapperTest_Object()
+        );
+        $this->assertInternalType('null', $sn->pValueObjectNullable);
     }
 }
 ?>
