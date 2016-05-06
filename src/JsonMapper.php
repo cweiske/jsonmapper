@@ -450,10 +450,11 @@ class JsonMapper
     /**
      * removes - and _ and makes the next letter that uppercase
      * 
-     * @param $name
+     * @param string $name property name
+     *
      * @return mixed
      */
-    private function getUppercaseName($name)
+    protected function getUppercaseName($name)
     {
         return str_replace(
             ' ', '', ucwords(str_replace(array('_', '-'), ' ', $name))
@@ -463,10 +464,11 @@ class JsonMapper
     /**
      * since hyphens cant be used in variables we have to uppercase them
      *
-     * @param $name
+     * @param string $name property name
+     *
      * @return mixed
      */
-    private function getSafeName($name)
+    protected function getSafeName($name)
     {
         if (strpos($name, '-') !== false) {
             $name = $this->getUppercaseName($name);
