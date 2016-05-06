@@ -85,6 +85,12 @@ class JsonMapperTest_Simple
     public $under_score;
 
     /**
+     * Variable name with hyphen (-)
+     * @var string
+     */
+    public $hyphenValue;
+
+    /**
      * @var
      */
     public $empty;
@@ -126,6 +132,11 @@ class JsonMapperTest_Simple
     public function setUnderScoreSetter($v)
     {
         $this->internalData['under_score_setter'] = $v;
+    }
+
+    public function setHyphenValueSetter($v)
+    {
+        $this->internalData['hyphen-value-setter'] = $v;
     }
 
     public function setSetterPreferredOverProperty($v)
