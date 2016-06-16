@@ -18,6 +18,9 @@ require_once 'JsonMapperTest/Logger.php';
 require_once 'JsonMapperTest/PrivateWithSetter.php';
 require_once 'JsonMapperTest/ValueObject.php';
 
+use apimatic\jsonmapper\JsonMapper;
+use apimatic\jsonmapper\JsonMapperException;
+
 /**
  * Unit tests for JsonMapper
  *
@@ -55,6 +58,20 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertInternalType('float', $sn->fl);
         $this->assertEquals(1.2, $sn->fl);
+    }
+
+    /**
+     * Test for "@var double"
+     */
+    public function testMapSimpleDouble()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"db":"1.2"}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertInternalType('float', $sn->db);
+        $this->assertEquals(1.2, $sn->db);
     }
 
     /**
@@ -402,7 +419,7 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     /**
      * Test for "@var "
      *
-     * @expectedException JsonMapper_Exception
+     * @expectedException apimatic\jsonmapper\JsonMapperException
      * @expectedExceptionMessage Empty type at property "JsonMapperTest_Simple::$empty"
      */
     public function testMapEmpty()
@@ -573,7 +590,7 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException        JsonMapper_Exception
+     * @expectedException        apimatic\jsonmapper\JsonMapperException
      * @expectedExceptionMessage Required property "pMissingData" of class JsonMapperTest_Broken is missing in JSON data
      */
     public function testMissingDataException()
@@ -601,7 +618,7 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException        JsonMapper_Exception
+     * @expectedException        apimatic\jsonmapper\JsonMapperException
      * @expectedExceptionMessage JSON property "undefinedProperty" does not exist in object of type JsonMapperTest_Broken
      */
     public function testUndefinedPropertyException()
@@ -629,7 +646,7 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException        JsonMapper_Exception
+     * @expectedException        apimatic\jsonmapper\JsonMapperException
      * @expectedExceptionMessage JSON property "privateNoSetter" has no public setter method in object of type PrivateWithSetter
      */
     public function testPrivatePropertyWithNoSetter()
@@ -647,7 +664,7 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException        JsonMapper_Exception
+     * @expectedException        apimatic\jsonmapper\JsonMapperException
      * @expectedExceptionMessage JSON property "privatePropertyPrivateSetter" has no public setter method in object of type PrivateWithSetter
      */
     public function testPrivatePropertyWithPrivateSetter()

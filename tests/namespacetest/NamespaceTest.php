@@ -6,11 +6,13 @@ require_once __DIR__ . '/model/User.php';
 require_once __DIR__ . '/model/UserList.php';
 require_once __DIR__ . '/../othernamespace/Foo.php';
 
+use apimatic\jsonmapper\JsonMapper;
+
 class NamespaceTest extends \PHPUnit_Framework_TestCase
 {
     public function testMapArrayNamespace()
     {
-        $mapper = new \JsonMapper();
+        $mapper = new JsonMapper();
         $json = '{"data":[{"value":"1.2"}]}';
         $res = $mapper->map(json_decode($json), new UnitData());
         $this->assertInstanceOf('\namespacetest\UnitData', $res);
@@ -19,7 +21,7 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
 
     public function testMapSimpleArrayNamespace()
     {
-        $mapper = new \JsonMapper();
+        $mapper = new JsonMapper();
         $json = '{"units":[{"value":"1.2"}]}';
         $res = $mapper->map(json_decode($json), new UnitData());
         $this->assertInstanceOf('\namespacetest\UnitData', $res);
@@ -28,7 +30,7 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
 
     public function testMapSimpleStringArrayNamespace()
     {
-        $mapper = new \JsonMapper();
+        $mapper = new JsonMapper();
         $json = '{"messages":["message 1", "message 2"]}';
         $res = $mapper->map(json_decode($json), new UnitData());
         $this->assertInstanceOf('\namespacetest\UnitData', $res);
@@ -38,7 +40,7 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
 
     public function testMapChildClassNamespace()
     {
-        $mapper = new \JsonMapper();
+        $mapper = new JsonMapper();
         $json = '{"user":{"name": "John Smith"}}';
         $res = $mapper->map(json_decode($json), new UnitData());
         $this->assertInstanceOf('\namespacetest\UnitData', $res);
@@ -47,7 +49,7 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
 
     public function testMapChildClassConstructorNamespace()
     {
-        $mapper = new \JsonMapper();
+        $mapper = new JsonMapper();
         $json = '{"user":"John Smith"}';
         $res = $mapper->map(json_decode($json), new UnitData());
         $this->assertInstanceOf('\namespacetest\UnitData', $res);
@@ -56,7 +58,7 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
 
     public function testMapChildObjectArrayNamespace()
     {
-        $mapper = new \JsonMapper();
+        $mapper = new JsonMapper();
         $json = '{"data":null,"user":{"name": "John Smith"}}';
         /* @var \namespacetest\UnitData $res */
         $res = $mapper->map(json_decode($json), new UnitData());
@@ -65,12 +67,12 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException JsonMapper_Exception
+     * @expectedException apimatic\jsonmapper\JsonMapperException
      * @expectedExceptionMessage Empty type at property "namespacetest\UnitData::$empty"
      */
     public function testMapEmpty()
     {
-        $mapper = new \JsonMapper();
+        $mapper = new JsonMapper();
         $json = '{"empty":{}}';
         /* @var \namespacetest\UnitData $res */
         $res = $mapper->map(json_decode($json), new UnitData());
@@ -78,7 +80,7 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
 
     public function testMapCustomArraObjectWithChildType()
     {
-        $mapper = new \JsonMapper();
+        $mapper = new JsonMapper();
         $json = '{"users":[{"user":"John Smith"}]}';
         $res = $mapper->map(json_decode($json), new UnitData());
         $this->assertInstanceOf('\namespacetest\UnitData', $res);
@@ -92,7 +94,7 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetterNamespacedTypeHint()
     {
-        $mapper = new \JsonMapper();
+        $mapper = new JsonMapper();
         $json = '{"namespacedTypeHint":"Foo"}';
         $res = $mapper->map(json_decode($json), new UnitData());
         $this->assertInstanceOf('\namespacetest\UnitData', $res);
