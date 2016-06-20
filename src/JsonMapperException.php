@@ -1,7 +1,4 @@
 <?php
-
-namespace apimatic\jsonmapper;
-
 /**
  * Part of JsonMapper
  *
@@ -13,6 +10,8 @@ namespace apimatic\jsonmapper;
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     http://www.netresearch.de/
  */
+
+namespace apimatic\jsonmapper;
 
 /**
  * Simple exception

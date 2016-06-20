@@ -1,7 +1,4 @@
 <?php
-
-namespace apimatic\jsonmapper;
-
 /**
  * Part of JsonMapper
  *
@@ -13,6 +10,8 @@ namespace apimatic\jsonmapper;
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     http://www.netresearch.de/
  */
+
+namespace apimatic\jsonmapper;
 
 /**
  * Automatically map JSON structures into objects.
@@ -47,6 +46,7 @@ class JsonMapper
      * is found. This method should receive two arguments, $key
      * and $value for the property key and value. Only works if
      * $bExceptionOnUndefinedProperty is set to false.
+     *
      * @var string
      */
     public $sAdditionalPropertiesCollectionMethod = null;
@@ -63,7 +63,7 @@ class JsonMapper
      * If the types of map() parameters shall be checked.
      * You have to disable it if you're using the json_decode "assoc" parameter.
      *
-     *     json_decode($str, false)
+     *     `json_decode($str, false)`
      *
      * @var boolean
      */
@@ -121,8 +121,9 @@ class JsonMapper
             list($hasProperty, $accessor, $type)
                 = $this->arInspectedClasses[$strClassName][$key];
 
-            if($accessor !== null)
-                $providedProperties[$accessor->getName()] = true;
+            if ($accessor !== null) {
+                $providedProperties[$accessor->getName()] = true; 
+            }
 
             if (!$hasProperty) {
                 if ($this->bExceptionOnUndefinedProperty) {
@@ -154,9 +155,10 @@ class JsonMapper
                 );
             }
 
-            if($isAdditional) {
-                if($additionalPropertiesMethod !== null)
-                    $additionalPropertiesMethod->invoke($object, $key , $jvalue);
+            if ($isAdditional) {
+                if ($additionalPropertiesMethod !== null) {
+                    $additionalPropertiesMethod->invoke($object, $key, $jvalue); 
+                }
                 continue;
             }
 
@@ -289,31 +291,36 @@ class JsonMapper
 
     /**
      * Get additional properties setter method for the class.
-     * @param  \ReflectionClass $rc Reflection class to check
+     *
+     * @param \ReflectionClass $rc Reflection class to check
+     * 
      * @return \ReflectionMethod    Method or null if disabled.
      */
     protected function getAdditionalPropertiesMethod(\ReflectionClass $rc)
     {
-        if($this->bExceptionOnUndefinedProperty === false
-            && $this->sAdditionalPropertiesCollectionMethod !== null)
-        {
+        if ($this->bExceptionOnUndefinedProperty === false
+            && $this->sAdditionalPropertiesCollectionMethod !== null
+        ) {
             $additionalPropertiesMethod = null;
             try {
-                $additionalPropertiesMethod = $rc->getMethod($this->sAdditionalPropertiesCollectionMethod);
-                if(!$additionalPropertiesMethod->isPublic())
+                $additionalPropertiesMethod 
+                    = $rc->getMethod($this->sAdditionalPropertiesCollectionMethod);
+                if (!$additionalPropertiesMethod->isPublic()) {
                     throw new  \InvalidArgumentException(
-                        $this->sAdditionalPropertiesCollectionMethod . " method is not public"
-                        . " on the given class."
-                    );
-                if($additionalPropertiesMethod->getNumberOfParameters() < 2)
+                        $this->sAdditionalPropertiesCollectionMethod . 
+                            " method is not public on the given class."
+                    ); 
+                }
+                if ($additionalPropertiesMethod->getNumberOfParameters() < 2) {
                     throw new  \InvalidArgumentException(
-                        $this->sAdditionalPropertiesCollectionMethod . " method does not receive"
-                        . "two arguments, $key and $value."
-                    );
+                        $this->sAdditionalPropertiesCollectionMethod . 
+                            " method does not receive two args, $key and $value."
+                    ); 
+                }
             } catch (\ReflectionException $e) {
                 throw new  \InvalidArgumentException(
-                    $this->sAdditionalPropertiesCollectionMethod . " method is not available"
-                    . " on the given class."
+                    $this->sAdditionalPropertiesCollectionMethod . 
+                        " method is not available on the given class."
                 );
             }
             return $additionalPropertiesMethod;
@@ -410,20 +417,24 @@ class JsonMapper
         // check for @maps annotation for hints
         foreach ($rc->getProperties(\ReflectionProperty::IS_PUBLIC) as $p) {
             $mappedName = $this->getMapAnnotation($p);
-            if($mappedName !== null && $name == $mappedName) {
+            if ($mappedName !== null && $name == $mappedName) {
                 $rprop = $p;
                 break;
             }
         }
 
         //now try to set the property directly
-        if($rprop === null) {
-            if ($rc->hasProperty($name) && $this->getMapAnnotation($rc->getProperty($name)) === null) {
+        if ($rprop === null) {
+            if ($rc->hasProperty($name) 
+                && $this->getMapAnnotation($rc->getProperty($name)) === null
+            ) {
                 $rprop = $rc->getProperty($name);
             } else {
                 //case-insensitive property matching
                 foreach ($rc->getProperties(\ReflectionProperty::IS_PUBLIC) as $p) {
-                    if ((strcasecmp($p->name, $name) === 0) && $this->getMapAnnotation($p) === null) {
+                    if ((strcasecmp($p->name, $name) === 0) 
+                        && $this->getMapAnnotation($p) === null
+                    ) {
                         $rprop = $p;
                         break;
                     }
@@ -454,10 +465,17 @@ class JsonMapper
         return array(false, null, null);
     }
 
+    /**
+     * Get map annotation value for a property
+     * 
+     * @param object $property Property of a class
+     * 
+     * @return string|null      Map annotation value
+     */
     protected function getMapAnnotation($property)
     {
         $annotations = $this->parseAnnotations($property->getDocComment());
-        if(isset($annotations['maps'][0])) {
+        if (isset($annotations['maps'][0])) {
             return $annotations['maps'][0];
         }
         return null;
