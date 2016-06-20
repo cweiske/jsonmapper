@@ -288,14 +288,14 @@ class JsonMapper
     }
 
     /**
-     * Get additional properties setter method for the class. 
+     * Get additional properties setter method for the class.
      * @param  \ReflectionClass $rc Reflection class to check
      * @return \ReflectionMethod    Method or null if disabled.
      */
     protected function getAdditionalPropertiesMethod(\ReflectionClass $rc)
     {
-        if($this->bExceptionOnUndefinedProperty === false 
-            && $this->sAdditionalPropertiesCollectionMethod !== null) 
+        if($this->bExceptionOnUndefinedProperty === false
+            && $this->sAdditionalPropertiesCollectionMethod !== null)
         {
             $additionalPropertiesMethod = null;
             try {
@@ -427,7 +427,7 @@ class JsonMapper
                         $rprop = $p;
                         break;
                     }
-                }                
+                }
             }
         }
 
@@ -518,8 +518,8 @@ class JsonMapper
     {
         return $type == 'string'
             || $type == 'boolean' || $type == 'bool'
-            || $type == 'integer' || $type == 'int'
-            || $type == 'float' || $type == 'array' || $type == 'object';
+            || $type == 'integer' || $type == 'int'   || $type == 'float'
+            || $type == 'double'  || $type == 'array' || $type == 'object';
     }
 
     /**

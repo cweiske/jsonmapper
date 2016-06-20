@@ -53,6 +53,11 @@ class JsonMapperTest_Simple
     public $fl;
 
     /**
+     * @var double
+     */
+    public $db;
+
+    /**
      * @var mixed
      */
     public $mixed;

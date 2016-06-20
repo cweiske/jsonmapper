@@ -5,6 +5,7 @@ if (is_dir(__DIR__ . '/../src/')) {
         . PATH_SEPARATOR . get_include_path()
     );
 }
+
 require_once 'JsonMapper.php';
-require_once 'JsonMapper/Exception.php';
+require_once 'JsonMapperException.php';
 ?>
