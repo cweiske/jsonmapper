@@ -308,19 +308,19 @@ class JsonMapper
                 if (!$additionalPropertiesMethod->isPublic()) {
                     throw new  \InvalidArgumentException(
                         $this->sAdditionalPropertiesCollectionMethod . 
-                            " method is not public on the given class."
+                        " method is not public on the given class."
                     ); 
                 }
                 if ($additionalPropertiesMethod->getNumberOfParameters() < 2) {
                     throw new  \InvalidArgumentException(
                         $this->sAdditionalPropertiesCollectionMethod . 
-                            " method does not receive two args, $key and $value."
+                        " method does not receive two args, $key and $value."
                     ); 
                 }
             } catch (\ReflectionException $e) {
                 throw new  \InvalidArgumentException(
                     $this->sAdditionalPropertiesCollectionMethod . 
-                        " method is not available on the given class."
+                    " method is not available on the given class."
                 );
             }
             return $additionalPropertiesMethod;
