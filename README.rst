@@ -2,8 +2,8 @@
 JsonMapper - map nested JSON structures onto PHP classes
 ********************************************************
 
-.. image:: https://api.travis-ci.org/netresearch/jsonmapper.png
-   :target: https://travis-ci.org/netresearch/jsonmapper
+.. image:: https://api.travis-ci.org/apimatic/jsonmapper.png
+   :target: https://travis-ci.org/apimatic/jsonmapper
    :align: right
 
 Takes data retrieved from a JSON__ web service and converts them
