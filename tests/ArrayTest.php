@@ -269,6 +269,20 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Exception is not thrown when a non-nullable object has null value
+     * but strict nullable checks are turned off
+     */
+    public function testNonNullableArrayObjectWithLooseNullChecks()
+    {
+        $jm = new JsonMapper();
+        $jm->bStrictNullTypes = false;
+        $sn = $jm->map(
+            json_decode('{"pArrayObject": null}'),
+            new JsonMapperTest_Array()
+        );
+    }
+
+    /**
      * The TYPO3 autoloader breaks if we autoload a class with a [ or ]
      * in its name.
      *
