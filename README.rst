@@ -153,8 +153,8 @@ Your application code:
     ?>
 
 
-Property type documentation
-===========================
+Property type mapping
+=====================
 ``JsonMapper`` uses several sources to detect the correct type of
 a property:
 
@@ -194,7 +194,9 @@ a property:
    A JSON property ``isempty`` would then be mapped to a PHP property
    ``isEmpty``.
 
-Supported type names:
+
+Supported type names
+--------------------
 
 - Simple types:
 
@@ -258,7 +260,7 @@ This will result in ``new DateTime('2014-05-15')`` being called.
 
 Class map
 ---------
-When variables as defined as objects ofabstract classes or interfaces,
+When variables are defined as objects of abstract classes or interfaces,
 JsonMapper would normally try to instantiate those directly and crash.
 
 Using JsonMapper's ``$classMap`` property, you can specify which classes
@@ -272,6 +274,18 @@ shall get instantiated instead:
 
 This would create objects of type ``Bar`` when a variable is defined to be
 of type ``Foo``.
+
+
+Nullables
+---------
+JsonMapper throws an exception when a JSON property is ``null``,
+unless the PHP class property has a nullable type - e.g. ``Contact|null``.
+
+If your API contains many fields that may be ``null`` and you do not want
+to make all your type definitions nullable, set::
+
+    $jm->bStrictNullTypes = false;
+
 
 
 Logging
