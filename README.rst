@@ -425,9 +425,11 @@ Related software
 ================
 - `Jackson's data binding`__ for Java
 - `Johannes Schmitt Serializer`__ for PHP
+- `metassione`__ for PHP
 
 __ http://wiki.fasterxml.com/JacksonDataBinding
 __ http://jmsyst.com/libs/serializer
+__ https://github.com/drbonzo/metassione
 
 
 ================
