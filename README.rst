@@ -160,9 +160,10 @@ a property:
 
 #. The setter method (``set`` + ``ucwords($propertyname)``) is inspected.
 
-   Underscores make the next letter uppercase, which means that
-   for a JSON property ``foo_bar_baz`` a setter method of
-   ``setFooBarBaz`` is used.
+   Underscores and hyphens (-) make the next letter uppercase,
+   examples:
+       - property: ``foo_bar_baz`` setter: ``setFooBarBaz``
+       - property: ``foo-bar-baz`` setter: ``setFooBarBaz``
 
    #. If it has a type hint in the method signature, this type used::
 
