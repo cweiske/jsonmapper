@@ -67,6 +67,14 @@ class JsonMapper
     public $bStrictObjectTypeChecking = false;
 
     /**
+     * Throw an exception, if null value is found
+     * but the type of attribute does not allow nulls.
+     *
+     * @var bool
+     */
+    public $bStrictNullTypes = true;
+
+    /**
      * Override class names that JsonMapper uses to create objects.
      * Useful when your setter methods accept abstract classes or interfaces.
      *
@@ -173,7 +181,7 @@ class JsonMapper
                 continue;
             }
 
-            if ($this->isNullable($type)) {
+            if ($this->isNullable($type) || !$this->bStrictNullTypes) {
                 if ($jvalue === null) {
                     $this->setProperty($object, $accessor, null);
                     continue;
