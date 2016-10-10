@@ -198,6 +198,7 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('f', $sn->under_score);
     }
 
+
     /**
      * Variable with an underscore and a setter method
      */
@@ -214,6 +215,41 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             'blubb', $sn->internalData['under_score_setter']
         );
+    }
+
+    /**
+     * Variable with hyphen (-)
+     */
+    public function testMapSimpleHyphen()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"hyphen-value":"test"}'),
+            new JsonMapperTest_Simple()
+        );
+
+        $this->assertInternalType('string', $sn->hyphenValue);
+        $this->assertEquals('test', $sn->hyphenValue);
+
+    }
+
+    /**
+     * Variable with hyphen and a setter method
+     */
+    public function testMapSimpleHyphenSetter()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"hyphen-value-setter":"blubb"}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertInternalType(
+            'string', $sn->internalData['hyphen-value-setter']
+        );
+        $this->assertEquals(
+            'blubb', $sn->internalData['hyphen-value-setter']
+        );
+
     }
 }
 ?>

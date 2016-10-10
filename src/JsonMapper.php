@@ -133,6 +133,7 @@ class JsonMapper
         $strNs = $rc->getNamespaceName();
         $providedProperties = array();
         foreach ($json as $key => $jvalue) {
+            $key = $this->getSafeName($key);
             $providedProperties[$key] = true;
 
             // Store the property inspection results so we don't have to do it
@@ -339,6 +340,7 @@ class JsonMapper
     public function mapArray($json, $array, $class = null)
     {
         foreach ($json as $key => $jvalue) {
+            $key = $this->getSafeName($key);
             if ($class === null) {
                 $array[$key] = $jvalue;
             } else if ($this->isFlatType(gettype($jvalue))) {
@@ -380,9 +382,8 @@ class JsonMapper
     protected function inspectProperty(ReflectionClass $rc, $name)
     {
         //try setter method first
-        $setter = 'set' . str_replace(
-            ' ', '', ucwords(str_replace('_', ' ', $name))
-        );
+        $setter = 'set' . $this->getCamelCaseName($name);
+
         if ($rc->hasMethod($setter)) {
             $rmeth = $rc->getMethod($setter);
             if ($rmeth->isPublic()) {
@@ -448,6 +449,38 @@ class JsonMapper
 
         //no setter, no property
         return array(false, null, null);
+    }
+
+    /**
+     * Removes - and _ and makes the next letter uppercase
+     *
+     * @param string $name Property name
+     *
+     * @return string CamelCasedVariableName
+     */
+    protected function getCamelCaseName($name)
+    {
+        return str_replace(
+            ' ', '', ucwords(str_replace(array('_', '-'), ' ', $name))
+        );
+    }
+
+    /**
+     * Since hyphens cannot be used in variables we have to uppercase them.
+     *
+     * Technically you may use them, but they are awkward to access.
+     *
+     * @param string $name Property name
+     *
+     * @return string Name without hyphen
+     */
+    protected function getSafeName($name)
+    {
+        if (strpos($name, '-') !== false) {
+            $name = $this->getCamelCaseName($name);
+        }
+
+        return $name;
     }
 
     /**
