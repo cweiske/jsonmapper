@@ -536,13 +536,16 @@ class JsonMapper
      * @param string $type type name from gettype()
      *
      * @return boolean True if it is a simple PHP type
+     *
+     * @see isFlatType()
      */
     protected function isSimpleType($type)
     {
         return $type == 'string'
             || $type == 'boolean' || $type == 'bool'
             || $type == 'integer' || $type == 'int'
-            || $type == 'float' || $type == 'array' || $type == 'object';
+            || $type == 'double' || $type == 'float'
+            || $type == 'array' || $type == 'object';
     }
 
     /**
@@ -569,6 +572,8 @@ class JsonMapper
      * @param string $type type name from gettype()
      *
      * @return boolean True if it is a non-nested PHP type
+     *
+     * @see isSimpleType()
      */
     protected function isFlatType($type)
     {
@@ -576,7 +581,7 @@ class JsonMapper
             || $type == 'string'
             || $type == 'boolean' || $type == 'bool'
             || $type == 'integer' || $type == 'int'
-            || $type == 'double';
+            || $type == 'double' || $type == 'float';
     }
 
     /**
