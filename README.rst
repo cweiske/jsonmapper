@@ -416,9 +416,9 @@ via Composer
 ============
 From Packagist__::
 
-    $ composer require cweiske/jsonmapper
+    $ composer require netresearch/jsonmapper
 
-__ https://packagist.org/packages/cweiske/jsonmapper
+__ https://packagist.org/packages/netresearch/jsonmapper
 
 
 via PEAR
