@@ -14,7 +14,7 @@ converting them into the correct simple types or objects.
 
 It's a bit like the native SOAP parameter mapping PHP's ``SoapClient``
 gives you, but for JSON.
-Note that it does not rely on any schema, only your class definitions.
+It does not rely on any schema, only your PHP class definitions.
 
 Type detection works by parsing ``@var`` docblock annotations of
 class properties, as well as type hints in setter methods.
@@ -90,7 +90,7 @@ __ http://www.php-fig.org/psr/psr-0/
 
 Example
 =======
-JSON from a address book web service:
+JSON from an address book web service:
 
 .. code:: javascript
 
@@ -134,7 +134,7 @@ Your local ``Address`` class:
 
         public function getGeoCoords()
         {
-            //do something with the $street and $city
+            //do something with $street and $city
         }
     }
     ?>
@@ -144,7 +144,7 @@ Your application code:
 .. code:: php
 
     <?php
-    $json = json_decode(file_get_contents('http://example.org/bigbang.json'));
+    $json = json_decode(file_get_contents('http://example.org/sheldon.json'));
     $mapper = new JsonMapper();
     $contact = $mapper->map($json, new Contact());
 
@@ -163,7 +163,7 @@ a property:
    Underscores "``_``" and hyphens "``-``" make the next letter uppercase.
    Property ``foo_bar-baz`` leads to setter method ``setFooBarBaz``.
 
-   #. If it has a type hint in the method signature, this type used::
+   #. If it has a type hint in the method signature then its type used::
 
         public function setPerson(Contact $person) {...}
 
@@ -184,9 +184,11 @@ a property:
      */
     public $person;
 
-   Note that the property has to be public to be used directly.
+   The property has to be public to be used directly.
+   Protected and private properties cannot be set; you will have to
+   provide a setter method for them.
 
-   If no type could be detected, the property gets the plain JSON value.
+   If no type could be detected, the property gets the plain JSON value set.
 
    If a property can not be found, JsonMapper tries to find the property
    in a case-insensitive manner.
@@ -197,17 +199,17 @@ a property:
 Supported type names
 --------------------
 
-- Simple types:
+- Simple types
 
   - ``string``
   - ``bool``, ``boolean``
   - ``int``, ``integer``
-  - ``float``
+  - ``double``, ``float``
   - ``array``
   - ``object``
 - Class names, with and without namespaces
 
-  - ``Contact`` - will throw exception if JSON value is NULL
+  - ``Contact`` - exception will be thrown if the JSON value is ``null``
 - Arrays of simple types and class names:
 
   - ``int[]``
@@ -281,10 +283,11 @@ JsonMapper throws an exception when a JSON property is ``null``,
 unless the PHP class property has a nullable type - e.g. ``Contact|null``.
 
 If your API contains many fields that may be ``null`` and you do not want
-to make all your type definitions nullable, set::
+to make all your type definitions nullable, set:
+
+.. code:: php
 
     $jm->bStrictNullTypes = false;
-
 
 
 Logging
@@ -305,8 +308,8 @@ __ http://www.php-fig.org/psr/psr-3/
 Handling invalid or missing data
 ================================
 During development, APIs often change.
-To get notified about such changes, JsonMapper may throw exceptions
-in case of either missing or yet unknown data.
+To get notified about such changes, JsonMapper can be configured to
+throw exceptions in case of either missing or yet unknown data.
 
 
 Unknown properties
@@ -383,7 +386,7 @@ If you do not want this, set ``$bStrictObjectTypeChecking`` to ``true``:
     $jm->bStrictObjectTypeChecking = true;
     $jm->map(...);
 
-An exception is thrown then in such cases.
+An exception is then thrown in such cases.
 
 
 Passing arrays to ``map()``
@@ -413,22 +416,23 @@ via Composer
 ============
 From Packagist__::
 
-    $ composer require netresearch/jsonmapper
+    $ composer require cweiske/jsonmapper
 
-__ https://packagist.org/packages/netresearch/jsonmapper
+__ https://packagist.org/packages/cweiske/jsonmapper
 
 
 via PEAR
 ========
-.. warning::
-   Version 0.10.0 was the last version released on this PEAR channel.
+.. note::
+   With version 1.0.0 JsonMapper moved to PEAR channel
+   https://zustellzentrum.cweiske.de/
 
 From our `PEAR channel`__::
 
-    $ pear channel-discover pear.nrdev.de
-    $ pear install nr/jsonmapper-alpha
+    $ pear channel-discover zustellzentrum.cweiske.de
+    $ pear install zz/jsonmapper
 
-__ http://pear.nrdev.de/
+__ https://zustellzentrum.cweiske.de/
 
 
 
@@ -467,5 +471,5 @@ Author
 ======
 `Christian Weiske`__, `cweiske.de`__
 
-__ mailto:cweiske@cweiske.de
+__ mailto:cweiske+jsonmapper@cweiske.de
 __ http://cweiske.de/

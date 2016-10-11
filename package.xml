@@ -10,7 +10,7 @@
   http://pear.php.net/dtd/package-2.0.xsd"
 >
  <name>JsonMapper</name>
- <channel>pear.nrdev.de</channel>
+ <channel>zustellzentrum.cweiske.de</channel>
  <summary>Map nested JSON structures onto PHP classes</summary>
  <description>Map nested JSON structures onto PHP classes</description>
 
@@ -67,12 +67,18 @@
      <dir name="tests">
        <file role="test" name="bootstrap.php" />
        <file role="test" name="phpunit.xml" />
-       <file role="test" name="JsonMapperTest.php" />
+
+       <file role="test" name="ArrayTest.php" />
+       <file role="test" name="ObjectTest.php" />
+       <file role="test" name="OtherTest.php" />
+       <file role="test" name="SimpleTest.php" />
        <dir name="JsonMapperTest">
          <file role="test" name="Array.php" />
          <file role="test" name="Broken.php" />
          <file role="test" name="DependencyInjector.php" />
          <file role="test" name="Logger.php" />
+         <file role="test" name="Object.php" />
+         <file role="test" name="PlainObject.php" />
          <file role="test" name="PrivateWithSetter.php" />
          <file role="test" name="Simple.php" />
          <file role="test" name="ValueObject.php" />
