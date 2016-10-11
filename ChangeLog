@@ -1,3 +1,13 @@
+2016-10-11  Christian Weiske  <cweiske@cweiske.de>
+
+	* Add option to turn off the "must not be NULL" exception
+	  by @ kamranahmedse (issue #58)
+	* Add support for properties with hyphens "-"
+	  by @redshark1802 (issue #55)
+	* Add support for both "double" and "float" types
+	* Move to PEAR channel zustellzentrum.cweiske.de
+	* Version 1.0.0
+
 2016-04-14  Christian Weiske  <cweiske@cweiske.de>
 
 	* Add $undefinedPropertyHandler (issue #51)

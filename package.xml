@@ -21,34 +21,26 @@
   <active>yes</active>
  </lead>
 
- <date>2016-04-14</date>
+ <date>2016-10-11</date>
  <time>00:00:00</time>
 
  <version>
-  <release>0.11.0</release>
-  <api>0.11.0</api>
+  <release>1.0.0</release>
+  <api>1.0.0</api>
  </version>
 
  <stability>
-  <release>beta</release>
-  <api>beta</api>
+  <release>stable</release>
+  <api>stable</api>
  </stability>
 
  <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
 
  <notes>
-  * Add $undefinedPropertyHandler (issue #51)
-  * Add $classMap to override class names (issue #53)
-  * Add option to enable strict object type checks (issue #50)
-  * Add composer autoloader performance improvement
-  * Add exception when an array is expected, but simple type given
-    (issue #44)
-  * Fix non-nullable object handling: Exception is now thrown when
-    NULL is given and an object was expected.
-
-    THIS WILL PROBABLY BREAK YOUR CODE
-
-    Add "|null" to all your "@var ClassName" lines to fix that.
+  * Add option to turn off the "must not be NULL" exception
+  * Add support for properties with hyphens "-"
+  * Add support for both "double" and "float" types
+  * Move to PEAR channel zustellzentrum.cweiske.de
  </notes>
 
  <contents>
@@ -120,6 +112,26 @@
  </phprelease>
 
  <changelog>
+
+  <release>
+   <version>
+    <release>1.0.0</release>
+    <api>1.0.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2016-10-11</date>
+   <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
+   <notes>
+    * Add option to turn off the "must not be NULL" exception
+      by @ kamranahmedse (issue #58)
+    * Add support for properties with hyphens "-" by @redshark1802 (issue #55)
+    * Add support for both "double" and "float" types
+    * Move to PEAR channel zustellzentrum.cweiske.de
+   </notes>
+  </release>
 
   <release>
    <version>
