@@ -46,5 +46,21 @@ class PrivateWithSetter
     {
         return $this->privateProperty;
     }
+
+    /**
+     * @return int
+     */
+    public function getPrivateNoSetter()
+    {
+        return $this->privateNoSetter;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPrivatePropertyPrivateSetter()
+    {
+        return $this->privatePropertyPrivateSetter;
+    }
 }
 ?>
