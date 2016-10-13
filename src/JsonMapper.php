@@ -150,6 +150,9 @@ class JsonMapper
                     = $this->inspectProperty($rc, $key);
             }
 
+            /** bool $accessor $hasProperty */
+            /** \ReflectionMethod|\ReflectionProperty|null $accessor */
+            /** string|null $type */
             list($hasProperty, $accessor, $type)
                 = $this->arInspectedClasses[$strClassName][$key];
 

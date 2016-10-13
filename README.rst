@@ -373,8 +373,8 @@ an exception when ``$bExceptionOnMissingData`` is activated:
     $jm->map(...);
 
 
-Private properties
-------------------
+Private properties and functions
+--------------------------------
 If you want immutable objects without public accessors like this:
 
 .. code:: php
