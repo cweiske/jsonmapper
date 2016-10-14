@@ -501,9 +501,9 @@ class JsonMapper
      * Checks if the setter or the property are public are made before
      * calling this method.
      *
-     * @param object $object    Object to set property on
-     * @param object $accessor  ReflectionMethod or ReflectionProperty
-     * @param mixed  $value     Value of property
+     * @param object $object   Object to set property on
+     * @param object $accessor ReflectionMethod or ReflectionProperty
+     * @param mixed  $value    Value of property
      *
      * @return void
      */
