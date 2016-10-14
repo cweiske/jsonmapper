@@ -178,7 +178,9 @@ class JsonMapper
             }
 
             if ($accessor === null) {
-                if ($this->bExceptionOnUndefinedProperty && !$this->bAllowPrivatePropertiesMapping) {
+                if ($this->bExceptionOnUndefinedProperty
+                    && !$this->bAllowPrivatePropertiesMapping
+                ) {
                     throw new JsonMapper_Exception(
                         'JSON property "' . $key . '" has no public setter method'
                         . ' in object of type ' . $strClassName
@@ -499,16 +501,18 @@ class JsonMapper
      * Checks if the setter or the property are public are made before
      * calling this method.
      *
-     * @param object $object Object to set property on
-     * @param ReflectionMethod|ReflectionProperty $accessor
-     * @param mixed $value Value of property
+     * @param object $object    Object to set property on
+     * @param object $accessor  ReflectionMethod or ReflectionProperty
+     * @param mixed  $value     Value of property
      *
      * @return void
      */
     protected function setProperty(
         $object, $accessor, $value
     ) {
-        if ($this->bAllowPrivatePropertiesMapping && ($accessor->isPrivate() || $accessor->isProtected())) {
+        if ($this->bAllowPrivatePropertiesMapping
+            && ($accessor->isPrivate() || $accessor->isProtected())
+        ) {
             $accessor->setAccessible(true);
             $accessor->setValue($object, $value);
         } else if ($accessor instanceof ReflectionProperty) {
