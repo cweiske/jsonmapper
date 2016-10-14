@@ -373,6 +373,27 @@ an exception when ``$bExceptionOnMissingData`` is activated:
     $jm->map(...);
 
 
+Private properties and functions
+--------------------------------
+If you want immutable objects without public accessors like this:
+
+.. code:: php
+
+    /**
+     * @var string
+     */
+    private $someDatum;
+
+You can allow mapping to private properties and functions by
+setting the ``$bAllowPrivatePropertiesMapping`` to true:
+
+.. code:: php
+
+    $jm = new JsonMapper();
+    $jm->bAllowPrivatePropertiesMapping = true;
+    $jm->map(...);
+
+
 Simple types instead of objects
 -------------------------------
 When a variable's type is a class and JSON data is a simple type

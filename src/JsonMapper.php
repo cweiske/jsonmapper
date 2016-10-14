@@ -75,6 +75,13 @@ class JsonMapper
     public $bStrictNullTypes = true;
 
     /**
+     * Allow mapping of private and proteted properties.
+     *
+     * @var boolean
+     */
+    public $bAllowPrivatePropertiesMapping = false;
+
+    /**
      * Override class names that JsonMapper uses to create objects.
      * Useful when your setter methods accept abstract classes or interfaces.
      *
@@ -143,6 +150,9 @@ class JsonMapper
                     = $this->inspectProperty($rc, $key);
             }
 
+            /** bool $accessor $hasProperty */
+            /** \ReflectionMethod|\ReflectionProperty|null $accessor */
+            /** string|null $type */
             list($hasProperty, $accessor, $type)
                 = $this->arInspectedClasses[$strClassName][$key];
 
@@ -168,7 +178,9 @@ class JsonMapper
             }
 
             if ($accessor === null) {
-                if ($this->bExceptionOnUndefinedProperty) {
+                if ($this->bExceptionOnUndefinedProperty
+                    && !$this->bAllowPrivatePropertiesMapping
+                ) {
                     throw new JsonMapper_Exception(
                         'JSON property "' . $key . '" has no public setter method'
                         . ' in object of type ' . $strClassName
@@ -421,7 +433,7 @@ class JsonMapper
         } else {
             //case-insensitive property matching
             $rprop = null;
-            foreach ($rc->getProperties(ReflectionProperty::IS_PUBLIC) as $p) {
+            foreach ($rc->getProperties() as $p) {
                 if ((strcasecmp($p->name, $name) === 0)) {
                     $rprop = $p;
                     break;
@@ -429,7 +441,7 @@ class JsonMapper
             }
         }
         if ($rprop !== null) {
-            if ($rprop->isPublic()) {
+            if ($rprop->isPublic() || $this->bAllowPrivatePropertiesMapping) {
                 $docblock    = $rprop->getDocComment();
                 $annotations = $this->parseAnnotations($docblock);
 
@@ -498,7 +510,12 @@ class JsonMapper
     protected function setProperty(
         $object, $accessor, $value
     ) {
-        if ($accessor instanceof ReflectionProperty) {
+        if ($this->bAllowPrivatePropertiesMapping
+            && ($accessor->isPrivate() || $accessor->isProtected())
+        ) {
+            $accessor->setAccessible(true);
+            $accessor->setValue($object, $value);
+        } else if ($accessor instanceof ReflectionProperty) {
             $object->{$accessor->getName()} = $value;
         } else {
             $object->{$accessor->getName()}($value);
