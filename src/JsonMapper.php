@@ -75,6 +75,13 @@ class JsonMapper
     public $bStrictNullTypes = true;
 
     /**
+     * Allow mapping of private and proteted properties.
+     *
+     * @var boolean
+     */
+    public $bIgnoreVisibility = false;
+
+    /**
      * Override class names that JsonMapper uses to create objects.
      * Useful when your setter methods accept abstract classes or interfaces.
      *
@@ -386,7 +393,7 @@ class JsonMapper
 
         if ($rc->hasMethod($setter)) {
             $rmeth = $rc->getMethod($setter);
-            if ($rmeth->isPublic()) {
+            if ($rmeth->isPublic() || $this->bIgnoreVisibility) {
                 $rparams = $rmeth->getParameters();
                 if (count($rparams) > 0) {
                     $pclass = $rparams[0]->getClass();
@@ -421,7 +428,7 @@ class JsonMapper
         } else {
             //case-insensitive property matching
             $rprop = null;
-            foreach ($rc->getProperties(ReflectionProperty::IS_PUBLIC) as $p) {
+            foreach ($rc->getProperties() as $p) {
                 if ((strcasecmp($p->name, $name) === 0)) {
                     $rprop = $p;
                     break;
@@ -429,7 +436,7 @@ class JsonMapper
             }
         }
         if ($rprop !== null) {
-            if ($rprop->isPublic()) {
+            if ($rprop->isPublic() || $this->bIgnoreVisibility) {
                 $docblock    = $rprop->getDocComment();
                 $annotations = $this->parseAnnotations($docblock);
 
@@ -498,10 +505,14 @@ class JsonMapper
     protected function setProperty(
         $object, $accessor, $value
     ) {
+        if (!$accessor->isPublic() && $this->bIgnoreVisibility) {
+            $accessor->setAccessible(true);
+        }
         if ($accessor instanceof ReflectionProperty) {
-            $object->{$accessor->getName()} = $value;
+            $accessor->setValue($object, $value);
         } else {
-            $object->{$accessor->getName()}($value);
+            //setter method
+            $accessor->invoke($object, $value);
         }
     }
 

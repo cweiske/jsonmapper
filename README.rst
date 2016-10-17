@@ -373,6 +373,18 @@ an exception when ``$bExceptionOnMissingData`` is activated:
     $jm->map(...);
 
 
+Private properties and functions
+--------------------------------
+You can allow mapping to private and protected properties and
+setter methods by setting ``$bIgnoreVisibility`` to true:
+
+.. code:: php
+
+    $jm = new JsonMapper();
+    $jm->bIgnoreVisibility = true;
+    $jm->map(...);
+
+
 Simple types instead of objects
 -------------------------------
 When a variable's type is a class and JSON data is a simple type

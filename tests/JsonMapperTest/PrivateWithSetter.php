@@ -17,6 +17,8 @@ class PrivateWithSetter
      */
     private $privatePropertyPrivateSetter = 0;
 
+    private $_internal = array();
+
     /**
      * @param int $privateProperty
      *
@@ -40,11 +42,45 @@ class PrivateWithSetter
     }
 
     /**
+     * There is no property with this name, only a setter method
+     *
+     * @param int $ps
+     *
+     * @return $this
+     */
+    private function setPrivateSetter($ps)
+    {
+        $this->_internal['ps'] = $ps;
+        return $this;
+    }
+
+    /**
      * @return int
      */
     public function getPrivateProperty()
     {
         return $this->privateProperty;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPrivateNoSetter()
+    {
+        return $this->privateNoSetter;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPrivatePropertyPrivateSetter()
+    {
+        return $this->privatePropertyPrivateSetter;
+    }
+
+    public function getPrivateSetter()
+    {
+        return $this->_internal['ps'];
     }
 }
 ?>

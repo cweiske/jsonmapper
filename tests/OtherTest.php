@@ -245,6 +245,17 @@ class OtherTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(empty($logger->log));
     }
 
+    public function testPrivatePropertyWithNoSetterButAllowed()
+    {
+        $jm = new JsonMapper();
+        $jm->bIgnoreVisibility = true;
+
+        $json   = '{"privateNoSetter" : 1}';
+        $result = $jm->map(json_decode($json), new PrivateWithSetter());
+
+        $this->assertEquals(1, $result->getPrivateNoSetter());
+    }
+
     /**
      * @expectedException        JsonMapper_Exception
      * @expectedExceptionMessage JSON property "privatePropertyPrivateSetter" has no public setter method in object of type PrivateWithSetter
@@ -258,6 +269,18 @@ class OtherTest extends \PHPUnit_Framework_TestCase
 
         $json   = '{"privatePropertyPrivateSetter" : 1}';
         $result = $jm->map(json_decode($json), new PrivateWithSetter());
+    }
+
+    public function testPrivateSetterButAllowed()
+    {
+        $jm = new JsonMapper();
+        $jm->bIgnoreVisibility = true;
+        $jm->bExceptionOnUndefinedProperty = true;
+
+        $json   = '{"privateSetter" : 1}';
+        $result = $jm->map(json_decode($json), new PrivateWithSetter());
+
+        $this->assertEquals(1, $result->getPrivateSetter());
     }
 
     public function testSetterIsPreferredOverProperty()
