@@ -257,7 +257,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
      * An ArrayObject which may not be null but is.
      *
      * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "pArrayObject" must not be NULL
+     * @expectedExceptionMessage JSON property "pArrayObject" in class "JsonMapperTest_Array" must not be NULL
      */
     public function testArrayObjectInvalidNull()
     {

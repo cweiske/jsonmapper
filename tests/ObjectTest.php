@@ -148,7 +148,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
      * Test for "@var object" with null value
      *
      * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "pValueObject" must not be NULL
+     * @expectedExceptionMessage JSON property "pValueObject" in class "JsonMapperTest_Object" must not be NULL
      */
     public function testObjectInvalidNull()
     {
