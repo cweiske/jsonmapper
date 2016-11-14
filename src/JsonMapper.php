@@ -197,7 +197,7 @@ class JsonMapper
                 $type = $this->removeNullable($type);
             } else if ($jvalue === null) {
                 throw new JsonMapper_Exception(
-                    'JSON property "' . $key . '" must not be NULL'
+                    'JSON property "' . $key . '" in class "' . $strClassName . '"" must not be NULL'
                 );
             }
 
