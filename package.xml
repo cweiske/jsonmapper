@@ -21,12 +21,12 @@
   <active>yes</active>
  </lead>
 
- <date>2016-10-11</date>
+ <date>2016-11-17</date>
  <time>00:00:00</time>
 
  <version>
-  <release>1.0.0</release>
-  <api>1.0.0</api>
+  <release>1.1.0</release>
+  <api>1.1.0</api>
  </version>
 
  <stability>
@@ -37,10 +37,10 @@
  <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
 
  <notes>
-  * Add option to turn off the "must not be NULL" exception
-  * Add support for properties with hyphens "-"
-  * Add support for both "double" and "float" types
-  * Move to PEAR channel zustellzentrum.cweiske.de
+  * Add support for mapping to private properties/methods
+    by @jonaswouters
+  * Add classname to "NULL not allowed" exception message
+    by @veteran29
  </notes>
 
  <contents>
@@ -112,6 +112,25 @@
  </phprelease>
 
  <changelog>
+
+  <release>
+   <version>
+    <release>1.1.0</release>
+    <api>1.1.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2016-11-17</date>
+   <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
+   <notes>
+    * Add support for mapping to private properties/methods
+      by @jonaswouters
+    * Add classname to "NULL not allowed" exception message
+      by @veteran29
+   </notes>
+  </release>
 
   <release>
    <version>
