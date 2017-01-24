@@ -145,34 +145,6 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test for PHP7 nullable types like "?Object"
-     */
-    public function testObjectSetterTypeNullable()
-    {
-        $jm = new JsonMapper();
-        $sn = $jm->map(
-            json_decode('{"typeNullableObject":null}'),
-            new JsonMapperTest_Object()
-        );
-        $this->assertNull($sn->typeNullableObject);
-    }
-
-    /**
-     * Test for non-nullable types like "@param object" with null value
-     *
-     * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "nonNullableObject" in class "JsonMapperTest_Object" must not be NULL
-     */
-    public function testObjectSetterDocblockInvalidNull()
-    {
-        $jm = new JsonMapper();
-        $sn = $jm->map(
-            json_decode('{"nonNullableObject":null}'),
-            new JsonMapperTest_Object()
-        );
-    }
-
-    /**
      * Test for "@var object" with null value
      *
      * @expectedException JsonMapper_Exception

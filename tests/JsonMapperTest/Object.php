@@ -34,18 +34,5 @@ class JsonMapperTest_Object
     {
         $this->docblockNullableObject = $obj;
     }
-
-    public function setTypeNullableObject(?JsonMapperTest_PlainObject $obj)
-    {
-        $this->typeNullableObject = $obj;
-    }
-
-    /**
-     * @param JsonMapperTest_PlainObject $obj
-     */
-    public function setNonNullableObject($obj)
-    {
-        $this->typeNullableObject = $obj;
-    }
 }
 ?>
