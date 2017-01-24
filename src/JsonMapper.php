@@ -332,13 +332,13 @@ class JsonMapper
     /**
      * Map an array
      *
-     * @param array  $json  JSON array structure from json_decode()
-     * @param mixed  $array Array or ArrayObject that gets filled with
-     *                      data from $json
-     * @param string $class Class name for children objects.
-     *                      All children will get mapped onto this type.
-     *                      Supports class names and simple types
-     *                      like "string".
+     * @param array         $json  JSON array structure from json_decode()
+     * @param mixed         $array Array or ArrayObject that gets filled with
+     *                             data from $json
+     * @param string|object $class Class name for children objects.
+     *                             All children will get mapped onto this type.
+     *                             Supports class names and simple types
+     *                             like "string".
      *
      * @return mixed Mapped $array is returned
      */
