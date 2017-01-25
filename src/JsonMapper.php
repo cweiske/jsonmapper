@@ -239,8 +239,7 @@ class JsonMapper
                 } else {
                     $array = $this->createInstance($proptype);
                 }
-            } else if (
-                $type == 'ArrayObject' || is_subclass_of(
+            } else if ( $type == 'ArrayObject' || is_subclass_of(
                     $this->getFullNamespace($type, $strNs), 'ArrayObject'
                 )
             ) {
