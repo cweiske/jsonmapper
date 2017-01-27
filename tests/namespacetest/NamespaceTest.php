@@ -76,7 +76,7 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
         $res = $mapper->map(json_decode($json), new UnitData());
     }
 
-    public function testMapCustomArraObjectWithChildType()
+    public function testMapCustomArrayObjectWithChildType()
     {
         $mapper = new \JsonMapper();
         $json = '{"users":[{"user":"John Smith"}]}';
