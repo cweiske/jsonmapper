@@ -21,11 +21,11 @@
   <active>yes</active>
  </lead>
 
- <date>2016-11-17</date>
+ <date>2017-01-27</date>
  <time>00:00:00</time>
 
  <version>
-  <release>1.1.0</release>
+  <release>1.1.1</release>
   <api>1.1.0</api>
  </version>
 
@@ -37,10 +37,8 @@
  <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
 
  <notes>
-  * Add support for mapping to private properties/methods
-    by @jonaswouters
-  * Add classname to "NULL not allowed" exception message
-    by @veteran29
+  * Fix namespace resolution of ArrayObject child classes (issue #69)
+  * Add PHP 7.1 nullability support by @MHarutunian (issue #67)
  </notes>
 
  <contents>
@@ -63,6 +61,7 @@
        <file role="test" name="ArrayTest.php" />
        <file role="test" name="ObjectTest.php" />
        <file role="test" name="OtherTest.php" />
+       <file role="test" name="PHP7_ObjectTest.php" />
        <file role="test" name="SimpleTest.php" />
        <dir name="JsonMapperTest">
          <file role="test" name="Array.php" />
@@ -70,6 +69,7 @@
          <file role="test" name="DependencyInjector.php" />
          <file role="test" name="Logger.php" />
          <file role="test" name="Object.php" />
+         <file role="test" name="PHP7_Object.php" />
          <file role="test" name="PlainObject.php" />
          <file role="test" name="PrivateWithSetter.php" />
          <file role="test" name="Simple.php" />
@@ -80,6 +80,7 @@
          <file role="test" name="Unit.php" />
          <file role="test" name="UnitData.php" />
          <dir name="model">
+          <file role="test" name="MyArrayObject.php" />
           <file role="test" name="User.php" />
           <file role="test" name="UserList.php" />
          </dir>
@@ -112,6 +113,23 @@
  </phprelease>
 
  <changelog>
+
+  <release>
+   <version>
+    <release>1.1.1</release>
+    <api>1.1.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2017-01-27</date>
+   <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
+   <notes>
+    * Fix namespace resolution of ArrayObject child classes (issue #69)
+    * Add PHP 7.1 nullability support by @MHarutunian (issue #67)
+   </notes>
+  </release>
 
   <release>
    <version>

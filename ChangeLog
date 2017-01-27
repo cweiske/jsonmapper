@@ -1,3 +1,10 @@
+2017-01-27  Christian Weiske  <cweiske@cweiske.de>
+
+	* Fix namespace resolution of ArrayObject child classes (issue #69)
+	* Add PHP 7.1 nullability support
+	  by @MHarutunian (issue #67)
+	* Version 1.1.1
+
 2016-11-17  Christian Weiske  <cweiske@cweiske.de>
 
 	* Add support for mapping to private properties/methods
@@ -9,7 +16,7 @@
 2016-10-11  Christian Weiske  <cweiske@cweiske.de>
 
 	* Add option to turn off the "must not be NULL" exception
-	  by @ kamranahmedse (issue #58)
+	  by @kamranahmedse (issue #58)
 	* Add support for properties with hyphens "-"
 	  by @redshark1802 (issue #55)
 	* Add support for both "double" and "float" types
