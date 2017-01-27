@@ -239,10 +239,13 @@ class JsonMapper
                 } else {
                     $array = $this->createInstance($proptype);
                 }
-            } else if ($type == 'ArrayObject'
-                || is_subclass_of($type, 'ArrayObject')
-            ) {
-                $array = $this->createInstance($type);
+            } else {
+                $type = $this->getFullNamespace($type, $strNs);
+                if ($type == 'ArrayObject'
+                    || is_subclass_of($type, 'ArrayObject')
+                ) {
+                    $array = $this->createInstance($type);
+                }
             }
 
             if ($array !== null) {
@@ -254,7 +257,9 @@ class JsonMapper
                 }
 
                 $cleanSubtype = $this->removeNullable($subtype);
-                if (!$this->isSimpleType($cleanSubtype)) {
+                if (!$this->isSimpleType($cleanSubtype)
+                    && $cleanSubtype !== null
+                ) {
                     $subtype = $this->getFullNamespace($cleanSubtype, $strNs);
                 }
                 $child = $this->mapArray($jvalue, $array, $subtype);

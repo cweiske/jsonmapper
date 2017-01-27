@@ -2,6 +2,7 @@
 namespace namespacetest;
 require_once __DIR__ . '/Unit.php';
 require_once __DIR__ . '/UnitData.php';
+require_once __DIR__ . '/model/MyArrayObject.php';
 require_once __DIR__ . '/model/User.php';
 require_once __DIR__ . '/model/UserList.php';
 require_once __DIR__ . '/../othernamespace/Foo.php';
@@ -84,6 +85,17 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\namespacetest\UnitData', $res);
         $this->assertInstanceOf('\namespacetest\model\UserList', $res->users);
         $this->assertInstanceOf('\namespacetest\model\User', $res->users[0]);
+    }
+
+    public function testMapCustomArrayObject()
+    {
+        $mapper = new \JsonMapper();
+        $json = '{"aodata":["foo"]}';
+        $res = $mapper->map(json_decode($json), new UnitData());
+        $this->assertInstanceOf('\namespacetest\UnitData', $res);
+        $this->assertInstanceOf('\namespacetest\model\MyArrayObject', $res->aodata);
+        $this->assertInternalType('string', $res->aodata[0]);
+        $this->assertEquals('foo', $res->aodata[0]);
     }
 
     /**

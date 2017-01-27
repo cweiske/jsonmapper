@@ -33,6 +33,11 @@ class UnitData
      */
     public $users;
 
+    /**
+     * @var model\MyArrayObject
+     */
+    public $aodata;
+
     public $internalData = array();
 
 
