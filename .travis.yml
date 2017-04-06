@@ -13,6 +13,6 @@ before_script:
   - phpenv rehash
 script:
   - cd tests
-  - phpunit --coverage-text .
+  - ./vendor/bin/phpunit --coverage-text .
   - cd ..
   - ./vendor/bin/phpcs --standard=PEAR src/

@@ -209,12 +209,12 @@ a property:
    ``isEmpty``.
 
 To map a JSON key to an arbitrarily named class property, you can use 
-the ``@maps`` annotation::
+the ``@maps`` annotation:
 
 .. code:: php
 
     /**
-     * @var \my\application\model\Contact
+     * @var \my\application\model\Person
      * @maps person_object
      */
     public $person;

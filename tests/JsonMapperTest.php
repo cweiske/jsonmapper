@@ -847,11 +847,11 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
         $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = array();
 
         $sn = $jm->mapClassArray(
-            [
+            array(
                 (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'base'),
                 (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'derived1', 'derived1Field' => 'derived1 field'),
                 (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'derived2', 'derived1Field' => 'derived1 field', 'derived2Field' => 'derived2 Field')
-            ],
+            ),
             'JsonMapperTest_SimpleBase'
         );
 
