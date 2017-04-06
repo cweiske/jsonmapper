@@ -405,11 +405,16 @@ Your application code:
 .. code:: php
 
     $mapper = new JsonMapper();
+    $mapper->arChildClasses['Person'] = ['Employee'];
+    $mapper->arChildClasses['Employee'] = [];
     $person = $mapper->mapClass($json, 'Person');
 
 Now, if the value of the ``type`` key in JSON is ``"person"`` then an instance of
 a ``Person`` class is returned. However, if the ``type`` is ``"employee"`` then
 an instance of ``Employee`` class is returned.
+
+Classes need to be registered in ``arChildClasses`` before being used with 
+discriminator.
 
 Note that there can only be one discriminator field in an object hierarchy.
 
