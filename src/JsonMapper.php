@@ -70,6 +70,16 @@ class JsonMapper
     public $bEnforceMapType = true;
 
     /**
+     * Contains user provided map of class names vs their child classes.
+     * This is only needed if discriminators are to be used. PHP reflection is not
+     * used to get child classes because most code bases use autoloaders where
+     * classes are lazily loaded.
+     * 
+     * @var array
+     */
+    public $arChildClasses = array();
+
+    /**
      * Runtime cache for inspected classes. This is particularly effective if
      * mapArray() is called with a large number of objects
      *
@@ -215,6 +225,11 @@ class JsonMapper
                 }
                 if ($jvalue === null) {
                     $child = null;
+                } else if ($this->isRegisteredType(
+                    $this->getFullNamespace($subtype, $strNs)
+                )
+                ) {
+                    $child = $this->mapClassArray($jvalue, $subtype);
                 } else {
                     $child = $this->mapArray($jvalue, $array, $subtype);
                 }
@@ -227,6 +242,12 @@ class JsonMapper
                     $type = $this->getFullNamespace($type, $strNs);
                     $child = $this->createInstance($type, true, $jvalue);
                 }
+            } else if ($this->isRegisteredType(
+                $this->getFullNamespace($type, $strNs)
+            )
+            ) {
+                $type = $this->getFullNamespace($type, $strNs);
+                $child = $this->mapClass($jvalue, $type);
             } else {
                 $type = $this->getFullNamespace($type, $strNs);
                 $child = $this->createInstance($type);
@@ -240,6 +261,121 @@ class JsonMapper
         }
 
         return $object;
+    }
+
+    /**
+     * Map all data in $json into a new instance of $type class.
+     *
+     * @param object|null $json JSON object structure from json_decode()
+     * @param string      $type The type of class instance to map into.
+     *
+     * @return object|null      Mapped object is returned.
+     * @see    mapClassArray()
+     */
+    public function mapClass($json, $type)
+    {
+        if ($json === null) {
+            return null;
+        }
+
+        if (!is_object($json)) {
+            throw new \InvalidArgumentException(
+                'JsonMapper::mapClass() requires first argument to be an object'
+                . ', ' . gettype($json) . ' given.'
+            );
+        }
+
+        if (!class_exists($type)) {
+            throw new \InvalidArgumentException(
+                'JsonMapper::mapClass() requires second argument to be a class name'
+                . ', ' . $type . ' given.'
+            );
+        }
+
+        $ttype = ltrim($type, "\\");
+        $rc = new \ReflectionClass($ttype);
+
+        //try and find a class with matching discriminator
+        $instance = $this->getDiscriminatorMatch($json, $rc);
+
+        //otherwise fallback to an instance of $type class
+        if ($instance === null) {
+            $instance = $this->createInstance($ttype);
+        }
+
+        return $this->map($json, $instance);
+    }
+
+    /**
+     * Get class instance that best matches the class
+     * 
+     * @param object|null      $json JSON object structure from json_decode()
+     * @param \ReflectionClass $rc   Class to get instance of. This method
+     *                                will try to first match the discriminator
+     *                                field with the discriminator value of
+     *                                the current class or its child class.
+     *                                If no matches is found, then the current
+     *                                class's instance is returned.
+     *                                
+     * @return object|null           Object instance if match is found.
+     */
+    protected function getDiscriminatorMatch($json, $rc)
+    {
+        $discriminator = $this->getDiscriminator($rc);
+        if ($discriminator) {
+            list($fieldName, $fieldValue) = $discriminator;
+            if (isset($json->{$fieldName}) && $json->{$fieldName} === $fieldValue) {
+                return $rc->newInstance();
+            }
+            if (!$this->isRegisteredType($rc->name)) {
+                return null;
+            }
+            foreach ($this->getChildClasses($rc) as $clazz) {
+                $instance = $this->getDiscriminatorMatch($json, $clazz);
+                if ($instance) {
+                    return $instance;
+                }
+            }
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Get discriminator info
+     * 
+     * @param \ReflectionClass $rc ReflectionClass of class to inspect
+     * 
+     * @return array|null          An array with discriminator arguments
+     *                             Element 1 is discriminator field name
+     *                             and element 2 is discriminator value.
+     */
+    protected function getDiscriminator($rc)
+    {
+        $annotations = $this->parseAnnotations($rc->getDocComment());
+        if (isset($annotations['discriminator'])) {
+            return explode(' ', trim($annotations['discriminator'][0]));
+        }
+        return null;
+    }
+
+    /**
+     * Get child classes from a ReflectionClass
+     * 
+     * @param \ReflectionClass $rc ReflectionClass of class to inspect
+     * 
+     * @return \ReflectionClass[]  ReflectionClass instances for child classes
+     */
+    protected function getChildClasses($rc)
+    {
+        $children  = array();
+        foreach ($this->arChildClasses[$rc->name] as $class) {
+            $child = new \ReflectionClass($class);
+            if ($rc->isInstance($child->newInstance())) {
+                $children[] = $child;
+            }
+        }
+        return $children;
     }
 
     /**
@@ -368,6 +504,29 @@ class JsonMapper
                 );
             }
         }
+        return $array;
+    }
+
+    /**
+     * Map an array
+     * 
+     * @param array|null $jsonArray JSON array structure from json_decode()
+     * @param string     $type      Class name
+     * 
+     * @return array                A new array containing object of $type
+     *                              which is mapped from $jsonArray
+     */
+    public function mapClassArray($jsonArray, $type)
+    {
+        if ($jsonArray === null) {
+            return null;
+        }
+
+        $array = array();
+        foreach ($jsonArray as $key => $jvalue) {
+            $array[$key] = $this->mapClass($jvalue, $type);
+        }
+
         return $array;
     }
 
@@ -572,6 +731,18 @@ class JsonMapper
             || $type == 'boolean' || $type == 'bool'
             || $type == 'integer' || $type == 'int'
             || $type == 'double';
+    }
+
+    /**
+     * Is type registered with mapper
+     * 
+     * @param string $type Class name
+     *                      
+     * @return boolean     True if registered with $this->arChildClasses
+     */
+    protected function isRegisteredType($type)
+    {
+        return isset($this->arChildClasses[ltrim($type, "\\")]);
     }
 
     /**

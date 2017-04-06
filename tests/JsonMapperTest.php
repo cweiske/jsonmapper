@@ -17,6 +17,9 @@ require_once 'JsonMapperTest/Simple.php';
 require_once 'JsonMapperTest/Logger.php';
 require_once 'JsonMapperTest/PrivateWithSetter.php';
 require_once 'JsonMapperTest/ValueObject.php';
+require_once 'JsonMapperTest/SimpleBase.php';
+require_once 'JsonMapperTest/DerivedClass.php';
+require_once 'JsonMapperTest/DerivedClass2.php';
 
 use apimatic\jsonmapper\JsonMapper;
 use apimatic\jsonmapper\JsonMapperException;
@@ -733,6 +736,173 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('second level', $sn->simple->str);
         $this->assertEquals('database', $sn->simple->db);
+    }
+
+    public function testDiscriminatorWithBaseType()
+    {
+        $jm = new JsonMapper();
+        $jm->arChildClasses['JsonMapperTest_SimpleBase'] = ['JsonMapperTest_DerivedClass'];
+        $jm->arChildClasses['JsonMapperTest_DerivedClass'] = ['JsonMapperTest_DerivedClass2'];
+        $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = [];
+
+        $sn = $jm->mapClass(
+            (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'base'),
+            'JsonMapperTest_SimpleBase'
+        );
+
+        $this->assertInstanceOf('JsonMapperTest_SimpleBase', $sn);
+        $this->assertEquals('abc', $sn->afield);
+        $this->assertEquals(12, $sn->bfield);
+        $this->assertEquals('base', $sn->type);
+
+    }
+
+    public function testDiscriminatorWithIncorrectDiscriminatorValue()
+    {
+        $jm = new JsonMapper();
+        $jm->arChildClasses['JsonMapperTest_SimpleBase'] = ['JsonMapperTest_DerivedClass'];
+        $jm->arChildClasses['JsonMapperTest_DerivedClass'] = ['JsonMapperTest_DerivedClass2'];
+        $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = [];
+
+        $sn = $jm->mapClass(
+            (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'incorrect!'),
+            'JsonMapperTest_SimpleBase'
+        );
+
+        $this->assertInstanceOf('JsonMapperTest_SimpleBase', $sn);
+        $this->assertEquals('abc', $sn->afield);
+        $this->assertEquals(12, $sn->bfield);
+        $this->assertEquals('incorrect!', $sn->type);
+
+    }
+
+    public function testDiscriminatorWithUnregisteredClass()
+    {
+        $jm = new JsonMapper();
+
+        $sn = $jm->mapClass(
+            (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'incorrect!'),
+            'JsonMapperTest_SimpleBase'
+        );
+
+        $this->assertInstanceOf('JsonMapperTest_SimpleBase', $sn);
+        $this->assertEquals('abc', $sn->afield);
+        $this->assertEquals(12, $sn->bfield);
+        $this->assertEquals('incorrect!', $sn->type);
+    }
+
+    /**
+     * @expectedException        \InvalidArgumentException
+     * @expectedExceptionMessage JsonMapper::mapClass() requires second argument to be a class name, InvalidClassThatDoesNotExist given
+     */
+    public function testDiscriminatorWithInvalidClassName()
+    {
+        $jm = new JsonMapper();
+
+        $sn = $jm->mapClass(
+            (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'incorrect!'),
+            'InvalidClassThatDoesNotExist'
+        );
+    }
+
+    public function testDiscriminatorWithDerivedType()
+    {
+        $jm = new JsonMapper();
+        $jm->arChildClasses['JsonMapperTest_SimpleBase'] = ['JsonMapperTest_DerivedClass'];
+        $jm->arChildClasses['JsonMapperTest_DerivedClass'] = ['JsonMapperTest_DerivedClass2'];
+        $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = [];
+
+        $sn = $jm->mapClass(
+            (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'derived1', 'derived1Field' => 'derived1 field'),
+            'JsonMapperTest_SimpleBase'
+        );
+
+        $this->assertInstanceOf('JsonMapperTest_DerivedClass', $sn);
+        $this->assertEquals('derived1', $sn->type);
+        $this->assertEquals('derived1 field', $sn->derived1Field);
+    }
+
+    public function testDiscriminatorWithTwoLevelDerivedType()
+    {
+        $jm = new JsonMapper();
+        $jm->arChildClasses['JsonMapperTest_SimpleBase'] = ['JsonMapperTest_DerivedClass'];
+        $jm->arChildClasses['JsonMapperTest_DerivedClass'] = ['JsonMapperTest_DerivedClass2'];
+        $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = [];
+
+        $sn = $jm->mapClass(
+            (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'derived2', 'derived1Field' => 'derived1 field', 'derived2Field' => 'derived2 Field'),
+            'JsonMapperTest_SimpleBase'
+        );
+
+        $this->assertInstanceOf('JsonMapperTest_DerivedClass2', $sn);
+        $this->assertEquals('derived2', $sn->type);
+        $this->assertEquals('derived2 Field', $sn->derived2Field);
+    }
+
+    public function testDiscriminatorWithArrayOfObjects()
+    {
+        $jm = new JsonMapper();
+        $jm->arChildClasses['JsonMapperTest_SimpleBase'] = ['JsonMapperTest_DerivedClass'];
+        $jm->arChildClasses['JsonMapperTest_DerivedClass'] = ['JsonMapperTest_DerivedClass2'];
+        $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = [];
+
+        $sn = $jm->mapClassArray(
+            [
+                (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'base'),
+                (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'derived1', 'derived1Field' => 'derived1 field'),
+                (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'derived2', 'derived1Field' => 'derived1 field', 'derived2Field' => 'derived2 Field')
+            ],
+            'JsonMapperTest_SimpleBase'
+        );
+
+        $this->assertInternalType('array', $sn);
+        $this->assertInstanceOf('JsonMapperTest_SimpleBase', $sn[0]);
+        $this->assertInstanceOf('JsonMapperTest_DerivedClass', $sn[1]);
+        $this->assertInstanceOf('JsonMapperTest_DerivedClass2', $sn[2]);
+    }
+
+    public function testDiscriminatorWithEmbeddedObject()
+    {
+        $jm = new JsonMapper();
+        $jm->arChildClasses['JsonMapperTest_SimpleBase'] = ['JsonMapperTest_DerivedClass'];
+        $jm->arChildClasses['JsonMapperTest_DerivedClass'] = ['JsonMapperTest_DerivedClass2'];
+        $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = [];
+
+        $sn = $jm->mapClass(
+            (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'derived2', 'embedded' => (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'derived2', 'derived1Field' => 'derived1 field', 'derived2Field' => 'derived2 Field')),
+            'JsonMapperTest_SimpleBase'
+        );
+
+        $this->assertInstanceOf('JsonMapperTest_SimpleBase', $sn);
+        $this->assertInstanceOf('JsonMapperTest_DerivedClass2', $sn->embedded);
+        
+        $this->assertEquals('derived2', $sn->embedded->type);
+        $this->assertEquals('derived2 Field', $sn->embedded->derived2Field);
+    }
+
+    public function testDiscriminatorWithEmbeddedObjectArray()
+    {
+        $jm = new JsonMapper();
+        $jm->arChildClasses['JsonMapperTest_SimpleBase'] = ['JsonMapperTest_DerivedClass'];
+        $jm->arChildClasses['JsonMapperTest_DerivedClass'] = ['JsonMapperTest_DerivedClass2'];
+        $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = [];
+
+        $sn = $jm->mapClass(
+            (object) array(
+                'afield' => 'abc',
+                'bfield' => 12,
+                'type' => 'derived2',
+                'embeddedArray' => [
+                    (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'derived1', 'derived1Field' => 'derived1 field'),
+                    (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'derived2', 'derived1Field' => 'derived1 field', 'derived2Field' => 'derived2 Field')
+                ]
+            ),
+            'JsonMapperTest_SimpleBase'
+        );
+
+        $this->assertInstanceOf('JsonMapperTest_SimpleBase', $sn);
+        $this->assertInstanceOf('JsonMapperTest_DerivedClass', $sn->embeddedArray[0]);
+        $this->assertInstanceOf('JsonMapperTest_DerivedClass2', $sn->embeddedArray[1]);
     }
 }
 ?>

@@ -150,6 +150,22 @@ Your application code:
         . var_export($contact->address->getGeoCoords(), true);
     ?>
 
+Letting JsonMapper create the instances for you
+===============================================
+
+Map a normal object (works similarly to ``map``):
+
+.. code:: php
+
+    $mapper = new JsonMapper();
+    $contactObject = $mapper->mapClass($jsonContact, 'Contact');
+
+Map an array of objects (works similarly to ``mapArray``):
+
+.. code:: php
+
+    $mapper = new JsonMapper();
+    $contactsArray = $mapper->mapClassArray($jsonContacts, 'Contact');
 
 Property type documentation
 ===========================
@@ -191,6 +207,17 @@ a property:
    in a case-insensitive manner.
    A JSON property ``isempty`` would then be mapped to a PHP property
    ``isEmpty``.
+
+To map a JSON key to an arbitrarily named class property, you can use 
+the ``@maps`` annotation::
+
+.. code:: php
+
+    /**
+     * @var \my\application\model\Contact
+     * @maps person_object
+     */
+    public $person;
 
 Supported type names:
 
@@ -284,6 +311,17 @@ by setting ``$bExceptionOnUndefinedProperty``:
     $jm->bExceptionOnUndefinedProperty = true;
     $jm->map(...);
 
+To process unknown properties yourself, you can set a method on the
+class as a collection method:
+
+.. code:: php
+
+    $jm = new JsonMapper();
+    $mapper->sAdditionalPropertiesCollectionMethod = 'addAdditionalProperty';
+    $jm->map(...);
+
+Here, the ``addAdditionalProperty()`` method will be called with a ``name`` and
+a ``value`` argument.
 
 Missing properties
 ------------------
@@ -326,6 +364,57 @@ You can circumvent that by setting ``$bEnforceMapType`` to ``false``:
     $jm->bEnforceMapType = false;
     $jm->map(...);
 
+
+Handling polymorphic responses
+==============================
+
+JsonMapper allows you to map a JSON object to a derived class based on a discriminator
+field. The discriminator field's value is used to decide which class this JSON object
+should be mapped to.
+
+Your local ``Person`` class:
+
+.. code:: php
+
+    <?php
+    /**
+     * @discriminator type person
+     */
+    class Person
+    {
+        public $name;
+        public $age;
+        public $type;
+    }
+
+Your local ``Employee`` class:
+
+.. code:: php
+
+    <?php
+    /**
+     * @discriminator type employee
+     */
+    class Employee extends Person
+    {
+        public $employeeId;
+    }
+
+Your application code:
+
+.. code:: php
+
+    $mapper = new JsonMapper();
+    $person = $mapper->mapClass($json, 'Person');
+
+Now, if the value of the ``type`` key in JSON is ``"person"`` then an instance of
+a ``Person`` class is returned. However, if the ``type`` is ``"employee"`` then
+an instance of ``Employee`` class is returned.
+
+Note that there can only be one discriminator field in an object hierarchy.
+
+Polymorphic responses also work if the polymorphic class is embedded as a field or 
+in an array.
 
 ============
 Installation
