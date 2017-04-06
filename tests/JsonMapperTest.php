@@ -892,10 +892,10 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
                 'afield' => 'abc',
                 'bfield' => 12,
                 'type' => 'derived2',
-                'embeddedArray' => [
+                'embeddedArray' => array(
                     (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'derived1', 'derived1Field' => 'derived1 field'),
                     (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'derived2', 'derived1Field' => 'derived1 field', 'derived2Field' => 'derived2 Field')
-                ]
+                )
             ),
             'JsonMapperTest_SimpleBase'
         );
