@@ -741,9 +741,9 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     public function testDiscriminatorWithBaseType()
     {
         $jm = new JsonMapper();
-        $jm->arChildClasses['JsonMapperTest_SimpleBase'] = ['JsonMapperTest_DerivedClass'];
-        $jm->arChildClasses['JsonMapperTest_DerivedClass'] = ['JsonMapperTest_DerivedClass2'];
-        $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = [];
+        $jm->arChildClasses['JsonMapperTest_SimpleBase'] = array('JsonMapperTest_DerivedClass');
+        $jm->arChildClasses['JsonMapperTest_DerivedClass'] = array('JsonMapperTest_DerivedClass2');
+        $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = array();
 
         $sn = $jm->mapClass(
             (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'base'),
@@ -760,9 +760,9 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     public function testDiscriminatorWithIncorrectDiscriminatorValue()
     {
         $jm = new JsonMapper();
-        $jm->arChildClasses['JsonMapperTest_SimpleBase'] = ['JsonMapperTest_DerivedClass'];
-        $jm->arChildClasses['JsonMapperTest_DerivedClass'] = ['JsonMapperTest_DerivedClass2'];
-        $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = [];
+        $jm->arChildClasses['JsonMapperTest_SimpleBase'] = array('JsonMapperTest_DerivedClass');
+        $jm->arChildClasses['JsonMapperTest_DerivedClass'] = array('JsonMapperTest_DerivedClass2');
+        $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = array();
 
         $sn = $jm->mapClass(
             (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'incorrect!'),
@@ -808,9 +808,9 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     public function testDiscriminatorWithDerivedType()
     {
         $jm = new JsonMapper();
-        $jm->arChildClasses['JsonMapperTest_SimpleBase'] = ['JsonMapperTest_DerivedClass'];
-        $jm->arChildClasses['JsonMapperTest_DerivedClass'] = ['JsonMapperTest_DerivedClass2'];
-        $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = [];
+        $jm->arChildClasses['JsonMapperTest_SimpleBase'] = array('JsonMapperTest_DerivedClass');
+        $jm->arChildClasses['JsonMapperTest_DerivedClass'] = array('JsonMapperTest_DerivedClass2');
+        $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = array();
 
         $sn = $jm->mapClass(
             (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'derived1', 'derived1Field' => 'derived1 field'),
@@ -825,9 +825,9 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     public function testDiscriminatorWithTwoLevelDerivedType()
     {
         $jm = new JsonMapper();
-        $jm->arChildClasses['JsonMapperTest_SimpleBase'] = ['JsonMapperTest_DerivedClass'];
-        $jm->arChildClasses['JsonMapperTest_DerivedClass'] = ['JsonMapperTest_DerivedClass2'];
-        $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = [];
+        $jm->arChildClasses['JsonMapperTest_SimpleBase'] = array('JsonMapperTest_DerivedClass');
+        $jm->arChildClasses['JsonMapperTest_DerivedClass'] = array('JsonMapperTest_DerivedClass2');
+        $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = array();
 
         $sn = $jm->mapClass(
             (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'derived2', 'derived1Field' => 'derived1 field', 'derived2Field' => 'derived2 Field'),
@@ -842,9 +842,9 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     public function testDiscriminatorWithArrayOfObjects()
     {
         $jm = new JsonMapper();
-        $jm->arChildClasses['JsonMapperTest_SimpleBase'] = ['JsonMapperTest_DerivedClass'];
-        $jm->arChildClasses['JsonMapperTest_DerivedClass'] = ['JsonMapperTest_DerivedClass2'];
-        $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = [];
+        $jm->arChildClasses['JsonMapperTest_SimpleBase'] = array('JsonMapperTest_DerivedClass');
+        $jm->arChildClasses['JsonMapperTest_DerivedClass'] = array('JsonMapperTest_DerivedClass2');
+        $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = array();
 
         $sn = $jm->mapClassArray(
             [
@@ -864,9 +864,9 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     public function testDiscriminatorWithEmbeddedObject()
     {
         $jm = new JsonMapper();
-        $jm->arChildClasses['JsonMapperTest_SimpleBase'] = ['JsonMapperTest_DerivedClass'];
-        $jm->arChildClasses['JsonMapperTest_DerivedClass'] = ['JsonMapperTest_DerivedClass2'];
-        $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = [];
+        $jm->arChildClasses['JsonMapperTest_SimpleBase'] = array('JsonMapperTest_DerivedClass');
+        $jm->arChildClasses['JsonMapperTest_DerivedClass'] = array('JsonMapperTest_DerivedClass2');
+        $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = array();
 
         $sn = $jm->mapClass(
             (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'derived2', 'embedded' => (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'derived2', 'derived1Field' => 'derived1 field', 'derived2Field' => 'derived2 Field')),
@@ -883,9 +883,9 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
     public function testDiscriminatorWithEmbeddedObjectArray()
     {
         $jm = new JsonMapper();
-        $jm->arChildClasses['JsonMapperTest_SimpleBase'] = ['JsonMapperTest_DerivedClass'];
-        $jm->arChildClasses['JsonMapperTest_DerivedClass'] = ['JsonMapperTest_DerivedClass2'];
-        $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = [];
+        $jm->arChildClasses['JsonMapperTest_SimpleBase'] = array('JsonMapperTest_DerivedClass');
+        $jm->arChildClasses['JsonMapperTest_DerivedClass'] = array('JsonMapperTest_DerivedClass2');
+        $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = array();
 
         $sn = $jm->mapClass(
             (object) array(
