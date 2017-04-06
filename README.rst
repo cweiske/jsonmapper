@@ -378,7 +378,8 @@ Your local ``Person`` class:
 
     <?php
     /**
-     * @discriminator type person
+     * @discriminator type
+     * @discriminatorType person
      */
     class Person
     {
@@ -393,7 +394,8 @@ Your local ``Employee`` class:
 
     <?php
     /**
-     * @discriminator type employee
+     * @discriminator type
+     * @discriminatorType employee
      */
     class Employee extends Person
     {
@@ -420,6 +422,9 @@ Note that there can only be one discriminator field in an object hierarchy.
 
 Polymorphic responses also work if the polymorphic class is embedded as a field or 
 in an array.
+
+To map an array of classes, use the ``mapArrayClass`` which will create the right
+type of objects by examining the ``discriminatorType`` value.
 
 ============
 Installation

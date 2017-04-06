@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @discriminator type base
+ * @discriminator type
+ * @discriminatorType base
  */
 class JsonMapperTest_SimpleBase
 {

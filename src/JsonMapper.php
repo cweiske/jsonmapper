@@ -353,8 +353,15 @@ class JsonMapper
     protected function getDiscriminator($rc)
     {
         $annotations = $this->parseAnnotations($rc->getDocComment());
+        $annotationInfo = array();
         if (isset($annotations['discriminator'])) {
-            return explode(' ', trim($annotations['discriminator'][0]));
+            $annotationInfo[0] = trim($annotations['discriminator'][0]);
+            if (isset($annotations['discriminatorType'])) {
+                $annotationInfo[1] = trim($annotations['discriminatorType'][0]);
+            } else {
+                $annotationInfo[1] = $rc->getShortName();
+            }
+            return $annotationInfo;
         }
         return null;
     }
