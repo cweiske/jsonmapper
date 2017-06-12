@@ -311,6 +311,30 @@ During development, APIs often change.
 To get notified about such changes, JsonMapper can be configured to
 throw exceptions in case of either missing or yet unknown data.
 
+Property Setters Validation
+---------------------------
+When JsonMapper sees that a setter returns a boolean with ``false``,
+it will throw an Exception by settings ``$bExceptionOnFalseSetter``:
+
+.. code:: php
+
+    $jm = new JsonMapper();
+    $jm->bExceptionOnFalseSetter = true;
+    $jm->map(...);
+
+An example of the situation is:
+
+.. code:: php
+
+    public $myProperty = 0;
+
+    public function setMyProperty(int $value) {
+         if(database()->count(table, $value) == 0) {
+            return false;
+         }
+
+         $this->myProperty = $value;
+    }
 
 Unknown properties
 ------------------

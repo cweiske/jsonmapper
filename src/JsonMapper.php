@@ -82,6 +82,18 @@ class JsonMapper
     public $bIgnoreVisibility = false;
 
     /**
+     * Throw an exception if the value set to a property
+     * by a setter it's null.
+     *
+     * eg.: setId ( return false );
+     *
+     * Usable on validation methods
+     *
+     * @var bool
+     */
+    public $bExceptionOnFalseSetter = false;
+
+    /**
      * Override class names that JsonMapper uses to create objects.
      * Useful when your setter methods accept abstract classes or interfaces.
      *
@@ -505,6 +517,7 @@ class JsonMapper
      * @param mixed  $value    Value of property
      *
      * @return void
+     * @throws JsonMapper_Exception
      */
     protected function setProperty(
         $object, $accessor, $value
@@ -516,7 +529,15 @@ class JsonMapper
             $accessor->setValue($object, $value);
         } else {
             //setter method
-            $accessor->invoke($object, $value);
+            $returnValue = $accessor->invoke($object, $value);
+
+            // check if the return value of the setter is false
+            if($this->bExceptionOnFalseSetter && $returnValue === false) {
+                throw new JsonMapper_Exception(
+                    'JSON setter ' . $object . ' has boolean with false return value, ' .
+                    'with flag ExceptionOnNullableSetter, so an exception was thrown.'
+                );
+            }
         }
     }
 
