@@ -112,12 +112,24 @@ class JsonMapper
     protected $arInspectedClasses = array();
 
     /**
+     * Runtime cache for use clauses. Consists of an array of arrays, where the
+     * index for the first level is the full class name. Each sub-array will contain
+     * the "use" clauses found on the file regarding that class. This expects that
+     * the class respects PSR-1, which means one single class per file, and thus one
+     * single namespace. http://www.php-fig.org/psr/psr-1/#namespace-and-class-names
+     *
+     * @var string[][]
+     */
+    protected $arrUseClauses = [];
+
+    /**
      * Map data all data in $json into the given $object instance.
      *
      * @param object $json   JSON object structure from json_decode()
      * @param object $object Object to map $json data into
      *
      * @return object Mapped object is returned.
+     * @throws JsonMapper_Exception
      * @see    mapArray()
      */
     public function map($json, $object)
@@ -215,7 +227,7 @@ class JsonMapper
                 continue;
             }
 
-            //FIXME: check if type exists, give detailled error message if not
+            //FIXME: check if type exists, give detailed error message if not
             if ($type === '') {
                 throw new JsonMapper_Exception(
                     'Empty type at property "'
@@ -225,12 +237,14 @@ class JsonMapper
 
             $array = null;
             $subtype = null;
-            if (substr($type, -2) == '[]') {
+            if ($this->isArrayOfType($type)) {
                 //array
                 $array = array();
                 $subtype = substr($type, 0, -2);
             } else if (substr($type, -1) == ']') {
                 list($proptype, $subtype) = explode('[', substr($type, 0, -1));
+                $subtype = $this->removeNullable($subtype);
+
                 if (!$this->isSimpleType($proptype)) {
                     $proptype = $this->getFullNamespace($proptype, $strNs);
                 }
@@ -256,14 +270,8 @@ class JsonMapper
                     );
                 }
 
-                $cleanSubtype = $this->removeNullable($subtype);
-                if (!$this->isSimpleType($cleanSubtype)
-                    && $cleanSubtype !== null
-                ) {
-                    $subtype = $this->getFullNamespace($cleanSubtype, $strNs);
-                }
-                $child = $this->mapArray($jvalue, $array, $subtype);
-            } else if ($this->isFlatType(gettype($jvalue))) {
+                $child = $this->mapArray($jvalue, $array, $subtype, $strNs);
+            } elseif ($this->isFlatType(gettype($jvalue))) {
                 //use constructor parameter if we have a class
                 // but only a flat type (i.e. string, int)
                 if ($this->bStrictObjectTypeChecking) {
@@ -347,16 +355,22 @@ class JsonMapper
      *                      Supports class names and simple types
      *                      like "string" and nullability "string|null".
      *                      Pass "null" to not convert any values
+     * @param string $strNs Namespace
      *
      * @return mixed Mapped $array is returned
      */
-    public function mapArray($json, $array, $class = null)
+    public function mapArray($json, $array, $class = null, $strNs)
     {
         foreach ($json as $key => $jvalue) {
             $key = $this->getSafeName($key);
             if ($class === null) {
                 $array[$key] = $jvalue;
-            } else if ($this->isFlatType(gettype($jvalue))) {
+            } elseif ($this->isArrayOfType($class)) {
+                $array[$key] = $this->mapArray($jvalue,
+                    [],
+                    substr($class, 0, -2), $strNs
+                );
+            } elseif ($this->isFlatType(gettype($jvalue))) {
                 //use constructor parameter if we have a class
                 // but only a flat type (i.e. string, int)
                 if ($jvalue === null) {
@@ -367,13 +381,17 @@ class JsonMapper
                         $array[$key] = $jvalue;
                     } else {
                         $array[$key] = $this->createInstance(
-                            $class, true, $jvalue
+                            $this->getFullNamespace($class, $strNs),
+                            true,
+                            $jvalue
                         );
                     }
                 }
             } else {
                 $array[$key] = $this->map(
-                    $jvalue, $this->createInstance($class)
+                    $jvalue, $this->createInstance(
+                        $this->getFullNamespace($class, $strNs)
+                    )
                 );
             }
         }
@@ -403,11 +421,11 @@ class JsonMapper
                 $rparams = $rmeth->getParameters();
                 if (count($rparams) > 0) {
                     $pclass = $rparams[0]->getClass();
-                    $nullability = '';
-                    if ($rparams[0]->allowsNull()) {
-                        $nullability = '|null';
-                    }
                     if ($pclass !== null) {
+                        $nullability = '';
+                        if ($rparams[0]->allowsNull()) {
+                            $nullability = '|null';
+                        }
                         return array(
                             true, $rmeth,
                             '\\' . $pclass->getName() . $nullability
@@ -422,6 +440,9 @@ class JsonMapper
                     return array(true, $rmeth, null);
                 }
                 list($type) = explode(' ', trim($annotations['param'][0]));
+
+                $type = $this->getFullyQualifiedType($rc, $type);
+
                 return array(true, $rmeth, $type);
             }
         }
@@ -451,6 +472,8 @@ class JsonMapper
                 //support "@var type description"
                 list($type) = explode(' ', $annotations['var'][0]);
 
+                $type = $this->getFullyQualifiedType($rc, $type);
+
                 return array(true, $rprop, $type);
             } else {
                 //no setter, private property
@@ -460,6 +483,135 @@ class JsonMapper
 
         //no setter, no property
         return array(false, null, null);
+    }
+
+
+    /**
+     * Splits the $type string from the phpdoc, and finds the FQN for each type
+     * found
+     *
+     * @param ReflectionClass $rc Reflection class to check
+     * @param string          $type source type
+     *
+     * @return string
+     */
+    protected function getFullyQualifiedType(ReflectionClass $rc, $type)
+    {
+        $arrTypes = [];
+        $arrMatch = [];
+        foreach (explode('|', $type) as $strType) {
+            $strType = trim($strType);
+            $strArraySection = '';
+            if (preg_match('/(.*?)(\[.*\])$/', $strType, $arrMatch) === 1) {
+                $strType = $arrMatch[1];
+                $strArraySection = $arrMatch[2];
+            }
+            $strFQNType = $this->getFQN($rc, $strType);
+            if ($strArraySection !== '') {
+                if (preg_match('/^\[([\w]+)\]$/',
+                        $strArraySection, $arrMatch) === 1) {
+                    $strArraySection = '['.$this->getFQN($rc, $arrMatch[1]).']';
+                }
+            }
+            $arrTypes[] = $strFQNType.$strArraySection;
+        }
+        return implode('|', $arrTypes);
+
+
+    }
+
+    /**
+     * Gets the FQN for a type
+     *
+     * @param ReflectionClass $rc Reflection class to check
+     * @param string          $strType source type
+     *
+     * @return string
+     */
+    protected function getFQN(ReflectionClass $rc, $strType)
+    {
+        // If type starts with \, no need to append namespaces on it
+        if (strpos($strType, '\\') === 0) {
+            return $strType;
+        }
+        $arrUseClauses = $this->getUseClauses($rc);
+
+        if (count($arrUseClauses) === 0) {
+            return $strType;
+        }
+
+        // If there is a perfect match for the type within the use clauses, prepend
+        // a \ and return it - this will guarantee that we get the correct FQN for
+        // it, even if it belongs to the root namespace
+        if (array_key_exists($strType, $arrUseClauses)) {
+            return '\\' . $strType;
+        }
+
+        // If the type contains a relative qualified name, we need to find the first
+        // part of if within the 'use' clauses. To do that, we take the first
+        // sub-path of the type and search it within the use clauses. This should
+        // return exactly one match, since PHP does not allow ambiguous class names.
+        if (strpos($strType, '\\') !== false) {
+            // Gets first sub-path
+            $arrExplodedType = explode('\\', $strType, 2);
+            $strNSSubPath = $arrExplodedType[0];
+            // Get use clause that end with the found sub-path
+            // (There can be only one! #highlanderfeelings)
+            $arrMatchingUseClauses = preg_grep(
+                '/^(.*\\\\' . $strNSSubPath . '|' . $strNSSubPath . ')$/',
+                $arrUseClauses
+            );
+            if (count($arrMatchingUseClauses) === 1) {
+                return '\\' . preg_replace('/(.*)' . $strNSSubPath . '$/',
+                        '$1',
+                        reset($arrMatchingUseClauses)) . $strType;
+            }
+        } else {
+            // The last check against use clauses is when type is a SFQN and its FQN
+            // is in the use clauses:
+            $arrMatchingUseClauses =
+                preg_grep('/\\\\'.$strType.'$/', $arrUseClauses);
+            if (count($arrMatchingUseClauses) === 1) {
+                return '\\'.reset($arrMatchingUseClauses);
+            }
+        }
+
+        // If nothing else was triggered, simply return the unchanged type
+        return $strType;
+    }
+
+    /**
+     * Finds all "use" clauses inside the class file, and returns a string[] with the
+     * found namespace names
+     *
+     * @param ReflectionClass $rc Reflection class to check
+     *
+     * @return string[]
+     */
+    protected function getUseClauses(ReflectionClass $rc)
+    {
+        $strClassName = $rc->getName();
+        if (!array_key_exists($strClassName, $this->arrUseClauses)) {
+
+            $arrLines = file($rc->getFileName(),
+                FILE_SKIP_EMPTY_LINES|FILE_IGNORE_NEW_LINES);
+
+            if ($arrLines && count($arrLines)) {
+                $arrUseLines = preg_grep('/^\s*use\s+[\w\\\\]+;/', $arrLines);
+
+                // strip out the 'use ' part
+                $this->arrUseClauses[$strClassName] = preg_replace(
+                    '/(^\s*use\s+)([\w\\\\]+);/', '$2', $arrUseLines);
+
+                // makes keys match values, so that $arr[x] = x;
+                $this->arrUseClauses[$strClassName] = array_combine(
+                    $this->arrUseClauses[$strClassName],
+                    $this->arrUseClauses[$strClassName]
+                );
+            }
+        }
+
+        return $this->arrUseClauses[$strClassName];
     }
 
     /**
@@ -556,11 +708,11 @@ class JsonMapper
      */
     protected function isSimpleType($type)
     {
-        return $type == 'string'
-            || $type == 'boolean' || $type == 'bool'
-            || $type == 'integer' || $type == 'int'
-            || $type == 'double' || $type == 'float'
-            || $type == 'array' || $type == 'object';
+        return $type === 'string'
+            || $type === 'boolean' || $type === 'bool'
+            || $type === 'integer' || $type === 'int'
+            || $type === 'double'  || $type === 'float'
+            || $type === 'array'   || $type === 'object';
     }
 
     /**
@@ -597,6 +749,19 @@ class JsonMapper
             || $type == 'boolean' || $type == 'bool'
             || $type == 'integer' || $type == 'int'
             || $type == 'double' || $type == 'float';
+    }
+
+    /**
+     * Returns true if type is an array of elements
+     * (bracket notation)
+     *
+     * @param string $strType type to be matched
+     *
+     * @return bool
+     */
+    protected function isArrayOfType($strType)
+    {
+        return(substr($strType, -2) === '[]');
     }
 
     /**
