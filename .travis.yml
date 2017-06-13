@@ -1,19 +1,17 @@
 language: php
 sudo: false
 php:
-  - 5.3
   - 5.4
   - 5.5
   - 5.6
   - 7
   - 7.1
-  - hhvm
 
 before_script:
   - composer install --no-interaction --prefer-source --dev
   - phpenv rehash
 script:
   - cd tests
-  - phpunit --coverage-text .
+  - ./../vendor/bin/phpunit --coverage-text .
   - cd ..
   - ./vendor/bin/phpcs --standard=PEAR src/

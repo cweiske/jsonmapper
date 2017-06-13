@@ -1,4 +1,5 @@
 <?php
+namespace JsonMapperTest;
 /**
  * Part of JsonMapper
  *
@@ -10,6 +11,13 @@
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
  */
+use JsonMapper;
+use JsonMapper_Exception;
+use JsonMapperTest_Array;
+use JsonMapperTest_Broken;
+use JsonMapperTest_Simple;
+use PHPUnit_Framework_TestCase;
+
 require_once 'JsonMapperTest/Array.php';
 require_once 'JsonMapperTest/Broken.php';
 require_once 'JsonMapperTest/Simple.php';
@@ -23,7 +31,7 @@ require_once 'JsonMapperTest/Simple.php';
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
  */
-class ArrayTest extends \PHPUnit_Framework_TestCase
+class ArrayTest extends PHPUnit_Framework_TestCase
 {
     /**
      * Test for an array of classes "@var Classname[]"
@@ -50,6 +58,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
     public function testMapTypedSimpleArray()
     {
         $jm = new JsonMapper();
+        /** @var JsonMapperTest_Array $sn */
         $sn = $jm->map(
             json_decode('{"typedSimpleArray":["2014-01-02",null,"2014-05-07"]}'),
             new JsonMapperTest_Array()
@@ -310,6 +319,9 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @param $class
+     */
     public function mapTypedArrayObjectDoesNotExistAutoloader($class)
     {
         $this->assertFalse(

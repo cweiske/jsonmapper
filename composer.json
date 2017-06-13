@@ -1,5 +1,5 @@
 {
-    "name": "netresearch/jsonmapper",
+    "name": "spysystem/jsonmapper",
     "description": "Map nested JSON structures onto PHP classes",
     "license": "OSL-3.0",
     "autoload": {
