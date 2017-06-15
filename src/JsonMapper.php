@@ -532,10 +532,10 @@ class JsonMapper
             $returnValue = $accessor->invoke($object, $value);
 
             // check if the return value of the setter is false
-            if($this->bExceptionOnFalseSetter && $returnValue === false) {
+            if ($this->bExceptionOnFalseSetter && $returnValue === false) {
                 throw new JsonMapper_Exception(
-                    'JSON setter ' . $object . ' has boolean with false return value, ' .
-                    'with flag ExceptionOnNullableSetter, so an exception was thrown.'
+                    'JSON setter ' . $object . ' has boolean return value, ' .
+                    'with flag ExceptionOnFalseSetter, so an exception was thrown.'
                 );
             }
         }
