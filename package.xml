@@ -21,11 +21,11 @@
   <active>yes</active>
  </lead>
 
- <date>2017-01-27</date>
+ <date>2017-07-13</date>
  <time>00:00:00</time>
 
  <version>
-  <release>1.1.1</release>
+  <release>1.2.0</release>
   <api>1.1.0</api>
  </version>
 
@@ -37,8 +37,7 @@
  <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
 
  <notes>
-  * Fix namespace resolution of ArrayObject child classes (issue #69)
-  * Add PHP 7.1 nullability support by @MHarutunian (issue #67)
+  * Add support for multidimensional arrays by @thomasphansen (issue #81)
  </notes>
 
  <contents>
@@ -113,6 +112,22 @@
  </phprelease>
 
  <changelog>
+
+  <release>
+   <version>
+    <release>1.2.0</release>
+    <api>1.1.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2017-07-13</date>
+   <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
+   <notes>
+    * Add support for multidimensional arrays by @thomasphansen (issue #81)
+   </notes>
+  </release>
 
   <release>
    <version>

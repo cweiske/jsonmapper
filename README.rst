@@ -214,6 +214,10 @@ Supported type names
 
   - ``int[]``
   - ``Contact[]``
+- Multidimensional arrays:
+
+  - ``int[][]``
+  - ``TreeDeePixel[][][]``
 - ArrayObjects of simple types and class names:
 
   - ``ContactList[Contact]``

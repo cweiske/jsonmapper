@@ -1,3 +1,9 @@
+2017-07-13  Christian Weiske  <cweiske@cweiske.de>
+
+	* Add support for multidimensional arrays
+	  by @thomasphansen (issue #81)
+	* Version 1.2.0
+
 2017-01-27  Christian Weiske  <cweiske@cweiske.de>
 
 	* Fix namespace resolution of ArrayObject child classes (issue #69)
