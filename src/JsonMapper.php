@@ -215,7 +215,7 @@ class JsonMapper
                 continue;
             }
 
-            //FIXME: check if type exists, give detailled error message if not
+            //FIXME: check if type exists, give detailed error message if not
             if ($type === '') {
                 throw new JsonMapper_Exception(
                     'Empty type at property "'
@@ -225,7 +225,7 @@ class JsonMapper
 
             $array = null;
             $subtype = null;
-            if (substr($type, -2) == '[]') {
+            if ($this->isArrayOfType($type)) {
                 //array
                 $array = array();
                 $subtype = substr($type, 0, -2);
@@ -356,6 +356,12 @@ class JsonMapper
             $key = $this->getSafeName($key);
             if ($class === null) {
                 $array[$key] = $jvalue;
+            } else if ($this->isArrayOfType($class)) {
+                $array[$key] = $this->mapArray(
+                    $jvalue,
+                    array(),
+                    substr($class, 0, -2)
+                );
             } else if ($this->isFlatType(gettype($jvalue))) {
                 //use constructor parameter if we have a class
                 // but only a flat type (i.e. string, int)
@@ -597,6 +603,19 @@ class JsonMapper
             || $type == 'boolean' || $type == 'bool'
             || $type == 'integer' || $type == 'int'
             || $type == 'double' || $type == 'float';
+    }
+
+    /**
+     * Returns true if type is an array of elements
+     * (bracket notation)
+     *
+     * @param string $strType type to be matched
+     *
+     * @return bool
+     */
+    protected function isArrayOfType($strType)
+    {
+        return substr($strType, -2) === '[]';
     }
 
     /**
