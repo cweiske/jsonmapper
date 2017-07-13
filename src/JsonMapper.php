@@ -85,19 +85,19 @@ class JsonMapper
      * Override class names that JsonMapper uses to create objects.
      * Useful when your setter methods accept abstract classes or interfaces.
      *
-     * Works only when $bExceptionOnUndefinedProperty is disabled.
-     *
-     * Parameters to this function are:
-     * 1. Object that is being filled
-     * 2. Name of the unknown JSON property
-     * 3. JSON value of the property
-     *
      * @var array
      */
     public $classMap = array();
 
     /**
      * Callback used when an undefined property is found.
+     *
+     * Works only when $bExceptionOnUndefinedProperty is disabled.
+     *
+     * Parameters to this function are:
+     * 1. Object that is being filled
+     * 2. Name of the unknown JSON property
+     * 3. JSON value of the property
      *
      * @var callable
      */
