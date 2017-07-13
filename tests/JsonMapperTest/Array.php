@@ -77,5 +77,16 @@ class JsonMapperTest_Array
      */
     public $pSimpleArrayObject;
 
+    /**
+     * 2D matrix of numbers
+     * @var int[][]
+     */
+    public $nMatrix;
+
+    /**
+     * 3D matrix of objects
+     * @var JsonMapperTest_Simple[][][]
+     */
+    public $pMultiverse;
 }
 ?>

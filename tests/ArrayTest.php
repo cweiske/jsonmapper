@@ -326,5 +326,54 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         $code .= 'class ' . $class . '{}';
         eval($code);
     }
+
+    /**
+     * Test for an array of array of integers "@var int[][]"
+     */
+    public function testNMatrix()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"nMatrix":[[1,2],[3,4],[5]]}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertInternalType('array', $sn->nMatrix);
+        $this->assertEquals(3, count($sn->nMatrix));
+        $this->assertInternalType('array', $sn->nMatrix[0]);
+        $this->assertInternalType('array', $sn->nMatrix[1]);
+        $this->assertInternalType('array', $sn->nMatrix[2]);
+
+        $this->assertEquals(2, count($sn->nMatrix[0]));
+        $this->assertInternalType('int', $sn->nMatrix[0][0]);
+        $this->assertInternalType('int', $sn->nMatrix[0][1]);
+
+        $this->assertEquals(2, count($sn->nMatrix[1]));
+        $this->assertEquals(1, count($sn->nMatrix[2]));
+    }
+
+    /**
+     * Test for an array of arrays of arrays of objects
+     * "@var JsonMapper_Simple[][][]"
+     */
+    public function testObjectMultiverse()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"pMultiverse":[[[{"pint":23}]]]}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertInternalType('array', $sn->pMultiverse);
+        $this->assertEquals(1, count($sn->pMultiverse));
+
+        $this->assertInternalType('array', $sn->pMultiverse[0]);
+        $this->assertEquals(1, count($sn->pMultiverse[0]));
+
+        $this->assertInternalType('array', $sn->pMultiverse[0][0]);
+        $this->assertEquals(1, count($sn->pMultiverse[0][0]));
+
+        $this->assertInstanceOf(
+            'JsonMapperTest_Simple', $sn->pMultiverse[0][0][0]
+        );
+    }
 }
 ?>
