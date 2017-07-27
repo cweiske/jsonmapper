@@ -404,6 +404,22 @@ If you do not want this, set ``$bStrictObjectTypeChecking`` to ``true``:
 
 An exception is then thrown in such cases.
 
+Lossy data conversion for simple types
+--------------------------------------
+
+Converting from a type to an other may result to loose some data. For example,
+you may don't want to convert `12.3` to an array or to a boolean,
+
+I you want to check a lossy data conversion, set ``$bStrictSimpleTypeConversionChecking``
+to ``true`` (an exception will then thrown) or set ``$bSimpleTypeLossyDataConversionChecking``
+to ``true`` (a message will be logged):
+
+.. code:: php
+
+    $jm = new JsonMapper();
+    $jm->bStrictSimpleTypeConversionChecking = true;
+    $jm->map(...);
+
 
 Passing arrays to ``map()``
 ---------------------------

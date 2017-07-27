@@ -67,6 +67,22 @@ class JsonMapper
     public $bStrictObjectTypeChecking = false;
 
     /**
+     * Throw an exception when a JSON value has a simple type that implies
+     * a lossy data conversion when converting to the expected type.
+     *
+     * @var boolean
+     */
+    public $bStrictSimpleTypeConversionChecking = false;
+
+    /**
+     * if lossy data conversion for simple type should be checked
+     *
+     * @var boolean
+     */
+    public $bSimpleTypeLossyDataConversionChecking = false;
+
+
+    /**
      * Throw an exception, if null value is found
      * but the type of attribute does not allow nulls.
      *
@@ -210,6 +226,18 @@ class JsonMapper
                 $this->setProperty($object, $accessor, $jvalue);
                 continue;
             } else if ($this->isSimpleType($type)) {
+                if (($this->bSimpleTypeLossyDataConversionChecking
+                    || $this->bStrictSimpleTypeConversionChecking)
+                    && $this->isLossyDataConversion($type, $jvalue)
+                ) {
+                    $msg = 'Value conversion of JSON property "' . $key .
+                        '" from "'.gettype($jvalue). '" to "'. $type .
+                        '" is a lossy data conversion';
+                    if ($this->bStrictSimpleTypeConversionChecking) {
+                        throw new JsonMapper_Exception($msg);
+                    }
+                    $this->log('info', $msg);
+                }
                 settype($jvalue, $type);
                 $this->setProperty($object, $accessor, $jvalue);
                 continue;
@@ -369,6 +397,18 @@ class JsonMapper
                     $array[$key] = null;
                 } else {
                     if ($this->isSimpleType($class)) {
+                        if (($this->bSimpleTypeLossyDataConversionChecking
+                            || $this->bStrictSimpleTypeConversionChecking)
+                            && $this->isLossyDataConversion($class, $jvalue)
+                        ) {
+                            $msg = 'Value conversion of JSON property "' . $key .
+                                '" from "'.gettype($jvalue). '" to "'. $class .
+                                '" is a lossy data conversion';
+                            if ($this->bStrictSimpleTypeConversionChecking) {
+                                throw new JsonMapper_Exception($msg);
+                            }
+                            $this->log('info', $msg);
+                        }
                         settype($jvalue, $class);
                         $array[$key] = $jvalue;
                     } else {
@@ -649,6 +689,70 @@ class JsonMapper
     }
 
     /**
+     * Check if the conversion of a value to the given type will be a lossy data
+     * conversion
+     *
+     * @param string $targetType the type to which we want to convert the value
+     * @param mixed  $value      the value to convert
+     *
+     * @return boolean true if the conversion will loose data
+     */
+    public function isLossyDataConversion($targetType, $value)
+    {
+        if ($targetType == 'array') {
+            // ok to convert, all values type will be in an array
+            return false;
+        }
+
+        $type = gettype($value);
+        if ($type == 'array') {
+            // we loose all values when converting an array to anything else
+            return ($targetType != 'array');
+        }
+
+        if ($type == 'boolean') {
+            // we will have 0, 1, '1', '', array(true), array(false) so it is ok
+            return false;
+        }
+
+        if ($type == 'integer') {
+            // we will have 123 (double), '123', array(123) so it is ok
+            // except when converting to boolean
+            if ($targetType == 'boolean' || $targetType == 'bool') {
+                return ($value !== 0 && $value !== 1);
+            }
+            return false;
+        }
+
+        if ($type == 'double') {
+            if ( $targetType == 'integer' || $targetType == 'int' ) {
+                // it's ok to convert to integer, except if it has a none zero
+                // decimal part
+                $whole = floor($value);
+                return ($value - $whole) != 0;
+            } else if ($targetType == 'boolean'|| $targetType == 'bool') {
+                // it's ok to convert to boolean if it is 0 or 1
+                return ($value !== 0 && $value !== 1);
+            }
+            return false;
+        }
+        if ($type == 'string') {
+            if ( $targetType == 'integer'
+                || $targetType == 'int'
+                || $targetType == 'double'
+                || $targetType == 'float'
+            ) {
+                if (is_numeric($value)) {
+                    return false;
+                }
+            } else if ($targetType === 'boolean' || $targetType == 'bool') {
+                return ($value !== "0" && $value !== "1");
+            }
+        }
+        return ($type != $targetType);
+    }
+
+    /**
      * Copied from PHPUnit 3.7.29, Util/Test.php
      *
      * @param string $docblock Full method docblock
@@ -702,4 +806,3 @@ class JsonMapper
         $this->logger = $logger;
     }
 }
-?>
