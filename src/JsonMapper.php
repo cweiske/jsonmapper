@@ -153,7 +153,7 @@ class JsonMapper
 
         $strClassName = get_class($object);
         $rc = new ReflectionClass($object);
-        $strNs = $rc->getNamespaceName();
+        $classNamespace = $rc->getNamespaceName();
         $providedProperties = array();
         foreach ($json as $key => $jvalue) {
             $key = $this->getSafeName($key);
@@ -205,109 +205,8 @@ class JsonMapper
                 continue;
             }
 
-            if ($this->isNullable($type) || !$this->bStrictNullTypes) {
-                if ($jvalue === null) {
-                    $this->setProperty($object, $accessor, null);
-                    continue;
-                }
-                $type = $this->removeNullable($type);
-            } else if ($jvalue === null) {
-                throw new JsonMapper_Exception(
-                    'JSON property "' . $key . '" in class "'
-                    . $strClassName . '" must not be NULL'
-                );
-            }
-
-            if ($type === null || $type === 'mixed') {
-                //no given type - simply set the json data
-                $this->setProperty($object, $accessor, $jvalue);
-                continue;
-            } else if ($this->isObjectOfSameType($type, $jvalue)) {
-                $this->setProperty($object, $accessor, $jvalue);
-                continue;
-            } else if ($this->isSimpleType($type)) {
-                if (($this->bSimpleTypeLossyDataConversionChecking
-                    || $this->bStrictSimpleTypeConversionChecking)
-                    && $this->isLossyDataConversion($type, $jvalue)
-                ) {
-                    $msg = 'Value conversion of JSON property "' . $key .
-                        '" from "'.gettype($jvalue). '" to "'. $type .
-                        '" is a lossy data conversion';
-                    if ($this->bStrictSimpleTypeConversionChecking) {
-                        throw new JsonMapper_Exception($msg);
-                    }
-                    $this->log('info', $msg);
-                }
-                settype($jvalue, $type);
-                $this->setProperty($object, $accessor, $jvalue);
-                continue;
-            }
-
-            //FIXME: check if type exists, give detailed error message if not
-            if ($type === '') {
-                throw new JsonMapper_Exception(
-                    'Empty type at property "'
-                    . $strClassName . '::$' . $key . '"'
-                );
-            }
-
-            $array = null;
-            $subtype = null;
-            if ($this->isArrayOfType($type)) {
-                //array
-                $array = array();
-                $subtype = substr($type, 0, -2);
-            } else if (substr($type, -1) == ']') {
-                list($proptype, $subtype) = explode('[', substr($type, 0, -1));
-                if (!$this->isSimpleType($proptype)) {
-                    $proptype = $this->getFullNamespace($proptype, $strNs);
-                }
-                if ($proptype == 'array') {
-                    $array = array();
-                } else {
-                    $array = $this->createInstance($proptype);
-                }
-            } else {
-                $type = $this->getFullNamespace($type, $strNs);
-                if ($type == 'ArrayObject'
-                    || is_subclass_of($type, 'ArrayObject')
-                ) {
-                    $array = $this->createInstance($type);
-                }
-            }
-
-            if ($array !== null) {
-                if (!is_array($jvalue) && $this->isFlatType(gettype($jvalue))) {
-                    throw new JsonMapper_Exception(
-                        'JSON property "' . $key . '" must be an array, '
-                        . gettype($jvalue) . ' given'
-                    );
-                }
-
-                $cleanSubtype = $this->removeNullable($subtype);
-                if (!$this->isSimpleType($cleanSubtype)
-                    && $cleanSubtype !== null
-                ) {
-                    $subtype = $this->getFullNamespace($cleanSubtype, $strNs);
-                }
-                $child = $this->mapArray($jvalue, $array, $subtype);
-            } else if ($this->isFlatType(gettype($jvalue))) {
-                //use constructor parameter if we have a class
-                // but only a flat type (i.e. string, int)
-                if ($this->bStrictObjectTypeChecking) {
-                    throw new JsonMapper_Exception(
-                        'JSON property "' . $key . '" must be an object, '
-                        . gettype($jvalue) . ' given'
-                    );
-                }
-                $type = $this->getFullNamespace($type, $strNs);
-                $child = $this->createInstance($type, true, $jvalue);
-            } else {
-                $type = $this->getFullNamespace($type, $strNs);
-                $child = $this->createInstance($type);
-                $this->map($jvalue, $child);
-            }
-            $this->setProperty($object, $accessor, $child);
+            $value = $this->getPHPValue($type, $key, $jvalue, $classNamespace, $strClassName);
+            $this->setProperty($object, $accessor, $value);
         }
 
         if ($this->bExceptionOnMissingData) {
@@ -315,6 +214,116 @@ class JsonMapper
         }
 
         return $object;
+    }
+
+    /**
+     * @param string $type
+     * @param mixed $jvalue
+     * @return mixed
+     * @throws JsonMapper_Exception
+     */
+    protected function getPHPValue($type, $key, $jvalue, $classNamespace, $strClassName)
+    {
+
+        if ($this->isNullable($type) || !$this->bStrictNullTypes) {
+            if ($jvalue === null) {
+                return null;
+            }
+            $type = $this->removeNullable($type);
+        } else if ($jvalue === null) {
+            throw new JsonMapper_Exception(
+                'JSON property "' . $key . '" in class "'
+                . $strClassName . '" must not be NULL'
+            );
+        }
+
+        if ($type === null || $type === 'mixed') {
+            //no given type - simply set the json data
+            return $jvalue;
+        } else if ($this->isObjectOfSameType($type, $jvalue)) {
+            return $jvalue;
+        } else if ($this->isSimpleType($type)) {
+            if (($this->bSimpleTypeLossyDataConversionChecking
+                    || $this->bStrictSimpleTypeConversionChecking)
+                && $this->isLossyDataConversion($type, $jvalue)
+            ) {
+                $msg = 'Value conversion of JSON property "' . $key .
+                    '" from "'.gettype($jvalue). '" to "'. $type .
+                    '" is a lossy data conversion';
+                if ($this->bStrictSimpleTypeConversionChecking) {
+                    throw new JsonMapper_Exception($msg);
+                }
+                $this->log('info', $msg);
+            }
+            settype($jvalue, $type);
+            return $jvalue;
+        }
+
+        //FIXME: check if type exists, give detailed error message if not
+        if ($type === '') {
+            throw new JsonMapper_Exception(
+                'Empty type at property "'
+                . $strClassName . '::$' . $key . '"'
+            );
+        }
+
+        $array = null;
+        $subtype = null;
+        if ($this->isArrayOfType($type)) {
+            //array
+            $array = array();
+            $subtype = substr($type, 0, -2);
+        } else if (substr($type, -1) == ']') {
+            list($proptype, $subtype) = explode('[', substr($type, 0, -1));
+            if (!$this->isSimpleType($proptype)) {
+                $proptype = $this->getFullNamespace($proptype, $classNamespace);
+            }
+            if ($proptype == 'array') {
+                $array = array();
+            } else {
+                $array = $this->createInstance($proptype);
+            }
+        } else {
+            $type = $this->getFullNamespace($type, $classNamespace);
+            if ($type == 'ArrayObject'
+                || is_subclass_of($type, 'ArrayObject')
+            ) {
+                $array = $this->createInstance($type);
+            }
+        }
+
+        if ($array !== null) {
+            if (!is_array($jvalue) && $this->isFlatType(gettype($jvalue))) {
+                throw new JsonMapper_Exception(
+                    'JSON property "' . $key . '" must be an array, '
+                    . gettype($jvalue) . ' given'
+                );
+            }
+
+            $cleanSubtype = $this->removeNullable($subtype);
+            if (!$this->isSimpleType($cleanSubtype)
+                && $cleanSubtype !== null
+            ) {
+                $subtype = $this->getFullNamespace($cleanSubtype, $classNamespace);
+            }
+            $child = $this->mapArray($jvalue, $array, $subtype);
+        } else if ($this->isFlatType(gettype($jvalue))) {
+            //use constructor parameter if we have a class
+            // but only a flat type (i.e. string, int)
+            if ($this->bStrictObjectTypeChecking) {
+                throw new JsonMapper_Exception(
+                    'JSON property "' . $key . '" must be an object, '
+                    . gettype($jvalue) . ' given'
+                );
+            }
+            $type = $this->getFullNamespace($type, $classNamespace);
+            $child = $this->createInstance($type, true, $jvalue);
+        } else {
+            $type = $this->getFullNamespace($type, $classNamespace);
+            $child = $this->createInstance($type);
+            $this->map($jvalue, $child);
+        }
+        return $child;
     }
 
     /**
