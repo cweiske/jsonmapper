@@ -17,7 +17,8 @@ gives you, but for JSON.
 It does not rely on any schema, only your PHP class definitions.
 
 Type detection works by parsing ``@var`` docblock annotations of
-class properties, as well as type hints in setter methods.
+class properties, as well as type hints in setter methods. It supports
+types annotations supported by the PSR-5 specification.
 
 You do not have to modify your model classes by adding JSON specific code;
 it works automatically by parsing already-existing docblocks.
@@ -199,6 +200,8 @@ a property:
 Supported type names
 --------------------
 
+It supports all type names specified in the PSR-5 specification (types for PHPDoc).
+
 - Simple types
 
   - ``string``
@@ -210,6 +213,9 @@ Supported type names
 - Class names, with and without namespaces
 
   - ``Contact`` - exception will be thrown if the JSON value is ``null``
+- List of possible types
+  - ``double|string|array``
+
 - Arrays of simple types and class names:
 
   - ``int[]``
@@ -218,6 +224,10 @@ Supported type names
 
   - ``int[][]``
   - ``TreeDeePixel[][][]``
+- Arrays with multiple type of items:
+
+   - ``(TreeDeePixel|Contact)[]``
+
 - ArrayObjects of simple types and class names:
 
   - ``ContactList[Contact]``
@@ -419,26 +429,6 @@ to ``true`` (a message will be logged):
     $jm = new JsonMapper();
     $jm->bStrictSimpleTypeConversionChecking = true;
     $jm->map(...);
-
-
-Passing arrays to ``map()``
----------------------------
-You may wish to pass array data into ``map()`` that you got by calling
-
-.. code:: php
-
-    json_decode($jsonString, true)
-
-By default, JsonMapper will throw an exception because ``map()`` requires
-an object as first parameter.
-You can circumvent that by setting ``$bEnforceMapType`` to ``false``:
-
-.. code:: php
-
-    $jm = new JsonMapper();
-    $jm->bEnforceMapType = false;
-    $jm->map(...);
-
 
 ============
 Installation

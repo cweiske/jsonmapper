@@ -4,7 +4,7 @@ namespace namespacetest;
 class UnitData
 {
     /**
-     * @var \ArrayObject[Unit]
+     * @var \ArrayObject<Unit>
      */
     public $data;
 

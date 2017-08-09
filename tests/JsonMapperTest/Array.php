@@ -33,11 +33,6 @@ class JsonMapperTest_Array
     public $strArray;
 
     /**
-     * @var array[string]
-     */
-    public $strArrayV2;
-
-    /**
      * @var JsonMapperTest_Simple[]
      * @see http://phpdoc.org/docs/latest/references/phpdoc/types.html#arrays
      */
@@ -47,6 +42,11 @@ class JsonMapperTest_Array
      * @var DateTime[]
      */
     public $typedSimpleArray;
+
+    /**
+     * @var (DateTime|null)[]
+     */
+    public $typedSimpleArrayWithNullable;
 
     /**
      * @var string[]|null
@@ -68,12 +68,12 @@ class JsonMapperTest_Array
 
     /**
      * This generates an array object with JsonMapperTest_Simple instances
-     * @var ArrayObject[JsonMapperTest_Simple]
+     * @var ArrayObject<JsonMapperTest_Simple>
      */
     public $pTypedArrayObject;
 
     /**
-     * @var ArrayObject[int]
+     * @var ArrayObject<int>
      */
     public $pSimpleArrayObject;
 

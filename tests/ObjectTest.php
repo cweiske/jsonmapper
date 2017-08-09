@@ -110,7 +110,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "pValueObject" must be an object, string given
+     * @expectedExceptionMessage JSON property "{}->pValueObject" has not the expected type \JsonMapperTest_ValueObject in object of type JsonMapperTest_Object: JSON value at {}->pValueObject must be an object, string given
      */
     public function testStrictTypeCheckingObjectError()
     {
@@ -165,7 +165,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
      * Test for "@var object" with null value
      *
      * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "pValueObject" in class "JsonMapperTest_Object" must not be NULL
+     * @expectedExceptionMessage JSON property "{}->pValueObject" has not the expected type \JsonMapperTest_ValueObject in object of type JsonMapperTest_Object: JSON value at {}->pValueObject must not be NULL
      */
     public function testObjectInvalidNull()
     {

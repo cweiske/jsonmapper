@@ -51,21 +51,45 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"typedSimpleArray":["2014-01-02",null,"2014-05-07"]}'),
+            json_decode('{"typedSimpleArray":["2014-01-02","2014-05-07"]}'),
             new JsonMapperTest_Array()
         );
         $this->assertInternalType('array', $sn->typedSimpleArray);
-        $this->assertEquals(3, count($sn->typedSimpleArray));
+        $this->assertEquals(2, count($sn->typedSimpleArray));
         $this->assertInstanceOf('DateTime', $sn->typedSimpleArray[0]);
-        $this->assertNull($sn->typedSimpleArray[1]);
-        $this->assertInstanceOf('DateTime', $sn->typedSimpleArray[2]);
+        $this->assertInstanceOf('DateTime', $sn->typedSimpleArray[1]);
         $this->assertEquals(
             '2014-01-02', $sn->typedSimpleArray[0]->format('Y-m-d')
         );
         $this->assertEquals(
-            '2014-05-07', $sn->typedSimpleArray[2]->format('Y-m-d')
+            '2014-05-07', $sn->typedSimpleArray[1]->format('Y-m-d')
         );
     }
+
+    /**
+     * Test for an array of classes "@var (ClassName|null)[]" with
+     * flat/simple json values (string)
+     */
+    public function testMapTypedSimpleArrayWithNullable()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"typedSimpleArrayWithNullable":["2014-01-02",null,"2014-05-07"]}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertInternalType('array', $sn->typedSimpleArrayWithNullable);
+        $this->assertEquals(3, count($sn->typedSimpleArrayWithNullable));
+        $this->assertInstanceOf('DateTime', $sn->typedSimpleArrayWithNullable[0]);
+        $this->assertNull($sn->typedSimpleArray[1]);
+        $this->assertInstanceOf('DateTime', $sn->typedSimpleArrayWithNullable[2]);
+        $this->assertEquals(
+            '2014-01-02', $sn->typedSimpleArrayWithNullable[0]->format('Y-m-d')
+        );
+        $this->assertEquals(
+            '2014-05-07', $sn->typedSimpleArrayWithNullable[2]->format('Y-m-d')
+        );
+    }
+
 
     /**
      * Test for an array that is nullable - "@var string[]|null"
@@ -80,12 +104,14 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($sn->nullableSimpleArray);
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     */
     public function testMapArrayJsonNoTypeEnforcement()
     {
         $jm = new JsonMapper();
         $jm->bEnforceMapType = false;
         $sn = $jm->map(array(), new JsonMapperTest_Simple());
-        $this->assertInstanceOf('JsonMapperTest_Simple', $sn);
     }
 
     /**
@@ -140,23 +166,6 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test for an array of strings - "@var array[string]"
-     */
-    public function testStrArrayV2()
-    {
-        $jm = new JsonMapper();
-        $sn = $jm->map(
-            json_decode('{"strArrayV2":["str",false,2.048]}'),
-            new JsonMapperTest_Array()
-        );
-        $this->assertInternalType('array', $sn->strArrayV2);
-        $this->assertEquals(3, count($sn->strArrayV2));
-        $this->assertInternalType('string', $sn->strArrayV2[0]);
-        $this->assertInternalType('string', $sn->strArrayV2[1]);
-        $this->assertInternalType('string', $sn->strArrayV2[2]);
-    }
-
-    /**
      * Test for "@var ArrayObject"
      */
     public function testMapArrayObject()
@@ -177,7 +186,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
     /**
      * Test for "@var ArrayObject[Classname]"
      */
-    public function testMapTypedArrayObject()
+    /*public function testMapTypedArrayObject()
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
@@ -192,12 +201,12 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('JsonMapperTest_Simple', $sn->pTypedArrayObject[1]);
         $this->assertEquals('stringvalue', $sn->pTypedArrayObject[0]->str);
         $this->assertEquals('1.2', $sn->pTypedArrayObject[1]->fl);
-    }
+    }*/
 
     /**
-     * Test for "@var ArrayObject[int]"
+     * Test for "@var \ArrayObject<int>"
      */
-    public function testMapSimpleArrayObject()
+    /*public function testMapSimpleArrayObject()
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
@@ -212,11 +221,11 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('int', $sn->pSimpleArrayObject['zwei']);
         $this->assertEquals(1, $sn->pSimpleArrayObject['eins']);
         $this->assertEquals(1, $sn->pSimpleArrayObject['zwei']);
-    }
+    }*/
 
     /**
-     * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "flArray" must be an array, integer given
+     * @expectedException JsonMapper_BadTypeException
+     * @expectedExceptionMessage JSON property "{}->flArray" has not the expected type float[] in object of type JsonMapperTest_Array: JSON value at {}->flArray must be an array, integer given
      */
     public function testInvalidArray()
     {
@@ -228,8 +237,8 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "pArrayObject" must be an array, double given
+     * @expectedException JsonMapper_BadTypeException
+     * @expectedExceptionMessage JSON property "{}->pArrayObject" has not the expected type \ArrayObject in object of type JsonMapperTest_Array: JSON value at {}->pArrayObject must be an array, double given
      */
     public function testInvalidArrayObject()
     {
@@ -256,8 +265,8 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
     /**
      * An ArrayObject which may not be null but is.
      *
-     * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "pArrayObject" in class "JsonMapperTest_Array" must not be NULL
+     * @expectedException JsonMapper_BadTypeException
+     * @expectedExceptionMessage JSON property "{}->pArrayObject" has not the expected type \ArrayObject in object of type JsonMapperTest_Array: JSON value at {}->pArrayObject must not be NULL
      */
     public function testArrayObjectInvalidNull()
     {
@@ -289,7 +298,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
      *
      * @runInSeparateProcess
      */
-    public function testMapTypedArrayObjectDoesNotExist()
+    /*public function testMapTypedArrayObjectDoesNotExist()
     {
         $this->assertTrue(
             spl_autoload_register(
@@ -308,7 +317,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(
             'ThisClassDoesNotExist', $sn->pTypedArrayObjectNoClass[0]
         );
-    }
+    }*/
 
     public function mapTypedArrayObjectDoesNotExistAutoloader($class)
     {

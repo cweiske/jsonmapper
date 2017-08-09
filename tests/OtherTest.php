@@ -53,7 +53,7 @@ class OtherTest extends \PHPUnit_Framework_TestCase
      * Test for "@var "
      *
      * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage Empty type at property "JsonMapperTest_Simple::$empty"
+     * @expectedExceptionMessage Error during the parsing of the type for {}: Attempted to resolve "" but it appears to be empty
      */
     public function testMapEmpty()
     {
@@ -146,7 +146,7 @@ class OtherTest extends \PHPUnit_Framework_TestCase
                     'Property {property} has no public setter method in {class}',
                     array(
                         'class' => 'JsonMapperTest_Simple',
-                        'property' => 'protectedStrNoSetter'
+                        'property' => '{}->protectedStrNoSetter'
                     )
                 )
             ),
@@ -184,7 +184,7 @@ class OtherTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException        JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "undefinedProperty" does not exist in object of type JsonMapperTest_Broken
+     * @expectedExceptionMessage JSON property "{}->undefinedProperty" does not exist in object of type JsonMapperTest_Broken
      */
     public function testUndefinedPropertyException()
     {
@@ -229,7 +229,7 @@ class OtherTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException        JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "privateNoSetter" has no public setter method in object of type PrivateWithSetter
+     * @expectedExceptionMessage JSON property "{}->privateNoSetter" has no public setter method in object of type PrivateWithSetter
      */
     public function testPrivatePropertyWithNoSetter()
     {
@@ -258,7 +258,7 @@ class OtherTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException        JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "privatePropertyPrivateSetter" has no public setter method in object of type PrivateWithSetter
+     * @expectedExceptionMessage JSON property "{}->privatePropertyPrivateSetter" has no public setter method in object of type PrivateWithSetter
      */
     public function testPrivatePropertyWithPrivateSetter()
     {
