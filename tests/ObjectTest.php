@@ -14,6 +14,7 @@ require_once 'JsonMapperTest/Simple.php';
 require_once 'JsonMapperTest/Object.php';
 require_once 'JsonMapperTest/PlainObject.php';
 require_once 'JsonMapperTest/ValueObject.php';
+require_once 'JsonMapperTest/ComplexObject.php';
 
 /**
  * Unit tests for JsonMapper's object handling
@@ -75,6 +76,22 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertSame($valueObject, $sn->getValueObject());
+    }
+
+    public function testComplexObject()
+    {
+        $valueObject = new JsonMapperTest_ValueObject('test');
+        $complexObject = new JsonMapperTest_ComplexObject($valueObject);
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode(json_encode($complexObject)),
+            (new ReflectionClass(JsonMapperTest_ComplexObject::class))->newInstanceWithoutConstructor()
+        );
+
+        $this->assertEquals(
+            $complexObject->valueObject->getPublicValue(),
+            $sn->valueObject->getPublicValue()
+        );
     }
 
     public function testStrictTypeCheckingObject()

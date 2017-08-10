@@ -65,6 +65,7 @@
        <dir name="JsonMapperTest">
          <file role="test" name="Array.php" />
          <file role="test" name="Broken.php" />
+         <file role="test" name="ComplexObject.php" />
          <file role="test" name="DependencyInjector.php" />
          <file role="test" name="Logger.php" />
          <file role="test" name="Object.php" />
