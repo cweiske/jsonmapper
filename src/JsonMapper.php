@@ -547,7 +547,7 @@ class JsonMapper
         if ($useParameter) {
             return new $class($parameter);
         } else {
-            return new $class();
+            return (new ReflectionClass($class))->newInstanceWithoutConstructor();
         }
     }
 
