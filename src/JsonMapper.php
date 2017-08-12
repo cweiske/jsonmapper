@@ -254,7 +254,7 @@ class JsonMapper
             }
             $propPath = $jsonPath . '->' . $key;
             try {
-                $value = $this->getPHPValue($jvalue, $propPath, $type, $classNamespace);
+                $value = $this->getPHPValue($jvalue, $propPath, $type);
             }
             catch(JsonMapper_BadTypeException $exception) {
                 throw new JsonMapper_BadPropertyTypeException(
@@ -287,12 +287,11 @@ class JsonMapper
      * @param mixed $jvalue
      * @param string $jsonPath
      * @param Type $type
-     * @param string $classNamespace
      *
      * @return mixed
      * @throws JsonMapper_Exception
      */
-    protected function getPHPValue($jvalue, $jsonPath, Type $type = null, $classNamespace = '')
+    protected function getPHPValue($jvalue, $jsonPath, Type $type = null)
     {
         if ($type === null) {
             /*throw new JsonMapper_Exception(
@@ -345,27 +344,25 @@ class JsonMapper
         }
         
         if ($type instanceof Array_) {
-            return $this->_mapArray($jvalue, $jsonPath, $classNamespace, $type->getValueType());
+            return $this->_mapArray($jvalue, $jsonPath, $type->getValueType());
         }
 
         if ($type instanceof Iterable_) {
-            return $this->_mapArray($jvalue, $jsonPath, $classNamespace);
+            return $this->_mapArray($jvalue, $jsonPath);
         }
 
         if ($type instanceof Compound) {
-            return $this->mapCompound($jvalue, $type, $jsonPath, $classNamespace);
+            return $this->mapCompound($jvalue, $type, $jsonPath);
         }
 
         if ($type instanceof Object_) {
             $className = (string)$type->getFqsen();
-            //$expectedClass = (string)$type->getFqsen();
-            //$className = $this->getFullNamespace($expectedClass, $classNamespace);
             if ($className == '\\ArrayObject'
                 || is_subclass_of($className, '\\ArrayObject')
             ) {
 
                 $array = $this->createInstance($className);
-                return $this->_mapArray($jvalue, $jsonPath, $classNamespace, null, $array);
+                return $this->_mapArray($jvalue, $jsonPath, null, $array);
             }
 
             if ($this->isFlatType(gettype($jvalue))) {
@@ -388,26 +385,6 @@ class JsonMapper
         throw new JsonMapper_Exception(
             'Expected type "'.$type.'" is not supported by JSON mapper'
         );
-    }
-
-    /**
-     * Convert a type name to a fully namespaced type name.
-     *
-     * @param string $type  Type name (simple type or class name)
-     * @param string $strNs Base namespace that gets prepended to the type name
-     *
-     * @return string Fully-qualified type name with namespace
-     */
-    protected function getFullNamespace($type, $strNs)
-    {
-        if ($type !== '' && $type{0} != '\\') {
-            echo "#####!!!!!!!!!##### \ncreate a full qualified namespace from $type -> $strNs\n";
-            //create a full qualified namespace
-            if ($strNs != '') {
-                $type = '\\' . $strNs . '\\' . $type;
-            }
-        }
-        return $type;
     }
 
     /**
@@ -474,15 +451,13 @@ class JsonMapper
      *
      * @param array  $json  JSON array structure from json_decode()
      * @param string $jsonPath
-     * @param string $classNamespace
      * @param Type   $itemType  the expected type for array values
      * @param object $array ArrayObject that gets filled with
      *                      data from $json
      *
      * @return mixed Mapped $array is returned
      */
-    public function _mapArray($json, $jsonPath, $classNamespace = '',
-                             $itemType = null, \Traversable $array = null)
+    public function _mapArray($json, $jsonPath, $itemType = null, \Traversable $array = null)
     {
         if (!is_array($json) && !is_object($json)) {
             throw new JsonMapper_BadTypeException(
@@ -513,7 +488,7 @@ class JsonMapper
             $key = $this->getSafeName($key);
             $jsonValuePath = $jsonPath.'['.$key.']';
             try {
-                $value = $this->getPHPValue($jvalue, $jsonValuePath, $itemType, $classNamespace);
+                $value = $this->getPHPValue($jvalue, $jsonValuePath, $itemType);
             }
             catch(JsonMapper_BadTypeException $exception) {
                 if ($key > 0) {
@@ -538,14 +513,13 @@ class JsonMapper
      * @param mixed $jvalue
      * @param Compound $type
      * @param string $jsonPath
-     * @param string $classNamespace
      * @return mixed the php value
      */
-    protected function mapCompound($jvalue, Compound $list, $jsonPath, $classNamespace)
+    protected function mapCompound($jvalue, Compound $list, $jsonPath)
     {
         foreach($list->getIterator() as $type) {
             try {
-                return $this->getPHPValue($jvalue, $jsonPath, $type, $classNamespace);
+                return $this->getPHPValue($jvalue, $jsonPath, $type);
             }
             catch(JsonMapper_UnknownPropertyException $e) {
                 // not the good class
