@@ -29,7 +29,7 @@ class UnitData
     public $empty;
 
     /**
-     * @var model\UserList[model\User]
+     * @var model\UserList<model\User>
      */
     public $users;
 

@@ -9,14 +9,14 @@ require_once __DIR__ . '/../othernamespace/Foo.php';
 
 class NamespaceTest extends \PHPUnit_Framework_TestCase
 {
-    /*public function testMapArrayNamespace()
+    public function testMapArrayNamespace()
     {
         $mapper = new \JsonMapper();
         $json = '{"data":[{"value":"1.2"}]}';
         $res = $mapper->map(json_decode($json), new UnitData());
         $this->assertInstanceOf('\namespacetest\UnitData', $res);
         $this->assertInstanceOf('\namespacetest\Unit', $res->data[0]);
-    }*/
+    }
 
     public function testMapSimpleArrayNamespace()
     {
@@ -55,15 +55,15 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\namespacetest\model\User', $res->user);
     }
 
-    /*public function testMapChildObjectArrayNamespace()
+    public function testMapChildObjectArrayNamespace()
     {
         $mapper = new \JsonMapper();
         $json = '{"data":[],"user":{"name": "John Smith"}}';
         /* @var \namespacetest\UnitData $res */
-        /*$res = $mapper->map(json_decode($json), new UnitData());
+        $res = $mapper->map(json_decode($json), new UnitData());
         $this->assertInstanceOf('\\ArrayObject', $res->data);
         $this->assertInstanceOf('\namespacetest\model\User', $res->user);
-    }*/
+    }
 
     /**
      * @expectedException JsonMapper_Exception
@@ -77,7 +77,7 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
         $res = $mapper->map(json_decode($json), new UnitData());
     }
 
-    /*public function testMapCustomArrayObjectWithChildType()
+    public function testMapCustomArrayObjectWithChildType()
     {
         $mapper = new \JsonMapper();
         $json = '{"users":[{"user":"John Smith"}]}';
@@ -85,7 +85,7 @@ class NamespaceTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\namespacetest\UnitData', $res);
         $this->assertInstanceOf('\namespacetest\model\UserList', $res->users);
         $this->assertInstanceOf('\namespacetest\model\User', $res->users[0]);
-    }*/
+    }
 
     public function testMapCustomArrayObject()
     {

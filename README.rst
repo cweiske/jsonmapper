@@ -230,8 +230,10 @@ It supports all type names specified in the PSR-5 specification (types for PHPDo
 
 - ArrayObjects of simple types and class names:
 
-  - ``ContactList[Contact]``
-  - ``NumberList[int]``
+  - ``ContactList<Contact>``
+  - ``NumberList<int>``
+  - ``ContactListWithStringsAsKeys<string,Contact>``
+  - Note that the syntax ``NumberList[int]`` is not supported anymore
 - Nullable types:
 
   - ``int|null`` - will be ``null`` if the value in JSON is

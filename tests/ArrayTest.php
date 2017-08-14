@@ -184,9 +184,9 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test for "@var ArrayObject[Classname]"
+     * Test for "@var \ArrayObject<Classname>"
      */
-    /*public function testMapTypedArrayObject()
+    public function testMapTypedArrayObject()
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
@@ -201,12 +201,12 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('JsonMapperTest_Simple', $sn->pTypedArrayObject[1]);
         $this->assertEquals('stringvalue', $sn->pTypedArrayObject[0]->str);
         $this->assertEquals('1.2', $sn->pTypedArrayObject[1]->fl);
-    }*/
+    }
 
     /**
      * Test for "@var \ArrayObject<int>"
      */
-    /*public function testMapSimpleArrayObject()
+    public function testMapSimpleArrayObject()
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
@@ -221,7 +221,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('int', $sn->pSimpleArrayObject['zwei']);
         $this->assertEquals(1, $sn->pSimpleArrayObject['eins']);
         $this->assertEquals(1, $sn->pSimpleArrayObject['zwei']);
-    }*/
+    }
 
     /**
      * @expectedException JsonMapper_BadTypeException
@@ -298,7 +298,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
      *
      * @runInSeparateProcess
      */
-    /*public function testMapTypedArrayObjectDoesNotExist()
+    public function testMapTypedArrayObjectDoesNotExist()
     {
         $this->assertTrue(
             spl_autoload_register(
@@ -317,7 +317,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(
             'ThisClassDoesNotExist', $sn->pTypedArrayObjectNoClass[0]
         );
-    }*/
+    }
 
     public function mapTypedArrayObjectDoesNotExistAutoloader($class)
     {

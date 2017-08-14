@@ -28,6 +28,7 @@ use phpDocumentor\Reflection\Types\Object_;
 use phpDocumentor\Reflection\Types\Void_;
 use phpDocumentor\Reflection\Types\Resource_;
 use phpDocumentor\Reflection\Types\Callable_;
+use phpDocumentor\Reflection\Types\Collection;
 
 /**
  * Automatically map JSON structures into objects.
@@ -342,7 +343,21 @@ class JsonMapper
         if ($this->isSimpleType($type)) {
             return $this->getSimpleValue($jvalue, $type);
         }
-        
+
+        if ($type instanceof Collection) {
+            // verify that the collection accepts only strings and integers
+            // as keys. We cannot support for now other type of keys  (objects...) with JSON.
+            // FIXME: support of other type of keys, with JSON data like
+            // [ {"key":..., "value":....}, {"key":..., "value":....}, ...]
+            if (!$this->isArrayKeyType($type->getKeyType())) {
+                throw new JsonMapper_Exception(
+                    'JSON mapper doesn\'t support collection key types other than string and integers'
+                );
+            }
+            $array = $this->createInstance((string)$type->getFqsen());
+            return $this->_mapArray($jvalue, $jsonPath, $type->getValueType(), $array);
+        }
+
         if ($type instanceof Array_) {
             return $this->_mapArray($jvalue, $jsonPath, $type->getValueType());
         }
@@ -928,6 +943,31 @@ class JsonMapper
         }
 
         return $annotations;
+    }
+
+    /**
+     * Says it the given type match array key types, aka string and/or integers
+     *
+     * @param Type $keyType
+     * @return boolean  true if it is an array key type
+     */
+    protected function isArrayKeyType(Type $keyType) {
+        if ($keyType instanceof Types\String_ ||
+            $keyType instanceof Types\Integer) {
+            return true;
+        }
+
+        if (! $keyType instanceof Compound) {
+            return false;
+        }
+        foreach($keyType->getIterator() as $item) {
+            if (! $item instanceof Types\String_ &&
+                ! $item instanceof Types\Integer
+            ) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

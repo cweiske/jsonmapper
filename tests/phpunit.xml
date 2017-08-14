@@ -7,6 +7,11 @@
          beStrictAboutTestsThatDoNotTestAnything="true"
          checkForUnintentionallyCoveredCode="true"
 >
+    <testsuites>
+        <testsuite name="unit">
+            <directory>.</directory>
+        </testsuite>
+    </testsuites>
     <filter>
         <whitelist>
             <directory suffix=".php">../src/</directory>

@@ -23,7 +23,7 @@
 class JsonMapperTest_Broken
 {
     /**
-     * @var ArrayObject[ThisClassDoesNotExist]
+     * @var \ArrayObject<ThisClassDoesNotExist>
      */
     public $pTypedArrayObjectNoClass;
 
