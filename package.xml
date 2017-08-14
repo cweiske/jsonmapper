@@ -21,11 +21,11 @@
   <active>yes</active>
  </lead>
 
- <date>2017-07-13</date>
+ <date>2017-08-14</date>
  <time>00:00:00</time>
 
  <version>
-  <release>1.2.0</release>
+  <release>1.3.0</release>
   <api>1.1.0</api>
  </version>
 
@@ -37,7 +37,9 @@
  <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
 
  <notes>
-  * Add support for multidimensional arrays by @thomasphansen (issue #81)
+   * Fix "Missing argument" error when instantiating class with required
+     constructor parameter by @jaredchu (pull request #85)
+   * Raise minimum PHP version to 5.6.0
  </notes>
 
  <contents>
@@ -113,6 +115,24 @@
  </phprelease>
 
  <changelog>
+
+  <release>
+   <version>
+    <release>1.3.0</release>
+    <api>1.1.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2017-08-14</date>
+   <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
+   <notes>
+     * Fix "Missing argument" error when instantiating class with required
+       constructor parameter by @jaredchu (pull request #85)
+     * Raise minimum PHP version to 5.6.0
+   </notes>
+  </release>
 
   <release>
    <version>
