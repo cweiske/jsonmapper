@@ -1,6 +1,10 @@
 <?php
 /**
+ * Part of JsonMapper
  *
+ * PHP version 5
+ *
+ * @category Netresearch
  * @package  JsonMapper
  * @author   Laurent Jouanneau <dev@ljouanneau.com>
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
@@ -8,8 +12,9 @@
  */
 
 /**
- * general exception for bad types
+ * General exception for bad types
  *
+ * @category Netresearch
  * @package  JsonMapper
  * @author   Laurent Jouanneau <dev@ljouanneau.com>
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
@@ -17,15 +22,34 @@
  */
 class JsonMapper_UnknownPropertyException extends JsonMapper_Exception
 {
+    /**
+     * @var string the path in JSON to the item that causes the error
+     */
     protected $jsonPath = "";
 
-    public function __construct ($message = "", $jsonPath = '', Throwable $previous = NULL, $code = 0) {
+    /**
+     * JsonMapper_UnknownPropertyException constructor.
+     *
+     * @param string         $message  the error message
+     * @param string         $jsonPath the path in JSON to the item that causes
+     *                                 the error
+     * @param int            $code     the error code
+     * @param Throwable|null $previous the parent exception
+     */
+    public function __construct ($message = "", $jsonPath = '', $code = 0,
+        Throwable $previous = null
+    ) {
         parent::__construct($message, $code, $previous);
         $this->jsonPath = $jsonPath;
     }
 
-    public function getJsonPath() {
+    /**
+     * gets the json path of the error
+     *
+     * @return string
+     */
+    public function getJsonPath()
+    {
         return $this->jsonPath;
     }
 }
-

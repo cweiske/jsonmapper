@@ -162,9 +162,12 @@ class JsonMapper
     }
 
     /**
-     * @param object $json
-     * @param object $object
-     * @param string $jsonPath
+     * maps the given JSON value to an object
+     *
+     * @param object $json     JSON object structure from json_decode()
+     * @param object $object   Object to map $json data into
+     * @param string $jsonPath the path to the json object in the json value
+     *
      * @return mixed
      * @throws JsonMapper_BadPropertyTypeException
      * @throws JsonMapper_BadTypeException
@@ -199,9 +202,11 @@ class JsonMapper
 
                 } catch (\Exception $e) {
                     throw new JsonMapper_Exception(
-                        "Error during the parsing of the type for $jsonPath: ".$e->getMessage(),
+                        "Error during the parsing of the type for $jsonPath: "
+                        . $e->getMessage(),
                         $e->getCode(),
-                        $e);
+                        $e
+                    );
                 }
             }
 
@@ -211,8 +216,8 @@ class JsonMapper
             if (!$hasProperty) {
                 if ($this->bExceptionOnUndefinedProperty) {
                     throw new JsonMapper_UnknownPropertyException(
-                        'JSON property "' . $jsonPath . '->' . $key . '" does not exist'
-                        . ' in object of type ' . $strClassName,
+                        'JSON property "' . $jsonPath . '->' . $key
+                        . '" does not exist in object of type ' . $strClassName,
                         $jsonPath . '->' . $key
                     );
                 } else if ($this->undefinedPropertyHandler !== null) {
@@ -224,7 +229,10 @@ class JsonMapper
                     $this->log(
                         'info',
                         'Property {property} does not exist in {class}',
-                        array('property' => $jsonPath . '->' . $key, 'class' => $strClassName)
+                        array(
+                            'property' => $jsonPath . '->' . $key,
+                            'class' => $strClassName
+                        )
                     );
                 }
                 continue;
@@ -232,15 +240,19 @@ class JsonMapper
             if ($accessor === null) {
                 if ($this->bExceptionOnUndefinedProperty) {
                     throw new JsonMapper_UnknownPropertyException(
-                        'JSON property "' . $jsonPath . '->' . $key. '" has no public setter method'
-                        . ' in object of type ' . $strClassName,
+                        'JSON property "' . $jsonPath . '->' . $key
+                        . '" has no public setter method in object of type '
+                        . $strClassName,
                         $jsonPath . '->' . $key
                     );
                 }
                 $this->log(
                     'info',
                     'Property {property} has no public setter method in {class}',
-                    array('property' => $jsonPath . '->' . $key, 'class' => $strClassName)
+                    array(
+                        'property' => $jsonPath . '->' . $key,
+                        'class' => $strClassName
+                    )
                 );
                 continue;
             }
@@ -259,8 +271,9 @@ class JsonMapper
             }
             catch(JsonMapper_BadTypeException $exception) {
                 throw new JsonMapper_BadPropertyTypeException(
-                    'JSON property "' . $propPath . '" has not the expected type ' . $type
-                    . ' in object of type ' . $strClassName. ': '.$exception->getMessage(),
+                    'JSON property "' . $propPath . '" has not the expected type '
+                    . $type . ' in object of type ' . $strClassName. ': '
+                    . $exception->getMessage(),
                     $propPath,
                     $exception->getCode(),
                     $exception
@@ -285,11 +298,16 @@ class JsonMapper
     }
 
     /**
-     * @param mixed $jvalue
-     * @param string $jsonPath
-     * @param Type $type
+     * Gets the PHP value corresponding to the given JSON value.
      *
-     * @return mixed
+     * The value may be converted to specified object, an array object etc..
+     *
+     * @param mixed  $jvalue   The value to convert
+     * @param string $jsonPath the path to the value into the global JSON
+     *                         structure
+     * @param Type   $type     The expected type of the JSON value
+     *
+     * @return mixed the converted value
      * @throws JsonMapper_Exception
      */
     protected function getPHPValue($jvalue, $jsonPath, Type $type = null)
@@ -314,7 +332,8 @@ class JsonMapper
 
         if ($type instanceof Resource_ || $type instanceof Callable_) {
             throw new JsonMapper_BadTypeException(
-                'JSON value at '.$jsonPath.' should not be given, as target property must contain a resource or a callable',
+                'JSON value at '.$jsonPath.' should not be given, as target '
+                .'property must contain a resource or a callable',
                 $jsonPath
             );
         }
@@ -346,24 +365,28 @@ class JsonMapper
 
         if ($type instanceof Collection) {
             // verify that the collection accepts only strings and integers
-            // as keys. We cannot support for now other type of keys  (objects...) with JSON.
+            // as keys. We cannot support for now other type of keys
+            // (objects...) with JSON.
             // FIXME: support of other type of keys, with JSON data like
             // [ {"key":..., "value":....}, {"key":..., "value":....}, ...]
             if (!$this->isArrayKeyType($type->getKeyType())) {
                 throw new JsonMapper_Exception(
-                    'JSON mapper doesn\'t support collection key types other than string and integers'
+                    'JSON mapper doesn\'t support collection key types other '
+                    . 'than string and integers'
                 );
             }
             $array = $this->createInstance((string)$type->getFqsen());
-            return $this->_mapArray($jvalue, $jsonPath, $type->getValueType(), $array);
+            return $this->mapSubArray(
+                $jvalue, $jsonPath, $type->getValueType(), $array
+            );
         }
 
         if ($type instanceof Array_) {
-            return $this->_mapArray($jvalue, $jsonPath, $type->getValueType());
+            return $this->mapSubArray($jvalue, $jsonPath, $type->getValueType());
         }
 
         if ($type instanceof Iterable_) {
-            return $this->_mapArray($jvalue, $jsonPath);
+            return $this->mapSubArray($jvalue, $jsonPath);
         }
 
         if ($type instanceof Compound) {
@@ -377,7 +400,7 @@ class JsonMapper
             ) {
 
                 $array = $this->createInstance($className);
-                return $this->_mapArray($jvalue, $jsonPath, null, $array);
+                return $this->mapSubArray($jvalue, $jsonPath, null, $array);
             }
 
             if ($this->isFlatType(gettype($jvalue))) {
@@ -407,13 +430,16 @@ class JsonMapper
      *
      * @param array  $providedProperties array with json properties
      * @param object $rc                 Reflection class to check
+     * @param string $jsonPath           Path to the value into the global JSON
+     *                                   structure
      *
      * @throws JsonMapper_Exception
      *
      * @return void
      */
-    protected function checkMissingData($providedProperties, ReflectionClass $rc, $jsonPath)
-    {
+    protected function checkMissingData($providedProperties,
+        ReflectionClass $rc, $jsonPath
+    ) {
         foreach ($rc->getProperties() as $property) {
             $rprop = $rc->getProperty($property->name);
             $docblock = $rprop->getDocComment();
@@ -448,32 +474,31 @@ class JsonMapper
     {
         if ($class === null) {
             $type = new Mixed_();
-        }
-        else {
+        } else {
             $typeResolver = new TypeResolver();
             $type = $typeResolver->resolve($class);
         }
         if (is_array($array)) {
-            return $this->_mapArray($json, "", $type);
-        }
-        else {
-            return $this->_mapArray($json, "", $type, $array);
+            return $this->mapSubArray($json, "", $type);
+        } else {
+            return $this->mapSubArray($json, "", $type, $array);
         }
     }
 
     /**
      * Map an array
      *
-     * @param array  $json  JSON array structure from json_decode()
-     * @param string $jsonPath
-     * @param Type   $itemType  the expected type for array values
-     * @param object $array ArrayObject that gets filled with
-     *                      data from $json
+     * @param array  $json     JSON array structure from json_decode()
+     * @param string $jsonPath Path to the array into the global JSON structure
+     * @param Type   $itemType the expected type for array values
+     * @param object $array    ArrayObject that gets filled with
+     *                         data from $json
      *
      * @return mixed Mapped $array is returned
      */
-    public function _mapArray($json, $jsonPath, $itemType = null, \Traversable $array = null)
-    {
+    protected function mapSubArray($json, $jsonPath, $itemType = null,
+        \Traversable $array = null
+    ) {
         if (!is_array($json) && !is_object($json)) {
             throw new JsonMapper_BadTypeException(
                 'JSON value at '.$jsonPath.' must be an array, '
@@ -487,7 +512,7 @@ class JsonMapper
 
         if ($itemType === null || $itemType instanceof Mixed_) {
             if ($array !== null) {
-                foreach($json as $key => $jvalue) {
+                foreach ($json as $key => $jvalue) {
                     $array[$key] = $jvalue;
                 }
                 return $array;
@@ -508,14 +533,14 @@ class JsonMapper
             catch(JsonMapper_BadTypeException $exception) {
                 if ($key > 0) {
                     throw new JsonMapper_BadItemTypeException(
-                        'JSON array item "' . $jsonValuePath . '" has not the expected type ' . $itemType
+                        'JSON array item "' . $jsonValuePath
+                        . '" has not the expected type ' . $itemType
                         . ': '.$exception->getMessage(),
                         $jsonValuePath,
                         $exception->getCode(),
                         $exception
                     );
-                }
-                else {
+                } else {
                     throw $exception;
                 }
             }
@@ -525,14 +550,17 @@ class JsonMapper
     }
 
     /**
-     * @param mixed $jvalue
-     * @param Compound $type
-     * @param string $jsonPath
+     * maps a value to possible types
+     *
+     * @param mixed    $jvalue   a JSON value
+     * @param Compound $list     a list of possible type for the value
+     * @param string   $jsonPath the path of the value into the JSON structure
+     *
      * @return mixed the php value
      */
     protected function mapCompound($jvalue, Compound $list, $jsonPath)
     {
-        foreach($list->getIterator() as $type) {
+        foreach ($list->getIterator() as $type) {
             try {
                 return $this->getPHPValue($jvalue, $jsonPath, $type);
             }
@@ -555,12 +583,25 @@ class JsonMapper
                 continue;
             }
         }
-        throw new JsonMapper_BadTypeException("JSON value is not of one of this types ".$list, $jsonPath);
+        throw new JsonMapper_BadTypeException(
+            "JSON value is not of one of this types ".$list,
+            $jsonPath
+        );
     }
 
-    protected function getSimpleValue($jvalue, Type $type) {
+    /**
+     * Gets the value converted to the given type if possible
+     *
+     * @param mixed $jvalue a value from JSON value
+     * @param Type  $type   the expected type for the value
+     *
+     * @return mixed
+     * @throws JsonMapper_Exception
+     */
+    protected function getSimpleValue($jvalue, Type $type)
+    {
         if (($this->bSimpleTypeLossyDataConversionChecking
-                || $this->bStrictSimpleTypeConversionChecking)
+            || $this->bStrictSimpleTypeConversionChecking)
             && $this->isLossyDataConversion($type, $jvalue)
         ) {
             $msg = 'Value conversion of JSON value '.
@@ -580,16 +621,19 @@ class JsonMapper
      * Try to find out if a property exists in a given class.
      * Checks property first, falls back to setter method.
      *
-     * @param object $rc   Reflection class to check
-     * @param string $name Property name
+     * @param object  $rc      Reflection class to check
+     * @param string  $name    Property name
+     * @param Context $context the namespace context for the type resolver
      *
      * @return array First value: if the property exists
      *               Second value: the accessor to use (
      *                 ReflectionMethod or ReflectionProperty, or null)
-     *               Third value: type of the property (\phpDocumentor\Reflection\Type or null)
+     *               Third value: type of the property
+     *                 (\phpDocumentor\Reflection\Type or null)
      */
-    protected function inspectProperty(ReflectionClass $rc, $name, Context $context)
-    {
+    protected function inspectProperty(ReflectionClass $rc, $name,
+        Context $context
+    ) {
         //try setter method first
         $setter = 'set' . $this->getCamelCaseName($name);
 
@@ -602,7 +646,10 @@ class JsonMapper
                     $pclass = $rparams[0]->getClass();
                     if ($pclass !== null) {
 
-                        $resolvedType = $typeResolver->resolve('\\'.$pclass->getName(), $context);
+                        $resolvedType = $typeResolver->resolve(
+                            '\\'.$pclass->getName(),
+                            $context
+                        );
                         if ($rparams[0]->allowsNull()) {
                             $resolvedType = new Nullable($resolvedType);
                         }
@@ -736,9 +783,8 @@ class JsonMapper
     ) {
         if (isset($this->classMap[$class])) {
             $class = $this->classMap[$class];
-        }
-        else if ($class[0] == '\\' && isset($this->classMap[substr($class,1)])) {
-            $class = $this->classMap[substr($class,1)];
+        } else if ($class[0] == '\\' && isset($this->classMap[substr($class, 1)])) {
+            $class = $this->classMap[substr($class, 1)];
         }
 
         if ($useParameter) {
@@ -767,8 +813,8 @@ class JsonMapper
     /**
      * Checks if the object is of this type or has this type as one of its parents
      *
-     * @param Type $type  class name of type being required
-     * @param mixed  $value Some PHP value to be tested
+     * @param Type  $type  class name of type being required
+     * @param mixed $value Some PHP value to be tested
      *
      * @return boolean True if $object has type of $type
      */
@@ -812,7 +858,7 @@ class JsonMapper
             return true;
         }
         if ($type instanceof Compound) {
-            foreach($type->getIterator() as $t) {
+            foreach ($type->getIterator() as $t) {
                 if ($t instanceof Null_) {
                     return true;
                 }
@@ -838,7 +884,7 @@ class JsonMapper
         }
         if ($type instanceof Compound) {
             $types = [];
-            foreach($type->getIterator() as $t) {
+            foreach ($type->getIterator() as $t) {
                 if ($t instanceof Null_) {
                     continue;
                 }
@@ -853,8 +899,8 @@ class JsonMapper
      * Check if the conversion of a value to the given type will be a lossy data
      * conversion
      *
-     * @param Type $targetType the type to which we want to convert the value
-     * @param mixed  $value      the value to convert
+     * @param Type  $targetType the type to which we want to convert the value
+     * @param mixed $value      the value to convert
      *
      * @return boolean true if the conversion will loose data
      */
@@ -948,21 +994,24 @@ class JsonMapper
     /**
      * Says it the given type match array key types, aka string and/or integers
      *
-     * @param Type $keyType
+     * @param Type $keyType the type of array keys
+     *
      * @return boolean  true if it is an array key type
      */
-    protected function isArrayKeyType(Type $keyType) {
-        if ($keyType instanceof Types\String_ ||
-            $keyType instanceof Types\Integer) {
+    protected function isArrayKeyType(Type $keyType)
+    {
+        if ($keyType instanceof Types\String_
+            || $keyType instanceof Types\Integer
+        ) {
             return true;
         }
 
         if (! $keyType instanceof Compound) {
             return false;
         }
-        foreach($keyType->getIterator() as $item) {
-            if (! $item instanceof Types\String_ &&
-                ! $item instanceof Types\Integer
+        foreach ($keyType->getIterator() as $item) {
+            if (! $item instanceof Types\String_
+                && ! $item instanceof Types\Integer
             ) {
                 return false;
             }
