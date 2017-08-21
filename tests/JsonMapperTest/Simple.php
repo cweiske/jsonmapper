@@ -101,6 +101,16 @@ class JsonMapperTest_Simple
     public $setterPreferredOverProperty;
 
     /**
+     * @var callable
+     */
+    public $callableProperty;
+
+    /**
+     * @var string|int|JsonMapperTest_PlainObject|JsonMapperTest_Object
+     */
+    public $compound;
+
+    /**
      * Value object which needs to be set as an instance (without mapping)
      * @var JsonMapperTest_ValueObject
      */

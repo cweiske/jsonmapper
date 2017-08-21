@@ -360,6 +360,26 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($sn->nMatrix[2]));
     }
 
+
+    /**
+     * Test for an array for an Iterable property
+     */
+    public function testIterable()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"iterable":[1,2,3,4]}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertInstanceof('ArrayObject', $sn->iterable);
+        $this->assertEquals(4, count($sn->iterable));
+        $this->assertEquals(1, $sn->iterable[0]);
+        $this->assertEquals(2, $sn->iterable[1]);
+        $this->assertEquals(3, $sn->iterable[2]);
+        $this->assertEquals(4, $sn->iterable[3]);
+    }
+
+
     /**
      * Test for an array of arrays of arrays of objects
      * "@var JsonMapper_Simple[][][]"
@@ -384,5 +404,77 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
             'JsonMapperTest_Simple', $sn->pMultiverse[0][0][0]
         );
     }
+
+    /**
+     * Test for mapping data to an array using mapArray
+     */
+    public function testMapArrayWithClass()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->mapArray(
+            json_decode('[{"pStr":"hello"}, {"pStr":"World"}]'),
+            array(),
+            'JsonMapperTest_PlainObject'
+        );
+
+        $this->assertInternalType('array', $sn);
+        $this->assertEquals(2, count($sn));
+        $this->assertInstanceOf('JsonMapperTest_PlainObject', $sn[0]);
+        $this->assertInstanceOf('JsonMapperTest_PlainObject', $sn[1]);
+        $this->assertEquals('hello', $sn[0]->pStr);
+        $this->assertEquals('World', $sn[1]->pStr);
+    }
+
+    /**
+     * Test for mapping data to an array using mapArray containing any data
+     */
+    public function testMapArrayWithAnyData()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->mapArray(
+            json_decode('[{"pStr":"hello"}, 548, {"pStr":"World"}]'),
+            array()
+        );
+
+        $this->assertInternalType('array', $sn);
+        $this->assertEquals(3, count($sn));
+        $this->assertEquals(548, $sn[1]);
+        $this->assertInstanceOf('StdClass', $sn[0]);
+        $this->assertInstanceOf('StdClass', $sn[2]);
+        $this->assertEquals('hello', $sn[0]->pStr);
+        $this->assertEquals('World', $sn[2]->pStr);
+    }
+
+    /**
+     * Test for mapping data to an ArrayObject using mapArray
+     */
+    public function testMapArrayObjectWithClass()
+    {
+        $ar = new ArrayObject();
+        $jm = new JsonMapper();
+        $sn = $jm->mapArray(
+            json_decode('[{"pStr":"hello"}, {"pStr":"World"}]'),
+            $ar,
+            'JsonMapperTest_PlainObject'
+        );
+
+        $this->assertInstanceOf('ArrayObject', $sn);
+        $this->assertEquals(2, count($sn));
+        $this->assertInstanceOf('JsonMapperTest_PlainObject', $sn[0]);
+        $this->assertInstanceOf('JsonMapperTest_PlainObject', $sn[1]);
+        $this->assertEquals('hello', $sn[0]->pStr);
+        $this->assertEquals('World', $sn[1]->pStr);
+    }
+
+    /**
+     * @expectedException        JsonMapper_Exception
+     * @expectedExceptionMessage Error for JSON property "{}->unsupportedCollection" for class JsonMapperTest_Array: JSON mapper doesn't support collection key types other than string and integers
+     */
+    public function testUnsupportedCollection()
+    {
+        $jm = new JsonMapper();
+        $json   = '{"unsupportedCollection" : ["hello"]}';
+        $jm->map(json_decode($json), new JsonMapperTest_Array());
+    }
 }
-?>
+

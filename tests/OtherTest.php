@@ -327,5 +327,37 @@ class OtherTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('second level', $sn->simple->str);
         $this->assertEquals('database', $sn->simple->db);
     }
+
+
+    public function testLossyDataConversionSimple() {
+        $jm = new JsonMapper();
+        $jm->bSimpleTypeLossyDataConversionChecking = true;
+        $jm->bStrictSimpleTypeConversionChecking = true;
+
+        $sn = $jm->map(
+            json_decode('{"pbool":false,"pboolean":true,"pint":456,"pinteger":456,"pnullable":null,'
+                    .'"fl":63.21,"mixed":"h","str":"string","simple":{"str":"world"}}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertInstanceOf('JsonMapperTest_Simple', $sn);
+        $this->assertFalse($sn->pbool);
+        $this->assertTrue($sn->pboolean);
+        $this->assertEquals(456, $sn->pint);
+        $this->assertEquals('string', $sn->str);
+        $this->assertEquals('world', $sn->simple->str);
+    }
+
+    /**
+     * @expectedException        JsonMapper_Exception
+     * @expectedExceptionMessage JSON property "{}->callableProperty" has not the expected type callable in object of type JsonMapperTest_Simple: JSON value at {}->callableProperty should not be given, as target property must contain a resource or a callable
+     */
+    public function testCallableProperty()
+    {
+        $jm = new JsonMapper();
+        $json   = '{"callableProperty" : "hello"}';
+        $jm->map(json_decode($json), new JsonMapperTest_Simple());
+    }
+
+
 }
 ?>

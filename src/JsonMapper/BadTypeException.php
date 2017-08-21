@@ -34,10 +34,10 @@ class JsonMapper_BadTypeException extends JsonMapper_Exception
      * @param string         $jsonPath the path in JSON to the item that causes
      *                                 the error
      * @param int            $code     the error code
-     * @param Throwable|null $previous the parent exception
+     * @param Exception|null $previous the parent exception
      */
     public function __construct ($message = "", $jsonPath = '', $code = 0,
-        Throwable $previous = null
+        Exception $previous = null
     ) {
         parent::__construct($message, $code, $previous);
         $this->jsonPath = $jsonPath;

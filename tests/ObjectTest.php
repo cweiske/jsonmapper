@@ -193,5 +193,80 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
             $sn->pPlainObject->format('c')
         );
     }
+
+    public function testClassMapWithNamespace()
+    {
+        $jm = new JsonMapper();
+        $jm->classMap['\\JsonMapperTest_PlainObject'] = 'DateTime';
+        $sn = $jm->map(
+            json_decode('{"pPlainObject":"2016-04-14T23:15:42+02:00"}'),
+            new JsonMapperTest_Object()
+        );
+
+        $this->assertInternalType('object', $sn->pPlainObject);
+        $this->assertInstanceOf('DateTime', $sn->pPlainObject);
+        $this->assertEquals(
+            '2016-04-14T23:15:42+02:00',
+            $sn->pPlainObject->format('c')
+        );
+    }
+
+    public function testCompound1() {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"compound":"hello"}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertInstanceOf('JsonMapperTest_Simple', $sn);
+        $this->assertEquals("hello", $sn->compound);
+    }
+
+    public function testCompound2() {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"compound":123}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertInstanceOf('JsonMapperTest_Simple', $sn);
+        $this->assertEquals(123, $sn->compound);
+    }
+
+    public function testCompound3() {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"compound":{"pStr":"hello"}}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertInstanceOf('JsonMapperTest_Simple', $sn);
+        $this->assertInstanceOf('JsonMapperTest_PlainObject', $sn->compound);
+        $this->assertEquals("hello", $sn->compound->pStr);
+    }
+
+    public function testCompound4() {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"compound":{"pValueObject":{"publicValue":"hello"}}}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertInstanceOf('JsonMapperTest_Simple', $sn);
+        $this->assertInstanceOf('JsonMapperTest_Object', $sn->compound);
+        $this->assertInstanceOf('JsonMapperTest_ValueObject', $sn->compound->pValueObject);
+        $this->assertEquals("hello", $sn->compound->pValueObject->publicValue);
+    }
+
+    /**
+     * Test for compound with a property with the good name but a bad type
+     *
+     * @expectedException JsonMapper_Exception
+     * @expectedExceptionMessage Error for JSON property "{}->compound" for class JsonMapperTest_Simple: Error for JSON property "{}->compound->pPlainObject" for class JsonMapperTest_Object: JSON property "{}->compound->pPlainObject->foo" does not exist in object of type JsonMapperTest_PlainObject
+     */
+    public function testCompoundGoodPropertyNameBadType() {
+        $jm = new JsonMapper();
+        $jm->map(
+            json_decode('{"compound":{"pPlainObject":{ "foo":54}}}'),
+            new JsonMapperTest_Simple()
+        );
+    }
+
 }
 ?>

@@ -88,5 +88,14 @@ class JsonMapperTest_Array
      * @var JsonMapperTest_Simple[][][]
      */
     public $pMultiverse;
+
+    /**
+     * @var ArrayObject<JsonMapperTest_Simple,DateTime>
+     */
+    public $unsupportedCollection;
+
+    /**
+     * @var Iterable
+     */
+    public $iterable;
 }
-?>

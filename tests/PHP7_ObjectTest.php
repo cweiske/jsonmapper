@@ -51,7 +51,7 @@ class PHP7_1_ObjectTest extends \PHPUnit_Framework_TestCase
      * Test for non-nullable types like "@param object" with null value
      *
      * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "nonNullableObject" in class "JsonMapperTest_PHP7_Object" must not be NULL
+     * @expectedExceptionMessage JSON property "{}->nonNullableObject" has not the expected type \JsonMapperTest_PlainObject in object of type JsonMapperTest_PHP7_Object: JSON value at {}->nonNullableObject must not be NULL
      */
     public function testObjectSetterDocblockInvalidNull()
     {
