@@ -116,6 +116,11 @@ class JsonMapperTest_Simple
      */
     public $valueObject;
 
+    /**
+     * @var object
+     */
+    public $anyObject;
+
     public function setSimpleSetterOnlyTypeHint(JsonMapperTest_Simple $s)
     {
         $this->internalData['typehint'] = $s;

@@ -409,6 +409,14 @@ class JsonMapper
 
         if ($type instanceof Object_) {
             $className = (string)$type->getFqsen();
+            if ($className == '') {
+                if (!is_object($jvalue)) {
+                    throw new JsonMapper_BadTypeException(
+                        "$jsonPath is not an object", $jsonPath
+                    );
+                }
+                return $jvalue;
+            }
             if ($className == '\\ArrayObject'
                 || is_subclass_of($className, '\\ArrayObject')
             ) {

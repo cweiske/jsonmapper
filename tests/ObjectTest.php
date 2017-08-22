@@ -177,6 +177,21 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('null', $sn->pValueObjectNullable);
     }
 
+    /**
+     * Test for "@var object"
+     */
+    public function testMapObjectPropertyWithAnyObject()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"anyObject":{"str":"stringvalue"}}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertInternalType('object', $sn->anyObject);
+        $this->assertInstanceOf('stdClass', $sn->anyObject);
+        $this->assertEquals('stringvalue', $sn->anyObject->str);
+    }
+
     public function testClassMap()
     {
         $jm = new JsonMapper();
