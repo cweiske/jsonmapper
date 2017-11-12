@@ -1,5 +1,8 @@
 <?php
 namespace namespacetest;
+
+use PHPUnit\Framework\TestCase;
+
 require_once __DIR__ . '/Unit.php';
 require_once __DIR__ . '/UnitData.php';
 require_once __DIR__ . '/model/MyArrayObject.php';
@@ -7,7 +10,7 @@ require_once __DIR__ . '/model/User.php';
 require_once __DIR__ . '/model/UserList.php';
 require_once __DIR__ . '/../othernamespace/Foo.php';
 
-class NamespaceTest extends \PHPUnit_Framework_TestCase
+class NamespaceTest extends TestCase
 {
     public function testMapArrayNamespace()
     {

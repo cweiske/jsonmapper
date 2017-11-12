@@ -11,6 +11,8 @@
  * @link     https://github.com/cweiske/jsonmapper
  */
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Unit tests for JsonMapper's object handling using PHP 7.1 syntax
  *
@@ -21,7 +23,7 @@
  * @link     https://github.com/cweiske/jsonmapper
  * @requires PHP 7.1
  */
-class PHP7_1_ObjectTest extends \PHPUnit_Framework_TestCase
+class PHP7_1_ObjectTest extends TestCase
 {
     /**
      * Sets up test cases loading required classes.
