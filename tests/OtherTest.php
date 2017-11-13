@@ -10,6 +10,9 @@
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     http://cweiske.de/
  */
+
+use PHPUnit\Framework\TestCase;
+
 require_once 'JsonMapperTest/Broken.php';
 require_once 'JsonMapperTest/DependencyInjector.php';
 require_once 'JsonMapperTest/Simple.php';
@@ -26,7 +29,7 @@ require_once 'JsonMapperTest/ValueObject.php';
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     http://cweiske.de/
  */
-class OtherTest extends \PHPUnit_Framework_TestCase
+class OtherTest extends TestCase
 {
 
     /**
