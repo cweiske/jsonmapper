@@ -25,7 +25,7 @@ require_once 'JsonMapperTest/ComplexObject.php';
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
  */
-class ObjectTest extends \PHPUnit_Framework_TestCase
+class ObjectTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test for a class name "@var Classname"
