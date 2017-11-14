@@ -375,5 +375,32 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             'JsonMapperTest_Simple', $sn->pMultiverse[0][0][0]
         );
     }
+
+    /**
+     * Dead simple mapArray test
+     */
+    public function testMapArray()
+    {
+        $jm = new JsonMapper();
+        $mapped = $jm->mapArray(
+            json_decode('[1,2,3]'),
+            []
+        );
+        $this->assertEquals([1, 2, 3], $mapped);
+    }
+
+    /**
+     * Make sure we're not modifying array keys
+     * as we do with object names (getSafeName)
+     */
+    public function testMapArrayStrangeKeys()
+    {
+        $jm = new JsonMapper();
+        $mapped = $jm->mapArray(
+            ['en-US' => 'foo', 'de-DE' => 'bar'],
+            []
+        );
+        $this->assertEquals(['en-US' => 'foo', 'de-DE' => 'bar'], $mapped);
+    }
 }
 ?>
