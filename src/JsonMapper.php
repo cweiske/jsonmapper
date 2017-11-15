@@ -376,6 +376,13 @@ class JsonMapper
                         );
                     }
                 }
+            } else if ($class == 'ArrayObject'
+                || is_subclass_of($class, 'ArrayObject')
+            ) {
+                $array[$key] = $this->mapArray(
+                    $jvalue,
+                    $this->createInstance($class)
+                );
             } else {
                 $array[$key] = $this->map(
                     $jvalue, $this->createInstance($class)

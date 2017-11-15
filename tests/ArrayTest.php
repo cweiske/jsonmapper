@@ -328,6 +328,25 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Lists or ArrayObject instances.
+     */
+    public function testArrayObjectList()
+    {
+        $jm = new JsonMapper();
+        $jm->bStrictNullTypes = false;
+        $sn = $jm->map(
+            json_decode('{"pArrayObjectList": [{"x":"X"},{"y":"Y"}]}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertNotNull($sn->pArrayObjectList);
+        $this->assertInternalType('array', $sn->pArrayObjectList);
+        $this->assertEquals(2, count($sn->pArrayObjectList));
+        $ao = $sn->pArrayObjectList[0];
+        $this->assertInstanceOf('ArrayObject', $ao);
+        $this->assertEquals(['x' => 'X'], $ao->getArrayCopy());
+    }
+
+    /**
      * Test for an array of array of integers "@var int[][]"
      */
     public function testNMatrix()

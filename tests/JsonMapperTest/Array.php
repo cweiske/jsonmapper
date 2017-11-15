@@ -78,6 +78,12 @@ class JsonMapperTest_Array
     public $pSimpleArrayObject;
 
     /**
+     * Array of ArrayObject instances
+     * @var ArrayObject[]
+     */
+    public $pArrayObjectList;
+
+    /**
      * 2D matrix of numbers
      * @var int[][]
      */
