@@ -402,5 +402,24 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertEquals(['en-US' => 'foo', 'de-DE' => 'bar'], $mapped);
     }
+
+    /**
+     * Map a JSON object to an array with a key that contains a hyphen.
+     */
+    public function testMapTypedSimpleArrayFromObject()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"typedSimpleArray":{"en-US":"2014-01-02"}}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertInternalType('array', $sn->typedSimpleArray);
+        $this->assertEquals(1, count($sn->typedSimpleArray));
+        $this->assertArrayHasKey('en-US', $sn->typedSimpleArray);
+        $this->assertInstanceOf('DateTime', $sn->typedSimpleArray['en-US']);
+        $this->assertEquals(
+            '2014-01-02', $sn->typedSimpleArray['en-US']->format('Y-m-d')
+        );
+    }
 }
 ?>
