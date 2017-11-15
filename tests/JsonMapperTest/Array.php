@@ -84,6 +84,12 @@ class JsonMapperTest_Array
     public $pArrayObjectList;
 
     /**
+     * Array of ArrayObject instances
+     * @var \namespacetest\model\MyArrayObject[]
+     */
+    public $pArrayObjectSubclassList;
+
+    /**
      * 2D matrix of numbers
      * @var int[][]
      */

@@ -10,6 +10,9 @@
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
  */
+
+use namespacetest\model\MyArrayObject;
+
 require_once 'JsonMapperTest/Array.php';
 require_once 'JsonMapperTest/Broken.php';
 require_once 'JsonMapperTest/Simple.php';
@@ -340,9 +343,30 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertNotNull($sn->pArrayObjectList);
         $this->assertInternalType('array', $sn->pArrayObjectList);
-        $this->assertEquals(2, count($sn->pArrayObjectList));
+        $this->assertCount(2, $sn->pArrayObjectList);
+        $this->assertContainsOnlyInstancesOf(\ArrayObject::class, $sn->pArrayObjectList);
+        // test first element data
         $ao = $sn->pArrayObjectList[0];
-        $this->assertInstanceOf('ArrayObject', $ao);
+        $this->assertEquals(['x' => 'X'], $ao->getArrayCopy());
+    }
+
+    /**
+     * Lists or ArrayObject subclass instances.
+     */
+    public function testArrayObjectSubclassList()
+    {
+        $jm = new JsonMapper();
+        $jm->bStrictNullTypes = false;
+        $sn = $jm->map(
+            json_decode('{"pArrayObjectSubclassList": [{"x":"X"},{"y":"Y"}]}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertNotNull($sn->pArrayObjectSubclassList);
+        $this->assertInternalType('array', $sn->pArrayObjectSubclassList);
+        $this->assertCount(2, $sn->pArrayObjectSubclassList);
+        $this->assertContainsOnlyInstancesOf(MyArrayObject::class, $sn->pArrayObjectSubclassList);
+        // test first element data
+        $ao = $sn->pArrayObjectSubclassList[0];
         $this->assertEquals(['x' => 'X'], $ao->getArrayCopy());
     }
 
