@@ -176,7 +176,8 @@ class JsonMapper
             if ($factoryMethod !== null) {
                 if (!is_callable($factoryMethod)) {
                     throw new JsonMapperException(
-                        'Factory method "' . $factoryMethod . '" referenced by "' . $strClassName . '" is not callable'
+                        'Factory method "' . $factoryMethod . '" referenced by "'
+                        . $strClassName . '" is not callable'
                     );
                 }
                 $factoryValue = call_user_func($factoryMethod, $jvalue);
