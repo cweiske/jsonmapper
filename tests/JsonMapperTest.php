@@ -20,6 +20,8 @@ require_once 'JsonMapperTest/ValueObject.php';
 require_once 'JsonMapperTest/SimpleBase.php';
 require_once 'JsonMapperTest/DerivedClass.php';
 require_once 'JsonMapperTest/DerivedClass2.php';
+require_once 'JsonMapperTest/FactoryMethod.php';
+require_once 'JsonMapperTest/FactoryMethodWithError.php';
 
 use apimatic\jsonmapper\JsonMapper;
 use apimatic\jsonmapper\JsonMapperException;
@@ -903,6 +905,37 @@ class JsonMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('JsonMapperTest_SimpleBase', $sn);
         $this->assertInstanceOf('JsonMapperTest_DerivedClass', $sn->embeddedArray[0]);
         $this->assertInstanceOf('JsonMapperTest_DerivedClass2', $sn->embeddedArray[1]);
+    }
+
+    public function testFactoryMethods()
+    {
+        $jm = new JsonMapper();
+        $fm = $jm->map(
+            json_decode('{"simple":"hello world", "value":123, "bool": 0, "datetime": 1511247096, "object": "some value", "objObj":{"a":"b"}, "array": [1,2,3], "valueArr":[1,2,3]}'),
+            new FactoryMethod()
+        );
+        $this->assertEquals("hello world", $fm->simple);
+        $this->assertEquals("value is 123", $fm->value);
+        $this->assertEquals(false, $fm->bool);
+        $this->assertInternalType('bool', $fm->bool);
+        $this->assertInstanceOf('DateTime', $fm->datetime);
+        $this->assertInstanceOf('JsonMapperTest_ValueObject', $fm->object);
+        $this->assertInstanceOf('JsonMapperTest_ValueObject', $fm->objObj);
+        $this->assertEquals(array(1, 4, 9), $fm->array);
+        $this->assertEquals(6, $fm->valueArr);
+    }
+
+    /**
+     * @expectedException        apimatic\jsonmapper\JsonMapperException
+     * @expectedExceptionMessage  Factory method "NonExistentMethod" referenced by "FactoryMethodWithError" is not callable
+     */
+    public function testFactoryMethodException()
+    {
+        $jm = new JsonMapper();
+        $fm = $jm->map(
+            json_decode('{"simple":"hello world"}'),
+            new FactoryMethodWithError()
+        );
     }
 }
 ?>

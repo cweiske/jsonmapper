@@ -128,7 +128,7 @@ class JsonMapper
                     = $this->inspectProperty($rc, $key);
             }
 
-            list($hasProperty, $accessor, $type)
+            list($hasProperty, $accessor, $type, $factoryMethod)
                 = $this->arInspectedClasses[$strClassName][$key];
 
             if ($accessor !== null) {
@@ -169,6 +169,18 @@ class JsonMapper
                 if ($additionalPropertiesMethod !== null) {
                     $additionalPropertiesMethod->invoke($object, $key, $jvalue); 
                 }
+                continue;
+            }
+
+            //use factory method generated value if factory provided
+            if ($factoryMethod !== null) {
+                if (!is_callable($factoryMethod)) {
+                    throw new JsonMapperException(
+                        'Factory method "' . $factoryMethod . '" referenced by "' . $strClassName . '" is not callable'
+                    );
+                }
+                $factoryValue = call_user_func($factoryMethod, $jvalue);
+                $this->setProperty($object, $accessor, $factoryValue);
                 continue;
             }
 
@@ -548,6 +560,7 @@ class JsonMapper
      *               Second value: the accessor to use (
      *                 ReflectionMethod or ReflectionProperty, or null)
      *               Third value: type of the property
+     *               Fourth value: factory method
      */
     protected function inspectProperty(\ReflectionClass $rc, $name)
     {
@@ -563,7 +576,7 @@ class JsonMapper
                     $pclass = $rparams[0]->getClass();
                     if ($pclass !== null) {
                         return array(
-                            true, $rmeth, '\\' . $pclass->getName()
+                            true, $rmeth, '\\' . $pclass->getName(), null
                         );
                     }
                 }
@@ -572,10 +585,10 @@ class JsonMapper
                 $annotations = $this->parseAnnotations($docblock);
 
                 if (!isset($annotations['param'][0])) {
-                    return array(true, $rmeth, null);
+                    return array(true, $rmeth, null, null);
                 }
                 list($type) = explode(' ', trim($annotations['param'][0]));
-                return array(true, $rmeth, $type);
+                return array(true, $rmeth, $type, null);
             }
         }
 
@@ -610,25 +623,30 @@ class JsonMapper
 
         if ($rprop !== null) {
             if ($rprop->isPublic()) {
-                $docblock    = $rprop->getDocComment();
-                $annotations = $this->parseAnnotations($docblock);
-
-                if (!isset($annotations['var'][0])) {
-                    return array(true, $rprop, null);
-                }
+                $docblock      = $rprop->getDocComment();
+                $annotations   = $this->parseAnnotations($docblock);
+                $type          = null;
+                $factoryMethod = null;
 
                 //support "@var type description"
-                list($type) = explode(' ', $annotations['var'][0]);
+                if (isset($annotations['var'][0])) {
+                    list($type) = explode(' ', $annotations['var'][0]);
+                }
 
-                return array(true, $rprop, $type);
+                //support "@factory method_name"
+                if (isset($annotations['factory'][0])) {
+                    list($factoryMethod) = explode(' ', $annotations['factory'][0]);
+                }
+
+                return array(true, $rprop, $type, $factoryMethod);
             } else {
                 //no setter, private property
-                return array(true, null, null);
+                return array(true, null, null, null);
             }
         }
 
         //no setter, no property
-        return array(false, null, null);
+        return array(false, null, null, null);
     }
 
     /**
