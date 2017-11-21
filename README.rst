@@ -276,6 +276,29 @@ JSON:
 
 This will result in ``new DateTime('2014-05-15')`` being called.
 
+Custom property initialization
+------------------------------
+
+You can use the ``@factory`` annotation to specify a custom method that
+will be called to get the value to be assigned to the property.
+
+.. code:: php
+
+    /**
+     * @factory MyUtilityClass::createDate
+     */
+    public $date;
+
+Here, ``createDate`` method in the ``MyUtilityClass`` is called with the
+raw value for ``date`` property and the value returned by the factory method
+is then assigned to the ``date`` property.
+
+The factory method should return true when tested with ``is_callable``, otherwise
+an exception will be thrown.
+
+The factory annotation can be used with other annotations such as ``@var``; however,
+only the value created by the factory method will be used while other typehints and
+initialization methods for the property will be ignored.
 
 Logging
 =======
