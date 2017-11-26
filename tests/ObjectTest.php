@@ -177,10 +177,31 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertInternalType('null', $sn->pValueObjectNullable);
     }
 
-    public function testClassMap()
+    /**
+     * Abuse self
+     */
+    public function __invoke()
+    {
+        return 'DateTime';
+    }
+
+    public function classMapTestData()
+    {
+        // classMap value
+        return [
+            'name' =>     ['DateTime'],
+            'function' => [function ($jvalue) { return 'DateTime'; }],
+            'invoke' =>   [$this],  // __invoke
+        ];
+    }
+
+    /**
+     * @dataProvider classMapTestData
+     */
+    public function testClassMap($classMapValue)
     {
         $jm = new JsonMapper();
-        $jm->classMap['JsonMapperTest_PlainObject'] = 'DateTime';
+        $jm->classMap['JsonMapperTest_PlainObject'] = $classMapValue;
         $sn = $jm->map(
             json_decode('{"pPlainObject":"2016-04-14T23:15:42+02:00"}'),
             new JsonMapperTest_Object()
