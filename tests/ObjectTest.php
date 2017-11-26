@@ -180,7 +180,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
     /**
      * Abuse self
      */
-    public function __invoke()
+    public function __invoke($class, $jvalue)
     {
         return 'DateTime';
     }
@@ -190,7 +190,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
         // classMap value
         return [
             'name' =>     ['DateTime'],
-            'function' => [function ($jvalue) { return 'DateTime'; }],
+            'function' => [function ($class, $jvalue) { return 'DateTime'; }],
             'invoke' =>   [$this],  // __invoke
         ];
     }

@@ -542,7 +542,7 @@ class JsonMapper
     ) {
         if (isset($this->classMap[$class])) {
             if (is_callable($mapper = $this->classMap[$class])) {
-                $class = $mapper($jvalue);
+                $class = $mapper($class, $jvalue);
             } else {
                 $class = $this->classMap[$class];
             }

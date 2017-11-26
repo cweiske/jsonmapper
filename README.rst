@@ -282,12 +282,14 @@ of type ``Foo``.
 
 It is also possible to use a callable in case the actual implementation class
 needs to be determined dynamically (for example in case of a union).
-The Json data is passed as parameter into the call.
+The mapped class ('Foo' in the example below) and the Json data are passed as
+parameters into the call.
 
 .. code:: php
 
-    $mapper = function ($jvalue) {
-       return 'DateTime';
+    $mapper = function ($class, $jvalue) {
+        // examine $class and $jvalue to figure out what class to use...
+        return 'DateTime';
     };
 
     $jm = new JsonMapper();
