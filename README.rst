@@ -280,6 +280,20 @@ shall get instantiated instead:
 This would create objects of type ``Bar`` when a variable is defined to be
 of type ``Foo``.
 
+It is also possible to use a callable in case the actual implementation class
+needs to be determined dynamically (for example in case of a union).
+The Json data is passed as parameter into the call.
+
+.. code:: php
+
+    $mapper = function ($jvalue) {
+       return 'DateTime';
+    };
+
+    $jm = new JsonMapper();
+    $jm->classMap['Foo'] = $mapper;
+    $jm->map(...);
+
 
 Nullables
 ---------
