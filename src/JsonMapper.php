@@ -237,14 +237,14 @@ class JsonMapper
                 if ($proptype == 'array') {
                     $array = array();
                 } else {
-                    $array = $this->createInstance($proptype);
+                    $array = $this->createInstance($proptype, false, $jvalue);
                 }
             } else {
                 $type = $this->getFullNamespace($type, $strNs);
                 if ($type == 'ArrayObject'
                     || is_subclass_of($type, 'ArrayObject')
                 ) {
-                    $array = $this->createInstance($type);
+                    $array = $this->createInstance($type, false, $jvalue);
                 }
             }
 
@@ -276,7 +276,7 @@ class JsonMapper
                 $child = $this->createInstance($type, true, $jvalue);
             } else {
                 $type = $this->getFullNamespace($type, $strNs);
-                $child = $this->createInstance($type);
+                $child = $this->createInstance($type, false, $jvalue);
                 $this->map($jvalue, $child);
             }
             $this->setProperty($object, $accessor, $child);
@@ -378,7 +378,7 @@ class JsonMapper
                 }
             } else {
                 $array[$key] = $this->map(
-                    $jvalue, $this->createInstance($class)
+                    $jvalue, $this->createInstance($class, false, $jvalue)
                 );
             }
         }
@@ -533,18 +533,22 @@ class JsonMapper
      *
      * @param string  $class        Class name to instantiate
      * @param boolean $useParameter Pass $parameter to the constructor or not
-     * @param mixed   $parameter    Constructor parameter
+     * @param mixed   $jvalue       Constructor parameter (the json value)
      *
      * @return object Freshly created object
      */
     public function createInstance(
-        $class, $useParameter = false, $parameter = null
+        $class, $useParameter = false, $jvalue = null
     ) {
         if (isset($this->classMap[$class])) {
-            $class = $this->classMap[$class];
+            if (is_callable($mapper = $this->classMap[$class])) {
+                $class = $mapper($class, $jvalue);
+            } else {
+                $class = $this->classMap[$class];
+            }
         }
         if ($useParameter) {
-            return new $class($parameter);
+            return new $class($jvalue);
         } else {
             return (new ReflectionClass($class))->newInstanceWithoutConstructor();
         }
