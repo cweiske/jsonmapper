@@ -536,18 +536,18 @@ class JsonMapper
      *
      * @param string  $class        Class name to instantiate
      * @param boolean $useParameter Pass $parameter to the constructor or not
-     * @param mixed   $parameter    Constructor parameter
+     * @param mixed   $jvalue       Constructor parameter (the json value)
      *
      * @return object Freshly created object
      */
     public function createInstance(
-        $class, $useParameter = false, $parameter = null
+        $class, $useParameter = false, $jvalue = null
     ) {
         if (isset($this->classMap[$class])) {
             $class = $this->classMap[$class];
         }
         if ($useParameter) {
-            return new $class($parameter);
+            return new $class($jvalue);
         } else {
             return (new ReflectionClass($class))->newInstanceWithoutConstructor();
         }
