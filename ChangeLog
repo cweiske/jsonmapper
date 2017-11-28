@@ -1,3 +1,13 @@
+2017-11-28  Christian Weiske  <cweiske@cweiske.de>
+
+	* Fix do not modify keys when mapping objects to arrays (issue #87)
+	* Add support for lists of ArrayObjects
+	  by @DerManoMann
+	* Add support for callback functions in $classMap
+	  by @DerManoMann
+	* Use PHPUnit 5+ for tests
+	* Version 1.4.0
+
 2017-08-14  Christian Weiske  <cweiske@cweiske.de>
 
 	* Fix "Missing argument" error when instantiating class with required
