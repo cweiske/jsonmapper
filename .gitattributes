@@ -1,0 +1,9 @@
+* text=auto
+
+/example export-ignore
+/tests export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/ChangeLog export-ignore
+/package.xml export-ignore
+/README.rst export-ignore
