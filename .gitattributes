@@ -1,0 +1,7 @@
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/ChangeLog export-ignore
+/example export-ignore
+/package.xml export-ignore
+/README.rst export-ignore
+/tests export-ignore
