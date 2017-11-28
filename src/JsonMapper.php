@@ -237,12 +237,12 @@ class JsonMapper
                 if ($proptype == 'array') {
                     $array = array();
                 } else {
-                    $array = $this->createInstance($proptype);
+                    $array = $this->createInstance($proptype, false, $jvalue);
                 }
             } else {
                 $type = $this->getFullNamespace($type, $strNs);
                 if (is_a($type, 'ArrayObject', true)) {
-                    $array = $this->createInstance($type);
+                    $array = $this->createInstance($type, false, $jvalue);
                 }
             }
 
@@ -274,7 +274,7 @@ class JsonMapper
                 $child = $this->createInstance($type, true, $jvalue);
             } else {
                 $type = $this->getFullNamespace($type, $strNs);
-                $child = $this->createInstance($type);
+                $child = $this->createInstance($type, false, $jvalue);
                 $this->map($jvalue, $child);
             }
             $this->setProperty($object, $accessor, $child);
@@ -381,7 +381,7 @@ class JsonMapper
                 );
             } else {
                 $array[$key] = $this->map(
-                    $jvalue, $this->createInstance($class)
+                    $jvalue, $this->createInstance($class, false, $jvalue)
                 );
             }
         }
@@ -544,7 +544,11 @@ class JsonMapper
         $class, $useParameter = false, $jvalue = null
     ) {
         if (isset($this->classMap[$class])) {
-            $class = $this->classMap[$class];
+            if (is_callable($mapper = $this->classMap[$class])) {
+                $class = $mapper($class, $jvalue);
+            } else {
+                $class = $this->classMap[$class];
+            }
         }
         if ($useParameter) {
             return new $class($jvalue);
