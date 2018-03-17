@@ -271,6 +271,75 @@ class OtherTest extends \PHPUnit\Framework\TestCase
         $result = $jm->map(json_decode($json), new PrivateWithSetter());
     }
 
+    public function testPrivatePropertySetterWithoutDoc()
+    {
+        if (PHP_MAJOR_VERSION < 7) {
+            $this->markTestSkipped("This test is for PHP >= 7");
+        }
+
+        $jm = new JsonMapper();
+        $jm->bExceptionOnUndefinedProperty = true;
+        $jm->setLogger(new JsonMapperTest_Logger());
+
+        $result = $jm->map(json_decode('{"privatePropertySetterWithoutDoc" : 1}'), new PrivateWithSetter());
+        $this->assertEquals(1, $result->getPrivatePropertySetterWithoutDoc());
+    }
+
+    public function testPrivatePropertyNullableNotNullSetterWithoutDoc()
+    {
+        if (PHP_MAJOR_VERSION < 7) {
+            $this->markTestSkipped("This test is for PHP >= 7");
+        }
+
+        $jm = new JsonMapper();
+        $jm->bExceptionOnUndefinedProperty = true;
+        $jm->setLogger(new JsonMapperTest_Logger());
+
+        $result = $jm->map(json_decode('{"privatePropertyNullableSetterWithoutDoc" : 1}'), new PrivateWithSetter());
+        $this->assertSame(1, $result->getPrivatePropertyNullableSetterWithoutDoc());
+    }
+
+    public function testPrivatePropertyNullableNullSetterWithoutDoc()
+    {
+        if (PHP_MAJOR_VERSION < 7) {
+            $this->markTestSkipped("This test is for PHP >= 7");
+        }
+
+        $jm = new JsonMapper();
+        $jm->bExceptionOnUndefinedProperty = true;
+        $jm->setLogger(new JsonMapperTest_Logger());
+
+        $result = $jm->map(json_decode('{"privatePropertyNullableSetterWithoutDoc" : null}'), new PrivateWithSetter());
+        $this->assertNull($result->getPrivatePropertyNullableSetterWithoutDoc());
+    }
+
+    public function testPrivateArrayOfSimple()
+    {
+        $jm = new JsonMapper();
+        $jm->bExceptionOnUndefinedProperty = true;
+        $jm->setLogger(new JsonMapperTest_Logger());
+
+        $result = $jm->map(
+            json_decode(
+                '{"privateArrayOfSimple" : [{"pbool": true, "pint": 42}, {"pbool": false, "pint": 24}]}'
+            ),
+            new PrivateWithSetter()
+        );
+
+        $a = new JsonMapperTest_Simple;
+        $a->pbool = true;
+        $a->pint = 42;
+
+        $b = new JsonMapperTest_Simple;
+        $b->pbool = false;
+        $b->pint = 24;
+
+        $this->assertEquals(
+            [$a, $b],
+            $result->getPrivateArrayOfSimple()
+        );
+    }
+
     public function testPrivateSetterButAllowed()
     {
         $jm = new JsonMapper();

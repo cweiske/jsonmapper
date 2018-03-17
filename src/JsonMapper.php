@@ -427,6 +427,14 @@ class JsonMapper
                 $annotations = $this->parseAnnotations($docblock);
 
                 if (!isset($annotations['param'][0])) {
+                    // If there is no annotations (higher priority) inspect
+                    // if there's a scalar type being defined
+                    if (PHP_MAJOR_VERSION >= 7) {
+                        $ptype = $rparams[0]->getType();
+                        if ($ptype !== null) {
+                            return array(true, $rmeth, $ptype . $nullability);
+                        }
+                    }
                     return array(true, $rmeth, null);
                 }
                 list($type) = explode(' ', trim($annotations['param'][0]));
