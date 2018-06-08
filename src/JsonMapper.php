@@ -265,12 +265,12 @@ class JsonMapper
                 $array   = [];
                 $subtype = substr($type, 0, -2);
             } else {
-                if (substr($type, -1) == ']') {
+                if (substr($type, -1) === ']') {
                     list($proptype, $subtype) = explode('[', substr($type, 0, -1));
                     if (!$this->isSimpleType($proptype)) {
                         $proptype = $this->getFullNamespace($proptype, $strNs);
                     }
-                    if ($proptype == 'array') {
+                    if ($proptype === 'array') {
                         $array = [];
                     } else {
                         $array = $this->createInstance($proptype, false, $jvalue);
@@ -443,7 +443,7 @@ class JsonMapper
      */
     protected function getFullNamespace($type, $strNs)
     {
-        if ($type !== '' && $type{0} != '\\') {
+        if ($type !== '' && $type{0} !== '\\') {
             //create a full qualified namespace
             if ($strNs != '') {
                 $type = '\\' . $strNs . '\\' . $type;
@@ -635,15 +635,15 @@ class JsonMapper
      */
     protected function isSimpleType($type)
     {
-        return $type == 'string'
-            || $type == 'boolean'
-            || $type == 'bool'
-            || $type == 'integer'
-            || $type == 'int'
-            || $type == 'double'
-            || $type == 'float'
-            || $type == 'array'
-            || $type == 'object';
+        return $type === 'string'
+            || $type === 'boolean'
+            || $type === 'bool'
+            || $type === 'integer'
+            || $type === 'int'
+            || $type === 'double'
+            || $type === 'float'
+            || $type === 'array'
+            || $type === 'object';
     }
 
     /**
@@ -675,14 +675,14 @@ class JsonMapper
      */
     protected function isFlatType($type)
     {
-        return $type == 'NULL'
-            || $type == 'string'
-            || $type == 'boolean'
-            || $type == 'bool'
-            || $type == 'integer'
-            || $type == 'int'
-            || $type == 'double'
-            || $type == 'float';
+        return $type === 'NULL'
+            || $type === 'string'
+            || $type === 'boolean'
+            || $type === 'bool'
+            || $type === 'integer'
+            || $type === 'int'
+            || $type === 'double'
+            || $type === 'float';
     }
 
     /**
