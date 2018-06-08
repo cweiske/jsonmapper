@@ -143,7 +143,7 @@ class OtherTest extends \PHPUnit\Framework\TestCase
             array(
                 array(
                     'info',
-                    'Property {property} has no public setter method in {class}',
+                    'Property {protectedStrNoSetter} has no public setter method in {JsonMapperTest_Simple}',
                     array(
                         'class' => 'JsonMapperTest_Simple',
                         'property' => 'protectedStrNoSetter'
