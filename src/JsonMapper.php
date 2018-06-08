@@ -11,6 +11,9 @@
  * @link     http://cweiske.de/
  */
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+
 /**
  * Automatically map JSON structures into objects.
  *
@@ -26,7 +29,7 @@ class JsonMapper
      * PSR-3 compatible logger object
      *
      * @link http://www.php-fig.org/psr/psr-3/
-     * @var  object
+     * @var  \Psr\Log\LoggerInterface
      * @see  setLogger()
      */
     protected $logger;
@@ -112,6 +115,14 @@ class JsonMapper
     protected $arInspectedClasses = array();
 
     /**
+     * JsonMapper constructor.
+     */
+    public function __construct()
+    {
+        $this->logger = new NullLogger();
+    }
+
+    /**
      * Map data all data in $json into the given $object instance.
      *
      * @param object $json   JSON object structure from json_decode()
@@ -165,7 +176,7 @@ class JsonMapper
                         $object, $key, $jvalue
                     );
                 } else {
-                    $this->log(
+                    $this->logger->log(
                         'info',
                         'Property {property} does not exist in {class}',
                         array('property' => $key, 'class' => $strClassName)
@@ -181,7 +192,7 @@ class JsonMapper
                         . ' in object of type ' . $strClassName
                     );
                 }
-                $this->log(
+                $this->logger->log(
                     'info',
                     'Property {property} has no public setter method in {class}',
                     array('property' => $key, 'class' => $strClassName)
@@ -687,23 +698,22 @@ class JsonMapper
      * @param string $message Text to log
      * @param array  $context Additional information
      *
-     * @return null
+     * @return void
+     * @deprecated Use $logger property instead
      */
     protected function log($level, $message, array $context = array())
     {
-        if ($this->logger) {
-            $this->logger->log($level, $message, $context);
-        }
+        $this->logger->log($level, $message, $context);
     }
 
     /**
      * Sets a logger instance on the object
      *
-     * @param LoggerInterface $logger PSR-3 compatible logger object
+     * @param \Psr\Log\LoggerInterface $logger PSR-3 compatible logger object
      *
      * @return null
      */
-    public function setLogger($logger)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
