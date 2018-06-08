@@ -186,19 +186,19 @@ class JsonMapper
                         'JSON property "' . $key . '" does not exist'
                         . ' in object of type ' . $strClassName
                     );
+                }
+
+                if ($this->undefinedPropertyHandler !== null) {
+                    call_user_func(
+                        $this->undefinedPropertyHandler,
+                        $object, $key, $jvalue
+                    );
                 } else {
-                    if ($this->undefinedPropertyHandler !== null) {
-                        call_user_func(
-                            $this->undefinedPropertyHandler,
-                            $object, $key, $jvalue
-                        );
-                    } else {
-                        $this->log(
-                            'info',
-                            sprintf('Property {%s} does not exist in {%s}', $key, $strClassName),
-                            ['property' => $key, 'class' => $strClassName]
-                        );
-                    }
+                    $this->log(
+                        'info',
+                        sprintf('Property {%s} does not exist in {%s}', $key, $strClassName),
+                        ['property' => $key, 'class' => $strClassName]
+                    );
                 }
                 continue;
             }
@@ -224,30 +224,28 @@ class JsonMapper
                     continue;
                 }
                 $type = $this->removeNullable($type);
-            } else {
-                if ($jvalue === null) {
-                    throw new JsonMapper_Exception(
-                        'JSON property "' . $key . '" in class "'
-                        . $strClassName . '" must not be NULL'
-                    );
-                }
+            } elseif ($jvalue === null) {
+                throw new JsonMapper_Exception(
+                    'JSON property "' . $key . '" in class "'
+                    . $strClassName . '" must not be NULL'
+                );
             }
 
             if ($type === null || $type === 'mixed') {
                 //no given type - simply set the json data
                 $this->setProperty($object, $accessor, $jvalue);
                 continue;
-            } else {
-                if ($this->isObjectOfSameType($type, $jvalue)) {
-                    $this->setProperty($object, $accessor, $jvalue);
-                    continue;
-                } else {
-                    if ($this->isSimpleType($type)) {
-                        settype($jvalue, $type);
-                        $this->setProperty($object, $accessor, $jvalue);
-                        continue;
-                    }
-                }
+            }
+
+            if ($this->isObjectOfSameType($type, $jvalue)) {
+                $this->setProperty($object, $accessor, $jvalue);
+                continue;
+            }
+
+            if ($this->isSimpleType($type)) {
+                settype($jvalue, $type);
+                $this->setProperty($object, $accessor, $jvalue);
+                continue;
             }
 
             //FIXME: check if type exists, give detailed error message if not
@@ -416,9 +414,9 @@ class JsonMapper
         }
         if ($useParameter) {
             return new $class($jvalue);
-        } else {
-            return (new ReflectionClass($class))->newInstanceWithoutConstructor();
         }
+
+        return (new ReflectionClass($class))->newInstanceWithoutConstructor();
     }
 
     /**
@@ -484,8 +482,8 @@ class JsonMapper
      * Try to find out if a property exists in a given class.
      * Checks property first, falls back to setter method.
      *
-     * @param object $rc   Reflection class to check
-     * @param string $name Property name
+     * @param \ReflectionClass $rc   Reflection class to check
+     * @param string           $name Property name
      *
      * @return array First value: if the property exists
      *               Second value: the accessor to use (
@@ -554,10 +552,10 @@ class JsonMapper
                 list($type) = explode(' ', $annotations['var'][0]);
 
                 return [true, $rprop, $type];
-            } else {
-                //no setter, private property
-                return [true, null, null];
             }
+
+            //no setter, private property
+            return [true, null, null];
         }
 
         //no setter, no property
@@ -744,4 +742,4 @@ class JsonMapper
     }
 }
 
-?>
+
