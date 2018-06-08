@@ -331,6 +331,8 @@ class JsonMapper
      *                      Pass "null" to not convert any values
      *
      * @return mixed Mapped $array is returned
+     * @throws \JsonMapper_Exception
+     * @throws \ReflectionException
      */
     public function mapArray($json, $array, $class = null)
     {
@@ -390,6 +392,7 @@ class JsonMapper
      * @param mixed   $jvalue       Constructor parameter (the json value)
      *
      * @return object Freshly created object
+     * @throws \ReflectionException
      */
     public function createInstance(
         $class,
@@ -413,9 +416,9 @@ class JsonMapper
     /**
      * Sets a logger instance on the object
      *
-     * @param LoggerInterface $logger PSR-3 compatible logger object
+     * @param \Psr\Log\LoggerInterface $logger PSR-3 compatible logger object
      *
-     * @return null
+     * @return void
      */
     public function setLogger($logger)
     {
@@ -457,7 +460,7 @@ class JsonMapper
         foreach ($rc->getProperties() as $property) {
             $rprop       = $rc->getProperty($property->name);
             $docblock    = $rprop->getDocComment();
-            $annotations = $this->parseAnnotations($docblock);
+            $annotations = self::parseAnnotations($docblock);
             if (isset($annotations['required'])
                 && !isset($providedProperties[$property->name])
             ) {
@@ -507,7 +510,7 @@ class JsonMapper
                 }
 
                 $docblock    = $rmeth->getDocComment();
-                $annotations = $this->parseAnnotations($docblock);
+                $annotations = self::parseAnnotations($docblock);
 
                 if (!isset($annotations['param'][0])) {
                     return [true, $rmeth, null];
@@ -534,7 +537,7 @@ class JsonMapper
         if ($rprop !== null) {
             if ($rprop->isPublic() || $this->bIgnoreVisibility) {
                 $docblock    = $rprop->getDocComment();
-                $annotations = $this->parseAnnotations($docblock);
+                $annotations = self::parseAnnotations($docblock);
 
                 if (!isset($annotations['var'][0])) {
                     return [true, $rprop, null];
