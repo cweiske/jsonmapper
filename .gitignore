@@ -2,6 +2,7 @@
 /*.tgz
 /dist/
 /vendor/
+/.idea/
 .buildpath
 .project
 .settings
