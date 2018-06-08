@@ -90,7 +90,7 @@ class JsonMapper
      * PSR-3 compatible logger object
      *
      * @link http://www.php-fig.org/psr/psr-3/
-     * @var  object
+     * @var  \Psr\Log\LoggerInterface
      * @see  setLogger()
      */
     protected $logger;
@@ -101,6 +101,14 @@ class JsonMapper
      * @var array property inspection result cache
      */
     protected $arInspectedClasses = [];
+
+    /**
+     * JsonMapper constructor.
+     */
+    public function __construct()
+    {
+        $this->logger = new \Psr\Log\NullLogger();
+    }
 
     /**
      * Copied from PHPUnit 3.7.29, Util/Test.php
@@ -204,7 +212,7 @@ class JsonMapper
                 }
                 $this->log(
                     'info',
-                    sprintf('Property {property} has no public setter method in {class}', $key, $strClassName),
+                    sprintf('Property {%s} has no public setter method in {%s}', $key, $strClassName),
                     ['property' => $key, 'class' => $strClassName]
                 );
                 continue;
@@ -448,12 +456,11 @@ class JsonMapper
     /**
      * Check required properties exist in json
      *
-     * @param array  $providedProperties array with json properties
-     * @param object $rc                 Reflection class to check
-     *
-     * @throws JsonMapper_Exception
+     * @param array            $providedProperties array with json properties
+     * @param \ReflectionClass $rc                 Reflection class to check
      *
      * @return void
+     * @throws \JsonMapper_Exception
      */
     protected function checkMissingData($providedProperties, ReflectionClass $rc)
     {
@@ -729,13 +736,11 @@ class JsonMapper
      * @param string $message Text to log
      * @param array  $context Additional information
      *
-     * @return null
+     * @return void
      */
     protected function log($level, $message, array $context = [])
     {
-        if ($this->logger) {
-            $this->logger->log($level, $message, $context);
-        }
+        $this->logger->log($level, $message, $context);
     }
 }
 
