@@ -5,7 +5,6 @@
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTestSize="true"
          beStrictAboutTestsThatDoNotTestAnything="true"
-         checkForUnintentionallyCoveredCode="true"
 >
     <filter>
         <whitelist>

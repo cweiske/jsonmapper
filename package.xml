@@ -21,12 +21,12 @@
   <active>yes</active>
  </lead>
 
- <date>2017-08-14</date>
+ <date>2017-11-28</date>
  <time>00:00:00</time>
 
  <version>
-  <release>1.3.0</release>
-  <api>1.1.0</api>
+  <release>1.4.0</release>
+  <api>1.4.0</api>
  </version>
 
  <stability>
@@ -37,9 +37,12 @@
  <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
 
  <notes>
-   * Fix "Missing argument" error when instantiating class with required
-     constructor parameter by @jaredchu (pull request #85)
-   * Raise minimum PHP version to 5.6.0
+  * Fix do not modify keys when mapping objects to arrays (issue #87)
+  * Add support for lists of ArrayObjects
+    by @DerManoMann
+  * Add support for callback functions in $classMap
+    by @DerManoMann
+  * Use PHPUnit 5+ for tests
  </notes>
 
  <contents>
@@ -115,6 +118,27 @@
  </phprelease>
 
  <changelog>
+
+  <release>
+   <version>
+    <release>1.4.0</release>
+    <api>1.4.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2017-11-28</date>
+   <license uri="http://opensource.org/licenses/osl-3.0">OSL-3.0</license>
+   <notes>
+    * Fix do not modify keys when mapping objects to arrays (issue #87)
+    * Add support for lists of ArrayObjects
+      by @DerManoMann
+    * Add support for callback functions in $classMap
+      by @DerManoMann
+    * Use PHPUnit 5+ for tests
+   </notes>
+  </release>
 
   <release>
    <version>

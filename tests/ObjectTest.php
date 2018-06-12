@@ -25,7 +25,7 @@ require_once 'JsonMapperTest/ComplexObject.php';
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
  */
-class ObjectTest extends \PHPUnit_Framework_TestCase
+class ObjectTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test for a class name "@var Classname"
@@ -177,19 +177,56 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('null', $sn->pValueObjectNullable);
     }
 
-    public function testClassMap()
+    /**
+     * Abuse self
+     */
+    public function __invoke($class, $jvalue)
+    {
+        $testCase = $this;
+
+        // the class/interface to be mapped
+        $testCase->assertEquals($testCase::CLASS_MAP_CLASS, $class);
+        $testCase->assertEquals($testCase::CLASS_MAP_DATA, $jvalue);
+
+        return 'DateTime';
+    }
+
+    const CLASS_MAP_CLASS = 'JsonMapperTest_PlainObject';
+    const CLASS_MAP_DATA = '2016-04-14T23:15:42+02:00';
+
+    public function classMapTestData()
+    {
+        $testCase = $this;
+
+        // classMap value
+        return [
+            'name' =>     ['DateTime'],
+            'function' => [function ($class, $jvalue) use ($testCase) {
+                // the class/interface to be mapped
+                $testCase->assertEquals($testCase::CLASS_MAP_CLASS, $class);
+                $testCase->assertEquals($testCase::CLASS_MAP_DATA, $jvalue);
+                return 'DateTime';
+            }],
+            'invoke' =>   [$this],  // __invoke
+        ];
+    }
+
+    /**
+     * @dataProvider classMapTestData
+     */
+    public function testClassMap($classMapValue)
     {
         $jm = new JsonMapper();
-        $jm->classMap['JsonMapperTest_PlainObject'] = 'DateTime';
+        $jm->classMap[self::CLASS_MAP_CLASS] = $classMapValue;
         $sn = $jm->map(
-            json_decode('{"pPlainObject":"2016-04-14T23:15:42+02:00"}'),
+            json_decode('{"pPlainObject":"'.self::CLASS_MAP_DATA.'"}'),
             new JsonMapperTest_Object()
         );
 
         $this->assertInternalType('object', $sn->pPlainObject);
         $this->assertInstanceOf('DateTime', $sn->pPlainObject);
         $this->assertEquals(
-            '2016-04-14T23:15:42+02:00',
+            self::CLASS_MAP_DATA,
             $sn->pPlainObject->format('c')
         );
     }

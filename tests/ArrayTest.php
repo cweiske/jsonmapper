@@ -10,6 +10,9 @@
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
  */
+
+use namespacetest\model\MyArrayObject;
+
 require_once 'JsonMapperTest/Array.php';
 require_once 'JsonMapperTest/Broken.php';
 require_once 'JsonMapperTest/Simple.php';
@@ -23,7 +26,7 @@ require_once 'JsonMapperTest/Simple.php';
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
  */
-class ArrayTest extends \PHPUnit_Framework_TestCase
+class ArrayTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test for an array of classes "@var Classname[]"
@@ -328,6 +331,46 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Lists or ArrayObject instances.
+     */
+    public function testArrayObjectList()
+    {
+        $jm = new JsonMapper();
+        $jm->bStrictNullTypes = false;
+        $sn = $jm->map(
+            json_decode('{"pArrayObjectList": [{"x":"X"},{"y":"Y"}]}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertNotNull($sn->pArrayObjectList);
+        $this->assertInternalType('array', $sn->pArrayObjectList);
+        $this->assertCount(2, $sn->pArrayObjectList);
+        $this->assertContainsOnlyInstancesOf(\ArrayObject::class, $sn->pArrayObjectList);
+        // test first element data
+        $ao = $sn->pArrayObjectList[0];
+        $this->assertEquals(['x' => 'X'], $ao->getArrayCopy());
+    }
+
+    /**
+     * Lists or ArrayObject subclass instances.
+     */
+    public function testArrayObjectSubclassList()
+    {
+        $jm = new JsonMapper();
+        $jm->bStrictNullTypes = false;
+        $sn = $jm->map(
+            json_decode('{"pArrayObjectSubclassList": [{"x":"X"},{"y":"Y"}]}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertNotNull($sn->pArrayObjectSubclassList);
+        $this->assertInternalType('array', $sn->pArrayObjectSubclassList);
+        $this->assertCount(2, $sn->pArrayObjectSubclassList);
+        $this->assertContainsOnlyInstancesOf(MyArrayObject::class, $sn->pArrayObjectSubclassList);
+        // test first element data
+        $ao = $sn->pArrayObjectSubclassList[0];
+        $this->assertEquals(['x' => 'X'], $ao->getArrayCopy());
+    }
+
+    /**
      * Test for an array of array of integers "@var int[][]"
      */
     public function testNMatrix()
@@ -373,6 +416,52 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(
             'JsonMapperTest_Simple', $sn->pMultiverse[0][0][0]
+        );
+    }
+
+    /**
+     * Dead simple mapArray test
+     */
+    public function testMapArray()
+    {
+        $jm = new JsonMapper();
+        $mapped = $jm->mapArray(
+            json_decode('[1,2,3]'),
+            []
+        );
+        $this->assertEquals([1, 2, 3], $mapped);
+    }
+
+    /**
+     * Make sure we're not modifying array keys
+     * as we do with object names (getSafeName)
+     */
+    public function testMapArrayStrangeKeys()
+    {
+        $jm = new JsonMapper();
+        $mapped = $jm->mapArray(
+            ['en-US' => 'foo', 'de-DE' => 'bar'],
+            []
+        );
+        $this->assertEquals(['en-US' => 'foo', 'de-DE' => 'bar'], $mapped);
+    }
+
+    /**
+     * Map a JSON object to an array with a key that contains a hyphen.
+     */
+    public function testMapTypedSimpleArrayFromObject()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"typedSimpleArray":{"en-US":"2014-01-02"}}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertInternalType('array', $sn->typedSimpleArray);
+        $this->assertEquals(1, count($sn->typedSimpleArray));
+        $this->assertArrayHasKey('en-US', $sn->typedSimpleArray);
+        $this->assertInstanceOf('DateTime', $sn->typedSimpleArray['en-US']);
+        $this->assertEquals(
+            '2014-01-02', $sn->typedSimpleArray['en-US']->format('Y-m-d')
         );
     }
 }
