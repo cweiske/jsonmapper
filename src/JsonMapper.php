@@ -213,7 +213,8 @@ class JsonMapper
                 if (is_object($jvalue) && $type==='string') {
                     throw new JsonMapper_Exception(
                         'JSON property "' . $key . '" in class "'
-                        . $strClassName . '" is an object and cannot be converted to a string'
+                        . $strClassName . '" is an object and'
+                        . 'cannot be converted to a string'
                     );
                 }
                 settype($jvalue, $type);
