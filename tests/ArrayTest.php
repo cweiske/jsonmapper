@@ -464,5 +464,22 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             '2014-01-02', $sn->typedSimpleArray['en-US']->format('Y-m-d')
         );
     }
+
+    /**
+     * Test for "@var string[]" with object value
+     *
+     * @expectedException JsonMapper_Exception
+     * @expectedExceptionMessage JSON property "pString" in class "JsonMapperTest_Object" is an object and cannot be converted to a string
+     */
+    public function testObjectInsteadOfString()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"strArray":[{}]}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertInternalType('array', $sn->strArray);
+        $this->assertNotEmpty($sn->strArray);
+    }
 }
 ?>
