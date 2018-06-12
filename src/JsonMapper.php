@@ -260,7 +260,7 @@ class JsonMapper
                 ) {
                     $subtype = $this->getFullNamespace($cleanSubtype, $strNs);
                 }
-                $child = $this->mapArray($jvalue, $array, $subtype);
+                $child = $this->mapArray($jvalue, $array, $subtype, $key);
             } else if ($this->isFlatType(gettype($jvalue))) {
                 //use constructor parameter if we have a class
                 // but only a flat type (i.e. string, int)
@@ -348,7 +348,7 @@ class JsonMapper
      *
      * @return mixed Mapped $array is returned
      */
-    public function mapArray($json, $array, $class = null)
+    public function mapArray($json, $array, $class = null, $parent_key = '')
     {
         foreach ($json as $key => $jvalue) {
             if ($class === null) {
@@ -359,21 +359,27 @@ class JsonMapper
                     array(),
                     substr($class, 0, -2)
                 );
-            } else if ($this->isFlatType(gettype($jvalue))) {
+            } else if ($this->isFlatType(gettype($jvalue))){
                 //use constructor parameter if we have a class
                 // but only a flat type (i.e. string, int)
-                if ($jvalue === null) {
+                if ($jvalue===null){
                     $array[$key] = null;
-                } else {
-                    if ($this->isSimpleType($class)) {
+                }
+                else {
+                    if ($this->isSimpleType($class)){
                         settype($jvalue, $class);
                         $array[$key] = $jvalue;
-                    } else {
+                    }
+                    else {
                         $array[$key] = $this->createInstance(
                             $class, true, $jvalue
                         );
                     }
                 }
+            } else if ($this->isFlatType($class)){
+                throw new JsonMapper_Exception(
+                    'JSON property "' . ($parent_key ? $parent_key : '?') . '" is an array of type "'.$class.'" but contained a value of type "'.gettype($jvalue).'"'
+                );
             } else if (is_a($class, 'ArrayObject', true)) {
                 $array[$key] = $this->mapArray(
                     $jvalue,
