@@ -178,6 +178,22 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Test for "@var string" with object value
+     *
+     * @expectedException JsonMapper_Exception
+     * @expectedExceptionMessage JSON property "pString" in class "JsonMapperTest_Object" is an object and cannot be converted to a string
+     */
+    public function testObjectInsteadOfString()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"pString":{"key":"val"}}'),
+            new JsonMapperTest_Object()
+        );
+        $this->assertInternalType('null', $sn->pValueObjectNullable);
+    }
+
+    /**
      * Abuse self
      */
     public function __invoke($class, $jvalue)
