@@ -337,16 +337,16 @@ class JsonMapper
     /**
      * Map an array
      *
-     * @param array  $json        JSON array structure from json_decode()
-     * @param mixed  $array       Array or ArrayObject that gets filled with
-     *                            data from $json
-     * @param string $class       Class name for children objects.
-     *                            All children will get mapped onto this type.
-     *                            Supports class names and simple types
-     *                            like "string" and nullability "string|null".
-     *                            Pass "null" to not convert any values
-     * @param string $parent_key  Defines the key this array belongs to
-     *                            in order to
+     * @param array  $json       JSON array structure from json_decode()
+     * @param mixed  $array      Array or ArrayObject that gets filled with
+     *                           data from $json
+     * @param string $class      Class name for children objects.
+     *                           All children will get mapped onto this type.
+     *                           Supports class names and simple types
+     *                           like "string" and nullability "string|null".
+     *                           Pass "null" to not convert any values
+     * @param string $parent_key Defines the key this array belongs to
+     *                           in order to
      *
      * @return mixed Mapped $array is returned
      */
@@ -379,8 +379,8 @@ class JsonMapper
             } else if ($this->isFlatType($class)) {
                 throw new JsonMapper_Exception(
                     'JSON property "' . ($parent_key ? $parent_key : '?') . '" is'
-                    .'an array of type "'.$class.'" but contained a value of'
-                    .'type "'.gettype($jvalue).'"'
+                    . ' an array of type "'.$class.'" but contained a value of'
+                    . ' type "'.gettype($jvalue).'"'
                 );
             } else if (is_a($class, 'ArrayObject', true)) {
                 $array[$key] = $this->mapArray(
