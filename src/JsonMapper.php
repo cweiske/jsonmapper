@@ -359,18 +359,16 @@ class JsonMapper
                     array(),
                     substr($class, 0, -2)
                 );
-            } else if ($this->isFlatType(gettype($jvalue))){
+            } else if ($this->isFlatType(gettype($jvalue))) {
                 //use constructor parameter if we have a class
                 // but only a flat type (i.e. string, int)
-                if ($jvalue===null){
+                if ($jvalue === null){
                     $array[$key] = null;
-                }
-                else {
-                    if ($this->isSimpleType($class)){
+                } else {
+                    if ($this->isSimpleType($class)) {
                         settype($jvalue, $class);
                         $array[$key] = $jvalue;
-                    }
-                    else {
+                    } else {
                         $array[$key] = $this->createInstance(
                             $class, true, $jvalue
                         );
