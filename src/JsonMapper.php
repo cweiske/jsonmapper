@@ -362,7 +362,7 @@ class JsonMapper
             } else if ($this->isFlatType(gettype($jvalue))) {
                 //use constructor parameter if we have a class
                 // but only a flat type (i.e. string, int)
-                if ($jvalue === null){
+                if ($jvalue === null) {
                     $array[$key] = null;
                 } else {
                     if ($this->isSimpleType($class)) {
