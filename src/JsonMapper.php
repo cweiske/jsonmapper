@@ -459,11 +459,17 @@ class JsonMapper
         }
 
         //now try to set the property directly
-        if ($rc->hasProperty($name)) {
-            $rprop = $rc->getProperty($name);
-        } else {
+        //we have to look it up in the class hierarchy
+        $class = $rc;
+        $rprop = null;
+        do {
+            if ($class->hasProperty($name)) {
+                $rprop = $class->getProperty($name);
+            }
+        } while ($rprop === null && $class = $class->getParentClass());
+
+        if ($rprop === null) {
             //case-insensitive property matching
-            $rprop = null;
             foreach ($rc->getProperties() as $p) {
                 if ((strcasecmp($p->name, $name) === 0)) {
                     $rprop = $p;

@@ -15,6 +15,7 @@ require_once 'JsonMapperTest/DependencyInjector.php';
 require_once 'JsonMapperTest/Simple.php';
 require_once 'JsonMapperTest/Logger.php';
 require_once 'JsonMapperTest/PrivateWithSetter.php';
+require_once 'JsonMapperTest/PrivateWithSetterSub.php';
 require_once 'JsonMapperTest/ValueObject.php';
 
 /**
@@ -252,6 +253,17 @@ class OtherTest extends \PHPUnit\Framework\TestCase
 
         $json   = '{"privateNoSetter" : 1}';
         $result = $jm->map(json_decode($json), new PrivateWithSetter());
+
+        $this->assertEquals(1, $result->getPrivateNoSetter());
+    }
+
+    public function testPrivatePropertyInParentClassWithNoSetterButAllowed()
+    {
+        $jm = new JsonMapper();
+        $jm->bIgnoreVisibility = true;
+
+        $json   = '{"privateNoSetter" : 1}';
+        $result = $jm->map(json_decode($json), new PrivateWithSetterSub());
 
         $this->assertEquals(1, $result->getPrivateNoSetter());
     }
