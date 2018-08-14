@@ -22,6 +22,11 @@ class JsonMapperTest_Object
      */
     public $pPlainObject;
 
+    /**
+     * @var string
+     */
+    public $pString;
+
     public function setNullableObject(JsonMapperTest_PlainObject $obj = null)
     {
         $this->nullableObject = $obj;

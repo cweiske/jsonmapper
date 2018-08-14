@@ -210,6 +210,13 @@ class JsonMapper
                 $this->setProperty($object, $accessor, $jvalue);
                 continue;
             } else if ($this->isSimpleType($type)) {
+                if (is_object($jvalue) && $type==='string') {
+                    throw new JsonMapper_Exception(
+                        'JSON property "' . $key . '" in class "'
+                        . $strClassName . '" is an object and'
+                        . ' cannot be converted to a string'
+                    );
+                }
                 settype($jvalue, $type);
                 $this->setProperty($object, $accessor, $jvalue);
                 continue;
