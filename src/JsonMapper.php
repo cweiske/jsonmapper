@@ -217,6 +217,16 @@ class JsonMapper
                         . ' cannot be converted to a string'
                     );
                 }
+                /**
+                 * FIX for PHP LOGIC: bool value "false" is true
+                 * @see http://php.net/manual/en/function.settype.php#107683
+                 */
+                if (($type == 'bool' || $type == 'boolean') &&
+                    trim(strtolower($jvalue)) == 'false')
+                {
+                    $jvalue = false;
+                }
+
                 settype($jvalue, $type);
                 $this->setProperty($object, $accessor, $jvalue);
                 continue;
