@@ -80,6 +80,20 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Test for "@var boolean"
+     */
+    public function testMapSimpleBooleanFalse()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"pboolean":"false"}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertInternalType('boolean', $sn->pboolean);
+        $this->assertEquals(false, $sn->pboolean);
+    }
+
+    /**
      * Test for "@var int"
      */
     public function testMapSimpleInt()
