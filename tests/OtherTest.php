@@ -169,6 +169,37 @@ class OtherTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    public function testDataEnum()
+    {
+        $jm = new JsonMapper();
+        $jm->bExceptionOnMissingData = true;
+
+        $expected = new JsonMapperTest_Broken();
+        $expected->pMissingData = 'string';
+        $expected->pMethodEnum = 'first';
+        $expected->pMethodList = 'second';
+
+        $actual = $jm->map(
+            json_decode('{"pMissingData": "string", "pMethodEnum": "first", "pMethodList": "second"}'),
+            new JsonMapperTest_Broken()
+        );
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testMissingDataEnumException()
+    {
+        $jm = new JsonMapper();
+        $jm->bExceptionOnMissingData = true;
+
+        $this->expectException(JsonMapper_Exception::class);
+
+        $jm->map(
+            json_decode('{"pMissingData": "string", "pMethodEnum": "first", "pMethodList": "last"}'),
+            new JsonMapperTest_Broken()
+        );
+    }
+
     /**
      * We check that checkMissingData exits cleanly; needed for 100% coverage.
      */

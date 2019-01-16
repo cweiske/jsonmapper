@@ -33,5 +33,22 @@ class JsonMapperTest_Broken
      * @required
      */
     public $pMissingData;
+
+    /**
+     * @var string
+     * @enum JsonMapperTest_Broken::getEnum
+     */
+    public $pMethodEnum;
+
+    /**
+     * @var string
+     * @enum first, second
+     */
+    public $pMethodList;
+
+    public static function getEnum()
+    {
+        return ['first', 'second'];
+    }
 }
 ?>

@@ -288,7 +288,7 @@ class JsonMapper
         }
 
         if ($this->bExceptionOnMissingData) {
-            $this->checkMissingData($providedProperties, $rc);
+            $this->checkMissingData($providedProperties, $rc, $object);
         }
 
         return $object;
@@ -323,7 +323,7 @@ class JsonMapper
      *
      * @return void
      */
-    protected function checkMissingData($providedProperties, ReflectionClass $rc)
+    protected function checkMissingData($providedProperties, ReflectionClass $rc, $object)
     {
         foreach ($rc->getProperties() as $property) {
             $rprop = $rc->getProperty($property->name);
@@ -336,6 +336,14 @@ class JsonMapper
                     'Required property "' . $property->name . '" of class '
                     . $rc->getName()
                     . ' is missing in JSON data'
+                );
+            }
+
+            $value = $property->getValue($object);
+
+            if (isset($annotations['enum']) && !in_array($value, JsonMapper_EnumHelper::parse($annotations['enum']))) {
+                throw new JsonMapper_Exception(
+                    'Property "' . $property->name . '" of class ' . $rc->getName(). ' contains not allowed value'
                 );
             }
         }
