@@ -207,11 +207,15 @@ class OtherTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $jm->bExceptionOnMissingData = true;
-        $sn = $jm->map(
+        $expected = new JsonMapperTest_Broken();
+        $expected->pMissingData = 1;
+
+        $actual = $jm->map(
             json_decode('{"pMissingData":1}'),
             new JsonMapperTest_Broken()
         );
-        $this->assertTrue(true);
+
+        $this->assertEquals($expected, $actual);
     }
 
     /**

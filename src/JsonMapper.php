@@ -341,7 +341,13 @@ class JsonMapper
 
             $value = $property->getValue($object);
 
-            if (isset($annotations['enum']) && !in_array($value, JsonMapper_EnumHelper::parse($annotations['enum']))) {
+            if (
+                isset($annotations['enum'])
+                    &&
+                $value
+                    &&
+                !in_array($value, JsonMapper_EnumHelper::parse($annotations['enum']))
+            ) {
                 throw new JsonMapper_Exception(
                     'Property "' . $property->name . '" of class ' . $rc->getName(). ' contains not allowed value'
                 );
