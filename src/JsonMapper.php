@@ -598,11 +598,13 @@ class JsonMapper
      */
     protected function isSimpleType($type)
     {
-        return $type == 'string'
-            || $type == 'boolean' || $type == 'bool'
-            || $type == 'integer' || $type == 'int'
-            || $type == 'double' || $type == 'float'
-            || $type == 'array' || $type == 'object';
+        return in_array($type, array(
+            'string',
+            'boolean', 'bool',
+            'integer', 'int',
+            'double', 'float',
+            'array', 'object'
+        ));
     }
 
     /**
