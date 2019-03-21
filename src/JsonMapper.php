@@ -642,11 +642,15 @@ class JsonMapper
      */
     protected function isFlatType($type)
     {
-        return $type == 'NULL'
-            || $type == 'string'
-            || $type == 'boolean' || $type == 'bool'
-            || $type == 'integer' || $type == 'int'
-            || $type == 'double' || $type == 'float';
+        return in_array(
+            $type, array(
+            'NULL',
+            'string',
+            'boolean', 'bool',
+            'integer', 'int',
+            'double', 'float'
+            )
+        );
     }
 
     /**
