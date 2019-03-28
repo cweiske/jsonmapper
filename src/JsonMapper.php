@@ -202,22 +202,29 @@ class JsonMapper
                 );
             }
 
+            //Get the mapped class at this point, so that the effect of the mapping can flow through to some of the below code
+            if ($this->isSimpleType($type))
+                $mappedType = $type;
+            else
+                $mappedType = $this->getFullNamespace($type, $strNs);
+            $mappedType = $this->getMappedClass($mappedType,$jvalue);
+
             if ($type === null || $type === 'mixed') {
                 //no given type - simply set the json data
                 $this->setProperty($object, $accessor, $jvalue);
                 continue;
-            } else if ($this->isObjectOfSameType($type, $jvalue)) {
+            } else if ($this->isObjectOfSameType($mappedType, $jvalue)) {
                 $this->setProperty($object, $accessor, $jvalue);
                 continue;
-            } else if ($this->isSimpleType($type)) {
-                if ($type === 'string' && is_object($jvalue)) {
+            } else if ($this->isSimpleType($mappedType)) {
+                if ($mappedType === 'string' && is_object($jvalue)) {
                     throw new JsonMapper_Exception(
                         'JSON property "' . $key . '" in class "'
                         . $strClassName . '" is an object and'
                         . ' cannot be converted to a string'
                     );
                 }
-                settype($jvalue, $type);
+                settype($jvalue, $mappedType);
                 $this->setProperty($object, $accessor, $jvalue);
                 continue;
             }
@@ -573,6 +580,17 @@ class JsonMapper
     public function createInstance(
         $class, $useParameter = false, $jvalue = null
     ) {
+        $class = $this->getMappedClass($class,$jvalue);
+        if ($useParameter) {
+            return new $class($jvalue);
+        } else {
+            return (new ReflectionClass($class))->newInstanceWithoutConstructor();
+        }
+    }
+
+    protected function getMappedClass(
+        $class, $jvalue = null
+    ) {
         if (isset($this->classMap[$class])) {
             if (is_callable($mapper = $this->classMap[$class])) {
                 $class = $mapper($class, $jvalue);
@@ -580,11 +598,7 @@ class JsonMapper
                 $class = $this->classMap[$class];
             }
         }
-        if ($useParameter) {
-            return new $class($jvalue);
-        } else {
-            return (new ReflectionClass($class))->newInstanceWithoutConstructor();
-        }
+        return $class;
     }
 
     /**
