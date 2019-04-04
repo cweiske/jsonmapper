@@ -592,12 +592,12 @@ class JsonMapper
     }
 
     /**
-     * 
      * Get the mapped class/type name for this class.  Returns the incoming
      * classname if not mapped.
      * 
-     * @param string   $class        Class name to map
-     * @param mixed    $jvalue       Constructor parameter (the json value)
+     * @param string $class  Class name to map
+     * @param mixed  $jvalue Constructor parameter (the json value)
+     * 
      * @return string The mapped type/object name, or the original $class value if
      *                no mapping found
      */
