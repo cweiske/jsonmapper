@@ -202,12 +202,15 @@ class JsonMapper
                 );
             }
 
-            //Get the mapped class at this point, so that the effect of the mapping can flow through to some of the below code
-            if ($this->isSimpleType($type))
+            /* Get the mapped class at this point, so that the effect of the
+             * mapping can flow through to some of the below code
+             */
+            if ($this->isSimpleType($type)) {
                 $mappedType = $type;
-            else
+            } else {
                 $mappedType = $this->getFullNamespace($type, $strNs);
-            $mappedType = $this->getMappedClass($mappedType,$jvalue);
+            }
+            $mappedType = $this->getMappedClass($mappedType, $jvalue);
 
             if ($type === null || $type === 'mixed') {
                 //no given type - simply set the json data
@@ -580,7 +583,7 @@ class JsonMapper
     public function createInstance(
         $class, $useParameter = false, $jvalue = null
     ) {
-        $class = $this->getMappedClass($class,$jvalue);
+        $class = $this->getMappedClass($class, $jvalue);
         if ($useParameter) {
             return new $class($jvalue);
         } else {
@@ -588,6 +591,16 @@ class JsonMapper
         }
     }
 
+    /**
+     * 
+     * Get the mapped class/type name for this class.  Returns the incoming
+     * classname if not mapped.
+     * 
+     * @param string   $class        Class name to map
+     * @param mixed    $jvalue       Constructor parameter (the json value)
+     * @return string The mapped type/object name, or the original $class value if
+     *                no mapping found
+     */
     protected function getMappedClass(
         $class, $jvalue = null
     ) {
