@@ -112,6 +112,36 @@ class JsonMapper
     protected $arInspectedClasses = array();
 
     /**
+     * Reflect cache
+     *
+     * ```php
+     * [
+     *    'Banner' => $reflectClassBanner,
+     *    'Apple' => $reflectClassApple
+     * ]
+     * ```
+     *
+     * @var array
+     */
+    protected $reflectCache = array();
+
+    /**
+     * Reflect doc cache
+     *
+     * ```php
+     * [
+     *    'Banner' => [
+     *        'name' => ['string', 'xxx'],
+     *        'price' => ['float', 'xxx']
+     *    ],
+     * ]
+     * ```
+     *
+     * @var array
+     */
+    protected $docCache = array();
+
+    /**
      * Map data all data in $json into the given $object instance.
      *
      * @param object $json   JSON object structure from json_decode()
@@ -136,7 +166,7 @@ class JsonMapper
         }
 
         $strClassName = get_class($object);
-        $rc = new ReflectionClass($object);
+        $rc = $this->getReflectClass($object);
         $strNs = $rc->getNamespaceName();
         $providedProperties = array();
         foreach ($json as $key => $jvalue) {
@@ -326,9 +356,8 @@ class JsonMapper
     protected function checkMissingData($providedProperties, ReflectionClass $rc)
     {
         foreach ($rc->getProperties() as $property) {
-            $rprop = $rc->getProperty($property->name);
-            $docblock = $rprop->getDocComment();
-            $annotations = $this->parseAnnotations($docblock);
+            $propertyName = $property->getName();
+            $annotations = $this->getAnnotations($property);
             if (isset($annotations['required'])
                 && !isset($providedProperties[$property->name])
             ) {
@@ -479,8 +508,7 @@ class JsonMapper
         }
         if ($rprop !== null) {
             if ($rprop->isPublic() || $this->bIgnoreVisibility) {
-                $docblock    = $rprop->getDocComment();
-                $annotations = $this->parseAnnotations($docblock);
+                $annotations = $this->getAnnotations($rprop);
 
                 if (!isset($annotations['var'][0])) {
                     return array(true, $rprop, null);
@@ -736,6 +764,39 @@ class JsonMapper
     public function setLogger($logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * @param object $object
+     * @return mixed|ReflectionClass
+     * @throws \ReflectionException
+     */
+    protected function getReflectClass($object)
+    {
+        $class = get_class($object);
+        if (isset($this->reflectCache[$class])) {
+            return $this->reflectCache[$class];
+        } else {
+            return $this->reflectCache[$class] = new ReflectionClass($object);
+        }
+    }
+
+    /**
+     * @param ReflectionProperty $property
+     * @return array
+     */
+    protected function getAnnotations(ReflectionProperty $property)
+    {
+        $propertyName = $property->name;
+        $className = $property->class;
+        if (isset($this->docCache[$className][$propertyName])) {
+            $annotations = $this->docCache[$className][$propertyName];
+        } else {
+            $docBlock = $property->getDocComment();
+            $annotations = $this->parseAnnotations($docBlock);
+            $this->docCache[$className][$propertyName] = $annotations;
+        }
+        return $annotations;
     }
 }
 ?>
