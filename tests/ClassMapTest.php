@@ -80,5 +80,31 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
             $sn->pPlainObject->format('c')
         );
     }
+
+    public function testNamespaceKeyWithLeadingBackslash()
+    {
+        $jm = new JsonMapper();
+        $jm->classMap['\\namespacetest\\model\\User']
+            = \namespacetest\Unit::class;
+        $data = $jm->map(
+            json_decode('{"user":"foo"}'),
+            new \namespacetest\UnitData()
+        );
+
+        $this->assertInstanceOf(\namespacetest\Unit::class, $data->user);
+    }
+
+    public function testNamespaceKeyNoLeadingBackslash()
+    {
+        $jm = new JsonMapper();
+        $jm->classMap[\namespacetest\model\User::class]
+            = \namespacetest\Unit::class;
+        $data = $jm->map(
+            json_decode('{"user":"foo"}'),
+            new \namespacetest\UnitData()
+        );
+
+        $this->assertInstanceOf(\namespacetest\Unit::class, $data->user);
+    }
 }
 ?>

@@ -574,10 +574,20 @@ class JsonMapper
         $class, $useParameter = false, $jvalue = null
     ) {
         if (isset($this->classMap[$class])) {
-            if (is_callable($mapper = $this->classMap[$class])) {
-                $class = $mapper($class, $jvalue);
+            $target = $this->classMap[$class];
+        } else if ($class[0] == '\\'
+            && isset($this->classMap[substr($class, 1)])
+        ) {
+            $target = $this->classMap[substr($class, 1)];
+        } else {
+            $target = null;
+        }
+
+        if ($target) {
+            if (is_callable($target)) {
+                $class = $target($class, $jvalue);
             } else {
-                $class = $this->classMap[$class];
+                $class = $target;
             }
         }
         if ($useParameter) {
