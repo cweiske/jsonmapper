@@ -4,7 +4,6 @@
  *
  * PHP version 5
  *
- * @category Netresearch
  * @package  JsonMapper
  * @author   Christian Weiske <cweiske@cweiske.de>
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
@@ -14,7 +13,6 @@
 /**
  * Simple in-memory logger
  *
- * @category Netresearch
  * @package  JsonMapper
  * @author   Christian Weiske <cweiske@cweiske.de>
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
