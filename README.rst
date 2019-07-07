@@ -443,30 +443,11 @@ You can circumvent that by setting ``$bEnforceMapType`` to ``false``:
 ============
 Installation
 ============
-
-via Composer
-============
-From Packagist__::
+Via Composer from Packagist__::
 
     $ composer require netresearch/jsonmapper
 
 __ https://packagist.org/packages/netresearch/jsonmapper
-
-
-via PEAR
-========
-.. note::
-   With version 1.0.0 JsonMapper moved to PEAR channel
-   https://zustellzentrum.cweiske.de/
-
-From our `PEAR channel`__::
-
-    $ pear channel-discover zustellzentrum.cweiske.de
-    $ pear install zz/jsonmapper
-
-__ https://zustellzentrum.cweiske.de/
-
-
 
 
 ================
