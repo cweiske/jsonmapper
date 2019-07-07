@@ -202,6 +202,8 @@ class JsonMapper
                 );
             }
 
+            $type = $this->getFullNamespace($type, $strNs);
+
             if ($type === null || $type === 'mixed') {
                 //no given type - simply set the json data
                 $this->setProperty($object, $accessor, $jvalue);
@@ -238,16 +240,12 @@ class JsonMapper
                 $subtype = substr($type, 0, -2);
             } else if (substr($type, -1) == ']') {
                 list($proptype, $subtype) = explode('[', substr($type, 0, -1));
-                if (!$this->isSimpleType($proptype)) {
-                    $proptype = $this->getFullNamespace($proptype, $strNs);
-                }
                 if ($proptype == 'array') {
                     $array = array();
                 } else {
                     $array = $this->createInstance($proptype, false, $jvalue);
                 }
             } else {
-                $type = $this->getFullNamespace($type, $strNs);
                 if (is_a($type, 'ArrayObject', true)) {
                     $array = $this->createInstance($type, false, $jvalue);
                 }
@@ -262,11 +260,7 @@ class JsonMapper
                 }
 
                 $cleanSubtype = $this->removeNullable($subtype);
-                if (!$this->isSimpleType($cleanSubtype)
-                    && $cleanSubtype !== null
-                ) {
-                    $subtype = $this->getFullNamespace($cleanSubtype, $strNs);
-                }
+                $subtype = $this->getFullNamespace($cleanSubtype, $strNs);
                 $child = $this->mapArray($jvalue, $array, $subtype, $key);
             } else if ($this->isFlatType(gettype($jvalue))) {
                 //use constructor parameter if we have a class
@@ -277,10 +271,8 @@ class JsonMapper
                         . gettype($jvalue) . ' given'
                     );
                 }
-                $type = $this->getFullNamespace($type, $strNs);
                 $child = $this->createInstance($type, true, $jvalue);
             } else {
-                $type = $this->getFullNamespace($type, $strNs);
                 $child = $this->createInstance($type, false, $jvalue);
                 $this->map($jvalue, $child);
             }
@@ -304,13 +296,18 @@ class JsonMapper
      */
     protected function getFullNamespace($type, $strNs)
     {
-        if ($type !== '' && $type{0} != '\\') {
-            //create a full qualified namespace
-            if ($strNs != '') {
-                $type = '\\' . $strNs . '\\' . $type;
-            }
+        if ($type === null || $type === '' || $type{0} == '\\'
+            || $strNs == ''
+        ) {
+            return $type;
         }
-        return $type;
+        list($first) = explode('[', $type, 2);
+        if ($this->isSimpleType($first)) {
+            return $type;
+        }
+
+        //create a full qualified namespace
+        return '\\' . $strNs . '\\' . $type;
     }
 
     /**
