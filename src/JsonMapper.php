@@ -570,28 +570,43 @@ class JsonMapper
     public function createInstance(
         $class, $useParameter = false, $jvalue = null
     ) {
-        if (isset($this->classMap[$class])) {
-            $target = $this->classMap[$class];
-        } else if ($class[0] == '\\'
-            && isset($this->classMap[substr($class, 1)])
+        $class = $this->getMappedType($class, $jvalue);
+        if ($useParameter) {
+            return new $class($jvalue);
+        } else {
+            return (new ReflectionClass($class))->newInstanceWithoutConstructor();
+        }
+    }
+
+    /**
+     * Get the mapped class/type name for this class.
+     * Returns the incoming classname if not mapped.
+     *
+     * @param string $type   Type name to map
+     * @param mixed  $jvalue Constructor parameter (the json value)
+     *
+     * @return string The mapped type/class name
+     */
+    protected function getMappedType($type, $jvalue = null)
+    {
+        if (isset($this->classMap[$type])) {
+            $target = $this->classMap[$type];
+        } else if ($type !== '' && $type[0] == '\\'
+            && isset($this->classMap[substr($type, 1)])
         ) {
-            $target = $this->classMap[substr($class, 1)];
+            $target = $this->classMap[substr($type, 1)];
         } else {
             $target = null;
         }
 
         if ($target) {
             if (is_callable($target)) {
-                $class = $target($class, $jvalue);
+                $type = $target($type, $jvalue);
             } else {
-                $class = $target;
+                $type = $target;
             }
         }
-        if ($useParameter) {
-            return new $class($jvalue);
-        } else {
-            return (new ReflectionClass($class))->newInstanceWithoutConstructor();
-        }
+        return $type;
     }
 
     /**
