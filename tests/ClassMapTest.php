@@ -106,5 +106,30 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(\namespacetest\Unit::class, $data->user);
     }
+
+    public function testMapObjectToSimpleType()
+    {
+        $jm = new JsonMapper();
+        $jm->classMap[\namespacetest\model\User::class] = 'string';
+        $data = $jm->map(
+            json_decode('{"user":"foo"}'),
+            new \namespacetest\UnitData()
+        );
+
+        $this->assertInternalType('string', $data->user);
+    }
+
+    public function testMapArraySubtype()
+    {
+        $jm = new JsonMapper();
+        $jm->classMap[DateTime::class] = 'string';
+        $data = $jm->map(
+            json_decode('{"typedSimpleArray":["2019-03-23"]}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertInternalType('array', $data->typedSimpleArray);
+        $this->assertEquals(1, count($data->typedSimpleArray));
+        $this->assertInternalType('string', $data->typedSimpleArray[0]);
+    }
 }
 ?>

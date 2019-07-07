@@ -203,6 +203,7 @@ class JsonMapper
             }
 
             $type = $this->getFullNamespace($type, $strNs);
+            $type = $this->getMappedType($type, $jvalue);
 
             if ($type === null || $type === 'mixed') {
                 //no given type - simply set the json data
@@ -356,6 +357,7 @@ class JsonMapper
      */
     public function mapArray($json, $array, $class = null, $parent_key = '')
     {
+        $class = $this->getMappedType($class);
         foreach ($json as $key => $jvalue) {
             if ($class === null) {
                 $array[$key] = $jvalue;
@@ -570,7 +572,6 @@ class JsonMapper
     public function createInstance(
         $class, $useParameter = false, $jvalue = null
     ) {
-        $class = $this->getMappedType($class, $jvalue);
         if ($useParameter) {
             return new $class($jvalue);
         } else {
