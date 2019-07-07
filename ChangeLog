@@ -1,3 +1,16 @@
+2019-07-07  Christian Weiske  <cweiske@cweiske.de>
+
+	* Add support for PHP 7 scalar type hints (issue #98)
+	  by @patrickallaert
+	* Add support for namespaced classes in classMap keys without backslash (issue #111)
+	* Throw exception when an object shall be converted into a string (pull request #106)
+	  by @m1ke
+	* Throw exception when an object is passed as value into a string array (pull request #107)
+	  by @m1ke
+	* Correctly support setting private properties defined in parent classes (issue #109)
+	* Use class map as early as possible (issues #96 and #122)
+	* Version 1.5.0
+
 2017-11-28  Christian Weiske  <cweiske@cweiske.de>
 
 	* Fix do not modify keys when mapping objects to arrays (issue #87)
