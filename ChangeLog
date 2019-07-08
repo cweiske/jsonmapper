@@ -1,3 +1,8 @@
+2019-07-08  Christian Weiske  <cweiske@cweiske.de>
+
+	* Fix support for "mixed" in namespaced classes
+	* Version 1.5.1
+
 2019-07-07  Christian Weiske  <cweiske@cweiske.de>
 
 	* Add support for PHP 7 scalar type hints (issue #98)
