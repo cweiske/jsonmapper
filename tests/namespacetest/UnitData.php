@@ -29,6 +29,11 @@ class UnitData
     public $empty;
 
     /**
+     * @var mixed
+     */
+    public $mixed;
+
+    /**
      * @var model\UserList[model\User]
      */
     public $users;

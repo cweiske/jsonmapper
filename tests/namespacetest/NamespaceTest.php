@@ -37,6 +37,15 @@ class NamespaceTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $res->messages);
     }
 
+    public function testMapMixed()
+    {
+        $mapper = new \JsonMapper();
+        $json = '{"mixed":true}';
+        $res = $mapper->map(json_decode($json), new UnitData());
+        $this->assertInstanceOf('\namespacetest\UnitData', $res);
+        $this->assertTrue($res->mixed);
+    }
+
     public function testMapChildClassNamespace()
     {
         $mapper = new \JsonMapper();
