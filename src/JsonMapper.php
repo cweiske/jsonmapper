@@ -575,7 +575,12 @@ class JsonMapper
         if ($useParameter) {
             return new $class($jvalue);
         } else {
-            return (new ReflectionClass($class))->newInstanceWithoutConstructor();
+            $reflectClass = new ReflectionClass($class);
+            $constructor = $reflectClass->getConstructor();
+            if (null !== $constructor && $constructor->getNumberOfParameters() == 0) {
+                return $reflectClass->newInstance();
+            }
+            return $reflectClass->newInstanceWithoutConstructor();
         }
     }
 
