@@ -297,7 +297,7 @@ class JsonMapper
      */
     protected function getFullNamespace($type, $strNs)
     {
-        if ($type === null || $type === '' || $type{0} == '\\'
+        if ($type === null || $type === '' || $type[0] == '\\'
             || $strNs == ''
         ) {
             return $type;
