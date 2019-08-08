@@ -592,7 +592,7 @@ class JsonMapper
     {
         if (isset($this->classMap[$type])) {
             $target = $this->classMap[$type];
-        } else if ($type !== '' && $type[0] == '\\'
+        } else if (is_string($type) && $type !== '' && $type[0] == '\\'
             && isset($this->classMap[substr($type, 1)])
         ) {
             $target = $this->classMap[substr($type, 1)];
