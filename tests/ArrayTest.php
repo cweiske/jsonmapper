@@ -12,6 +12,9 @@
  */
 
 use namespacetest\model\MyArrayObject;
+use namespacetest\polimorphism\Animal;
+use namespacetest\polimorphism\Cat;
+use namespacetest\polimorphism\Zoo;
 
 require_once 'JsonMapperTest/Array.php';
 require_once 'JsonMapperTest/Broken.php';
@@ -480,6 +483,49 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertInternalType('array', $sn->strArray);
         $this->assertNotEmpty($sn->strArray);
+    }
+
+    public function testPolymorphicArray()
+    {
+        $zooJson = '
+        {
+            "name": "Serialized magical zoo",
+            "animals": [
+                {
+                    "kind": "cat",
+                    "name": "Lion",
+                    "legsNumber": 4
+                },
+                {
+                    "kind": "cat",
+                    "name": "Catbus",
+                    "legsNumber": 10
+                },
+                {
+                    "kind": "fish",
+                    "name": "Clown Fish",
+                    "livesInSaltwater": true
+                }
+            ]
+        }
+        ';
+
+        $jm = new JsonMapper();
+        $jm -> classMap["Zoo"] = Zoo::class;
+        $jm -> classMap[Animal::class] = function($class, $jvalue) {
+            return Animal::jsonMapper($class, $jvalue);
+        };
+        /** @var Zoo $zoo */
+        $zoo = $jm->map(json_decode($zooJson), new Zoo());
+        assertFalse(!is_null($zoo));
+        assertFalse(!is_null($zoo->animals));
+        assertTrue(count($zoo->animals) == 3);
+        assertTrue($zoo[1] instanceof Cat);
+        /** @var Cat $catBus */
+        $catBus = $zoo[1];
+        assertTrue($catBus->legsNumber == 10);
+        assertTrue($catBus->hasHair());
+        assertFalse($catBus->hasScales());
     }
 }
 ?>
