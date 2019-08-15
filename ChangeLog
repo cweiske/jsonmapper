@@ -1,3 +1,17 @@
+2019-08-15  Christian Weiske  <cweiske@cweiske.de>
+
+	* Add PHP extension dependencies to composer.json (pull request #132)
+	  by @CybotTM
+	* Add support for polymorphism in arrays (issue #134, pull request #135)
+	  by @GregorySech
+	* Add new option $bRemoveUndefinedAttributes (issue #126)
+	  by @Acolyte
+	* Call constructor when instantiating a class (pull request #129)
+	  by @soldierm
+	* Fix PHP 7.4 error: array offset on value of type null (pull request #131)
+	  by @remicollet
+	* Version 1.6.0
+
 2019-08-04  Christian Weiske  <cweiske@cweiske.de>
 
 	* Fix PHP 7.4 curly braces deprecation notice (pull request #130)
