@@ -392,6 +392,15 @@ an exception when ``$bExceptionOnMissingData`` is activated:
     $jm->bExceptionOnMissingData = true;
     $jm->map(...);
 
+Option ``$bRemoveUndefinedAttributes`` causes JsonMapper to remove properties
+from the final object if they have not been in the JSON data:
+
+.. code:: php
+
+    $jm = new JsonMapper();
+    $jm->bRemoveUndefinedAttributes = true;
+    $jm->map(...);
+
 
 Private properties and functions
 --------------------------------
