@@ -15,6 +15,8 @@ require_once 'JsonMapperTest/Object.php';
 require_once 'JsonMapperTest/PlainObject.php';
 require_once 'JsonMapperTest/ValueObject.php';
 require_once 'JsonMapperTest/ComplexObject.php';
+require_once 'JsonMapperTest/ObjectConstructor.php';
+require_once 'JsonMapperTest/ObjectConstructorOptional.php';
 
 /**
  * Unit tests for JsonMapper's object handling
@@ -191,6 +193,32 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Object()
         );
         $this->assertInternalType('null', $sn->pValueObjectNullable);
+    }
+
+    public function testConstructorWithoutParams()
+    {
+        $jm = new JsonMapper();
+        $json = '[{"id":1}]';
+        $objs = $jm->mapArray(
+            json_decode($json),
+            [],
+            JsonMapperTest_ObjectConstructor::class
+        );
+
+        $this->assertEquals('bar', $objs[0]->foo);
+    }
+
+    public function testConstructorWithOptionalParams()
+    {
+        $jm = new JsonMapper();
+        $json = '[{"id":1}]';
+        $objs = $jm->mapArray(
+            json_decode($json),
+            [],
+            JsonMapperTest_ObjectConstructorOptional::class
+        );
+
+        $this->assertEquals('optional', $objs[0]->foo);
     }
 }
 ?>
