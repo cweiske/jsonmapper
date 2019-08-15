@@ -357,8 +357,9 @@ class JsonMapper
      */
     public function mapArray($json, $array, $class = null, $parent_key = '')
     {
-        $class = $this->getMappedType($class);
+        $originalClass = $class;
         foreach ($json as $key => $jvalue) {
+            $class = $this->getMappedType($originalClass, $jvalue);
             if ($class === null) {
                 $array[$key] = $jvalue;
             } else if ($this->isArrayOfType($class)) {

@@ -16,6 +16,10 @@ use namespacetest\model\MyArrayObject;
 require_once 'JsonMapperTest/Array.php';
 require_once 'JsonMapperTest/Broken.php';
 require_once 'JsonMapperTest/Simple.php';
+require_once 'JsonMapperTest/Zoo/Animal.php';
+require_once 'JsonMapperTest/Zoo/Zoo.php';
+require_once 'JsonMapperTest/Zoo/Cat.php';
+require_once 'JsonMapperTest/Zoo/Fish.php';
 
 /**
  * Unit tests for JsonMapper's array handling
@@ -481,5 +485,38 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         $this->assertInternalType('array', $sn->strArray);
         $this->assertNotEmpty($sn->strArray);
     }
+
+    public function testPolymorphicArray()
+    {
+        $zooJson = <<<JSON
+        {
+            "animals": [
+                {
+                    "kind": "cat",
+                    "name": "Lion"
+                },
+                {
+                    "kind": "fish",
+                    "name": "Clown Fish"
+                }
+            ]
+        }
+JSON;
+
+        $jm = new JsonMapper();
+        $jm->classMap[Animal::class] = function ($class, $jvalue) {
+            return Animal::determineClass($class, $jvalue);
+        };
+
+        $zoo = $jm->map(json_decode($zooJson), new Zoo());
+        $this->assertEquals(2, count($zoo->animals));
+
+        $this->assertInstanceOf(Cat::class, $zoo->animals[0]);
+        $this->assertEquals('Lion', $zoo->animals[0]->name);
+
+        $this->assertInstanceOf(Fish::class, $zoo->animals[1]);
+        $this->assertEquals('Clown Fish', $zoo->animals[1]->name);
+    }
 }
+
 ?>
