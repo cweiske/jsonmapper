@@ -125,7 +125,7 @@ class JsonMapper
      * @param object $json   JSON object structure from json_decode()
      * @param object $object Object to map $json data into
      *
-     * @return object Mapped object is returned.
+     * @return mixed Mapped object is returned.
      * @see    mapArray()
      */
     public function map($json, $object)
