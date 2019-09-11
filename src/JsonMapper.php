@@ -112,6 +112,30 @@ class JsonMapper
     public $undefinedPropertyHandler = null;
 
     /**
+     * Callback used before a property set
+     *
+     * Parameters to this function are:
+     * 1. Object that is being filled
+     * 2. Name of the JSON property
+     * 3. JSON value of the property
+     *
+     * @var callable
+     */
+    public $beforeSetPropertyHandler = null;
+
+    /**
+     * Callback used after a property set
+     *
+     * Parameters to this function are:
+     * 1. Object that is being filled
+     * 2. Name of the JSON property
+     * 3. JSON value of the property
+     *
+     * @var callable
+     */
+    public $afterSetPropertyHandler = null;
+
+    /**
      * Runtime cache for inspected classes. This is particularly effective if
      * mapArray() is called with a large number of objects
      *
@@ -582,11 +606,20 @@ class JsonMapper
         if (!$accessor->isPublic() && $this->bIgnoreVisibility) {
             $accessor->setAccessible(true);
         }
+
+        if ($this->beforeSetPropertyHandler != null) {
+            call_user_func($this->beforeSetPropertyHandler, $object, $accessor, $value);
+        }
+
         if ($accessor instanceof ReflectionProperty) {
             $accessor->setValue($object, $value);
         } else {
             //setter method
             $accessor->invoke($object, $value);
+        }
+
+        if ($this->afterSetPropertyHandler != null) {
+            call_user_func($this->afterSetPropertyHandler, $object, $accessor, $value);
         }
     }
 
