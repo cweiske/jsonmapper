@@ -98,6 +98,13 @@ class JsonMapper
     public $classMap = array();
 
     /**
+     * Provied factories for class names that JsonMapper uses to create objects.
+     *
+     * @var array
+     */
+    public $factoryMap = array();
+
+    /**
      * Callback used when an undefined property is found.
      *
      * Works only when $bExceptionOnUndefinedProperty is disabled.
@@ -605,7 +612,11 @@ class JsonMapper
     public function createInstance(
         $class, $useParameter = false, $jvalue = null
     ) {
-        if ($useParameter) {
+
+        $factory = $this->getMappedFactory($class);
+        if ($factory !== null) {
+            return $factory($jvalue);
+        } else if ($useParameter) {
             return new $class($jvalue);
         } else {
             $reflectClass = new ReflectionClass($class);
@@ -630,15 +641,7 @@ class JsonMapper
      */
     protected function getMappedType($type, $jvalue = null)
     {
-        if (isset($this->classMap[$type])) {
-            $target = $this->classMap[$type];
-        } else if (is_string($type) && $type !== '' && $type[0] == '\\'
-            && isset($this->classMap[substr($type, 1)])
-        ) {
-            $target = $this->classMap[substr($type, 1)];
-        } else {
-            $target = null;
-        }
+        $target = $this->searchType($this->classMap, $type);
 
         if ($target) {
             if (is_callable($target)) {
@@ -648,6 +651,45 @@ class JsonMapper
             }
         }
         return $type;
+    }
+
+    /**
+     * Get the mapped factory for this class.
+     * Returns null if not mapped.
+     *
+     * @param string $type   Type name to map
+     *
+     * @return callable|null The mapped factory
+     */
+    protected function getMappedFactory($type)
+    {
+        $target = $this->searchType($this->factoryMap, $type);
+
+        if ($target !== null && !is_callable($target)) {
+            $target = null;
+        }
+        return $target;
+    }
+
+    /**
+     * Get the mapped value for this class.
+     *
+     * @param array $map   map to search
+     * @param string $type   Type name to map
+     *
+     * @return string The mapped value
+     */
+    protected function searchType($map, $type) {
+        if (isset($map[$type])) {
+            $target = $map[$type];
+        } else if (is_string($type) && $type !== '' && $type[0] == '\\'
+            && isset($map[substr($type, 1)])
+        ) {
+            $target = $map[substr($type, 1)];
+        } else {
+            $target = null;
+        }
+        return $target;
     }
 
     /**
