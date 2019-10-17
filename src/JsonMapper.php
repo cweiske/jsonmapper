@@ -602,7 +602,7 @@ class JsonMapper
      *
      * @return object Freshly created object
      */
-    public function createInstance(
+    protected function createInstance(
         $class, $useParameter = false, $jvalue = null
     ) {
         if ($useParameter) {
