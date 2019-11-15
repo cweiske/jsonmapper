@@ -30,7 +30,7 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"str":"stringvalue"}'),
+            \json_decode('{"str":"stringvalue"}'),
             new JsonMapperTest_Simple()
         );
         $this->assertInternalType('string', $sn->str);
@@ -44,7 +44,7 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"fl":"1.2"}'),
+            \json_decode('{"fl":"1.2"}'),
             new JsonMapperTest_Simple()
         );
         $this->assertInternalType('float', $sn->fl);
@@ -58,7 +58,7 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"pbool":"1"}'),
+            \json_decode('{"pbool":"1"}'),
             new JsonMapperTest_Simple()
         );
         $this->assertInternalType('boolean', $sn->pbool);
@@ -72,7 +72,7 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"pboolean":"0"}'),
+            \json_decode('{"pboolean":"0"}'),
             new JsonMapperTest_Simple()
         );
         $this->assertInternalType('boolean', $sn->pboolean);
@@ -86,7 +86,7 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"pint":"123"}'),
+            \json_decode('{"pint":"123"}'),
             new JsonMapperTest_Simple()
         );
         $this->assertInternalType('integer', $sn->pint);
@@ -100,7 +100,7 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"pinteger":"12345"}'),
+            \json_decode('{"pinteger":"12345"}'),
             new JsonMapperTest_Simple()
         );
         $this->assertInternalType('integer', $sn->pinteger);
@@ -114,14 +114,14 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"mixed":12345}'),
+            \json_decode('{"mixed":12345}'),
             new JsonMapperTest_Simple()
         );
         $this->assertInternalType('integer', $sn->mixed);
         $this->assertEquals('12345', $sn->mixed);
 
         $sn = $jm->map(
-            json_decode('{"mixed":"12345"}'),
+            \json_decode('{"mixed":"12345"}'),
             new JsonMapperTest_Simple()
         );
         $this->assertInternalType('string', $sn->mixed);
@@ -135,7 +135,7 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"pnullable":0}'),
+            \json_decode('{"pnullable":0}'),
             new JsonMapperTest_Simple()
         );
         $this->assertInternalType('integer', $sn->pnullable);
@@ -149,7 +149,7 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"pnullable":null}'),
+            \json_decode('{"pnullable":null}'),
             new JsonMapperTest_Simple()
         );
         $this->assertInternalType('null', $sn->pnullable);
@@ -163,7 +163,7 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"pnullable":"12345"}'),
+            \json_decode('{"pnullable":"12345"}'),
             new JsonMapperTest_Simple()
         );
         $this->assertInternalType('integer', $sn->pnullable);
@@ -177,7 +177,7 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"notype":{"k":"v"}}'),
+            \json_decode('{"notype":{"k":"v"}}'),
             new JsonMapperTest_Simple()
         );
         $this->assertInternalType('object', $sn->notype);
@@ -191,7 +191,7 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"under_score":"f"}'),
+            \json_decode('{"under_score":"f"}'),
             new JsonMapperTest_Simple()
         );
         $this->assertInternalType('string', $sn->under_score);
@@ -206,7 +206,7 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"under_score_setter":"blubb"}'),
+            \json_decode('{"under_score_setter":"blubb"}'),
             new JsonMapperTest_Simple()
         );
         $this->assertInternalType(
@@ -224,7 +224,7 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"hyphen-value":"test"}'),
+            \json_decode('{"hyphen-value":"test"}'),
             new JsonMapperTest_Simple()
         );
 
@@ -240,7 +240,7 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"hyphen-value-setter":"blubb"}'),
+            \json_decode('{"hyphen-value-setter":"blubb"}'),
             new JsonMapperTest_Simple()
         );
         $this->assertInternalType(

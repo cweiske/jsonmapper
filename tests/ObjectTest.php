@@ -36,7 +36,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"simple":{"str":"stringvalue"}}'),
+            \json_decode('{"simple":{"str":"stringvalue"}}'),
             new JsonMapperTest_Simple()
         );
         $this->assertInternalType('object', $sn->simple);
@@ -48,7 +48,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"datetime":"2014-04-01T00:00:00+02:00"}'),
+            \json_decode('{"datetime":"2014-04-01T00:00:00+02:00"}'),
             new JsonMapperTest_Object()
         );
         $this->assertInstanceOf('DateTime', $sn->datetime);
@@ -62,7 +62,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"datetime":null}'),
+            \json_decode('{"datetime":null}'),
             new JsonMapperTest_Object()
         );
         $this->assertNull($sn->datetime);
@@ -86,7 +86,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
         $complexObject = new JsonMapperTest_ComplexObject($valueObject);
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode(json_encode($complexObject)),
+            \json_decode(\json_encode($complexObject)),
             (new ReflectionClass(JsonMapperTest_ComplexObject::class))->newInstanceWithoutConstructor()
         );
 
@@ -101,7 +101,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
         $jm = new JsonMapper();
         $jm->bStrictObjectTypeChecking = true;
         $sn = $jm->map(
-            json_decode('{"pPlainObject":{"pStr":"abc"}}'),
+            \json_decode('{"pPlainObject":{"pStr":"abc"}}'),
             new JsonMapperTest_Object()
         );
 
@@ -119,7 +119,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
         $jm = new JsonMapper();
         $jm->bStrictObjectTypeChecking = true;
         $sn = $jm->map(
-            json_decode('{"pValueObject":"abc"}'),
+            \json_decode('{"pValueObject":"abc"}'),
             new JsonMapperTest_Object()
         );
     }
@@ -131,7 +131,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"pValueObjectNullable":null}'),
+            \json_decode('{"pValueObjectNullable":null}'),
             new JsonMapperTest_Object()
         );
         $this->assertNull($sn->pValueObjectNullable);
@@ -144,7 +144,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"nullableObject":null}'),
+            \json_decode('{"nullableObject":null}'),
             new JsonMapperTest_Object()
         );
         $this->assertNull($sn->nullableObject);
@@ -157,7 +157,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"docblockNullableObject":null}'),
+            \json_decode('{"docblockNullableObject":null}'),
             new JsonMapperTest_Object()
         );
         $this->assertNull($sn->docblockNullableObject);
@@ -173,7 +173,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"pValueObject":null}'),
+            \json_decode('{"pValueObject":null}'),
             new JsonMapperTest_Object()
         );
         $this->assertInternalType('null', $sn->pValueObjectNullable);
@@ -189,7 +189,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"pString":{"key":"val"}}'),
+            \json_decode('{"pString":{"key":"val"}}'),
             new JsonMapperTest_Object()
         );
         $this->assertInternalType('null', $sn->pValueObjectNullable);
@@ -200,7 +200,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
         $jm = new JsonMapper();
         $json = '[{"id":1}]';
         $objs = $jm->mapArray(
-            json_decode($json),
+            \json_decode($json),
             [],
             JsonMapperTest_ObjectConstructor::class
         );
@@ -213,7 +213,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
         $jm = new JsonMapper();
         $json = '[{"id":1}]';
         $objs = $jm->mapArray(
-            json_decode($json),
+            \json_decode($json),
             [],
             JsonMapperTest_ObjectConstructorOptional::class
         );

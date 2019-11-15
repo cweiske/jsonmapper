@@ -69,7 +69,7 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
         $jm = new JsonMapper();
         $jm->classMap[self::CLASS_MAP_CLASS] = $classMapValue;
         $sn = $jm->map(
-            json_decode('{"pPlainObject":"'.self::CLASS_MAP_DATA.'"}'),
+            \json_decode('{"pPlainObject":"'.self::CLASS_MAP_DATA.'"}'),
             new JsonMapperTest_Object()
         );
 
@@ -87,7 +87,7 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
         $jm->classMap['\\namespacetest\\model\\User']
             = \namespacetest\Unit::class;
         $data = $jm->map(
-            json_decode('{"user":"foo"}'),
+            \json_decode('{"user":"foo"}'),
             new \namespacetest\UnitData()
         );
 
@@ -100,7 +100,7 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
         $jm->classMap[\namespacetest\model\User::class]
             = \namespacetest\Unit::class;
         $data = $jm->map(
-            json_decode('{"user":"foo"}'),
+            \json_decode('{"user":"foo"}'),
             new \namespacetest\UnitData()
         );
 
@@ -112,7 +112,7 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
         $jm = new JsonMapper();
         $jm->classMap[\namespacetest\model\User::class] = 'string';
         $data = $jm->map(
-            json_decode('{"user":"foo"}'),
+            \json_decode('{"user":"foo"}'),
             new \namespacetest\UnitData()
         );
 
@@ -124,11 +124,11 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
         $jm = new JsonMapper();
         $jm->classMap[DateTime::class] = 'string';
         $data = $jm->map(
-            json_decode('{"typedSimpleArray":["2019-03-23"]}'),
+            \json_decode('{"typedSimpleArray":["2019-03-23"]}'),
             new JsonMapperTest_Array()
         );
         $this->assertInternalType('array', $data->typedSimpleArray);
-        $this->assertEquals(1, count($data->typedSimpleArray));
+        $this->assertEquals(1, \count($data->typedSimpleArray));
         $this->assertInternalType('string', $data->typedSimpleArray[0]);
     }
 }

@@ -41,7 +41,7 @@ class PHP7_1_ObjectTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"typeNullableObject":null}'),
+            \json_decode('{"typeNullableObject":null}'),
             new JsonMapperTest_PHP7_Object()
         );
         $this->assertNull($sn->typeNullableObject);
@@ -57,7 +57,7 @@ class PHP7_1_ObjectTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"nonNullableObject":null}'),
+            \json_decode('{"nonNullableObject":null}'),
             new JsonMapperTest_PHP7_Object()
         );
     }

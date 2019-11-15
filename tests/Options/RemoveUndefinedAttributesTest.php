@@ -26,7 +26,7 @@ class Options_RemoveUndefinedAttributesTest extends \PHPUnit\Framework\TestCase
         $jm = new JsonMapper();
         $jm->bRemoveUndefinedAttributes = true;
         $obj = $jm->map(
-            json_decode('{"pbool":true}'),
+            \json_decode('{"pbool":true}'),
             new JsonMapperTest_Simple()
         );
         $this->assertTrue($obj->pbool);
