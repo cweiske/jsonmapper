@@ -479,8 +479,12 @@ class JsonMapper
                     // if there's a scalar type being defined
                     if (PHP_MAJOR_VERSION >= 7) {
                         $ptype = $rparams[0]->getType();
+                        // from php 7.2 ReflectionType::__toString() is deprecated
                         if ($ptype !== null) {
-                            return array(true, $rmeth, $ptype->getName() . $nullability);
+                            if (PHP_VERSION >= 7.1) {
+                                $ptype = $ptype->getName();
+                            }
+                            return array(true, $rmeth, $ptype . $nullability);
                         }
                     }
                     return array(true, $rmeth, null);
