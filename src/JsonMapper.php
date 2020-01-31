@@ -480,7 +480,7 @@ class JsonMapper
                     if (PHP_MAJOR_VERSION >= 7) {
                         $ptype = $rparams[0]->getType();
                         if ($ptype !== null) {
-                            return array(true, $rmeth, $ptype . $nullability);
+                            return array(true, $rmeth, $ptype->getName() . $nullability);
                         }
                     }
                     return array(true, $rmeth, null);
