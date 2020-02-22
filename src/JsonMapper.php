@@ -90,6 +90,14 @@ class JsonMapper
     public $bRemoveUndefinedAttributes = false;
 
     /**
+     * Enable conversion of snake case variables to
+     * camel case.
+     *
+     * @var boolean
+     */
+    public $bConvertSnakeCase = false;
+
+    /**
      * Override class names that JsonMapper uses to create objects.
      * Useful when your setter methods accept abstract classes or interfaces.
      *
@@ -563,7 +571,9 @@ class JsonMapper
      */
     protected function getSafeName($name)
     {
-        if (strpos($name, '-') !== false) {
+        $convertHyphens = strpos($name, '-') !== false;
+        $convertSnake = $this->bConvertSnakeCase && strpos($name, '_') !== false;
+        if ($convertHyphens || $convertSnake) {
             $name = $this->getCamelCaseName($name);
         }
 

@@ -429,6 +429,18 @@ If you do not want this, set ``$bStrictObjectTypeChecking`` to ``true``:
 
 An exception is then thrown in such cases.
 
+Matching snake case keys to camel case properties
+-------------------------------
+When your JSON data uses ``snake_case`` keys you can set
+the ``$bConvertSnakeCase`` flag to ``true`` so properties
+written in ``$camelCase`` will get matched.
+
+.. code:: php
+
+    $jm = new JsonMapper();
+    $jm->bConvertSnakeCase = true;
+    $jm->map(...);
+
 
 Passing arrays to ``map()``
 ---------------------------
