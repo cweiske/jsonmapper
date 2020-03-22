@@ -462,13 +462,19 @@ __ https://packagist.org/packages/netresearch/jsonmapper
 ================
 Related software
 ================
+Alternatives
+
 - `Jackson's data binding`__ for Java
 - `Johannes Schmitt Serializer`__ for PHP
 - `metassione`__ for PHP
+- `Cartographer`__ for PHP
+- `Data Transfer Object`__ for PHP
 
 __ https://fasterxml.github.io/jackson-databind/
 __ http://jmsyst.com/libs/serializer
 __ https://github.com/drbonzo/metassione
+__ https://github.com/jonjomckay/cartographer
+__ https://github.com/spatie/data-transfer-object
 
 
 ================
