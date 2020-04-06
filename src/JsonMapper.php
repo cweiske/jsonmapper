@@ -324,11 +324,11 @@ class JsonMapper
      * 
      * @param object|null      $json JSON object structure from json_decode()
      * @param \ReflectionClass $rc   Class to get instance of. This method
-     *                                will try to first match the discriminator
-     *                                field with the discriminator value of
-     *                                the current class or its child class.
-     *                                If no matches is found, then the current
-     *                                class's instance is returned.
+     *                               will try to first match the discriminator
+     *                               field with the discriminator value of
+     *                               the current class or its child class.
+     *                               If no matches is found, then the current
+     *                               class's instance is returned.
      *                                
      * @return object|null           Object instance if match is found.
      */
@@ -408,7 +408,7 @@ class JsonMapper
      */
     protected function getFullNamespace($type, $strNs)
     {
-        if ($type !== '' && $type{0} != '\\') {
+        if (\is_string($type) && $type !== '' && $type[0] != '\\') {
             //create a full qualified namespace
             if ($strNs != '') {
                 $type = '\\' . $strNs . '\\' . $type;

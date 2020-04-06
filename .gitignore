@@ -1,8 +1,8 @@
 /README.html
 /*.tgz
 /dist/
-/vendor/
+/vendor*/
 .buildpath
 .project
 .settings
-/composer.lock
+/composer*.lock
