@@ -8,7 +8,7 @@ require_once __DIR__ . '/../othernamespace/Foo.php';
 
 use apimatic\jsonmapper\JsonMapper;
 
-class NamespaceTest extends \PHPUnit_Framework_TestCase
+class NamespaceTest extends \PHPUnit\Framework\TestCase
 {
     public function testMapArrayNamespace()
     {

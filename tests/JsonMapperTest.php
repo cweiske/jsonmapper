@@ -35,7 +35,7 @@ use apimatic\jsonmapper\JsonMapperException;
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     http://www.netresearch.de/
  */
-class JsonMapperTest extends \PHPUnit_Framework_TestCase
+class JsonMapperTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test for "@var string"

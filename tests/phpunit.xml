@@ -3,9 +3,8 @@
          colors="true"
          beStrictAboutChangesToGlobalState="true"
          beStrictAboutOutputDuringTests="true"
-         beStrictAboutTestSize="true"
          beStrictAboutTestsThatDoNotTestAnything="true"
-         checkForUnintentionallyCoveredCode="true"
+         beStrictAboutCoversAnnotation="true"
 >
     <filter>
         <whitelist>
