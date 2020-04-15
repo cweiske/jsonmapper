@@ -120,6 +120,15 @@ class JsonMapper
     protected $arInspectedClasses = array();
 
     /**
+     * Method to call on each object after deserialization is done.
+     *
+     * Is only called if it exists on the object.
+     *
+     * @var string|null
+     */
+    public $postMappingMethod = null;
+
+    /**
      * Map data all data in $json into the given $object instance.
      *
      * @param object $json   JSON object structure from json_decode()
@@ -294,6 +303,16 @@ class JsonMapper
 
         if ($this->bRemoveUndefinedAttributes) {
             $this->removeUndefinedAttributes($object, $providedProperties);
+        }
+
+        if ($this->postMappingMethod !== null
+            && $rc->hasMethod($this->postMappingMethod)
+        ) {
+            $refDeserializePostMethod = $rc->getMethod(
+                $this->postMappingMethod
+            );
+            $refDeserializePostMethod->setAccessible(true);
+            $refDeserializePostMethod->invoke($object);
         }
 
         return $object;
