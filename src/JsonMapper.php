@@ -565,32 +565,43 @@ class JsonMapper
      */
     protected function inspectProperty(\ReflectionClass $rc, $name)
     {
-        //try setter method first
-        $setter = 'set' . str_replace(
-            ' ', '', ucwords(str_replace('_', ' ', $name))
-        );
-        if ($rc->hasMethod($setter)) {
-            $rmeth = $rc->getMethod($setter);
-            if ($rmeth->isPublic()) {
-                $rparams = $rmeth->getParameters();
-                if (count($rparams) > 0) {
-                    $pclass = $rparams[0]->getClass();
-                    if ($pclass !== null) {
-                        return array(
-                            true, $rmeth, '\\' . $pclass->getName(), null
-                        );
-                    }
-                }
-
-                $docblock    = $rmeth->getDocComment();
-                $annotations = $this->parseAnnotations($docblock);
-
-                if (!isset($annotations['param'][0])) {
-                    return array(true, $rmeth, null, null);
-                }
-                list($type) = explode(' ', trim($annotations['param'][0]));
-                return array(true, $rmeth, $type, null);
+        $rmeth = null;
+        $annotations = [];
+        foreach ($rc->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+            $annotations = $this->parseAnnotations($method->getDocComment());
+            if ($name === $this->getMapAnnotationFromParsed($annotations)) {
+                $rmeth = $method;
+                break;
             }
+        }
+
+        if ($rmeth === null) {
+            //try setter method
+            $setter = 'set' . str_replace(
+                ' ', '', ucwords(str_replace('_', ' ', $name))
+            );
+            if ($rc->hasMethod($setter)) {
+                $rmeth = $rc->getMethod($setter);
+                $annotations = $this->parseAnnotations($rmeth->getDocComment());
+            }
+        }
+
+        if ($rmeth !== null && $rmeth->isPublic()) {
+            $rparams = $rmeth->getParameters();
+            if (count($rparams) > 0) {
+                $pclass = $rparams[0]->getClass();
+                if ($pclass !== null) {
+                    return array(
+                        true, $rmeth, '\\' . $pclass->getName(), null
+                    );
+                }
+            }
+
+            if (!isset($annotations['param'][0])) {
+                return array(true, $rmeth, null, null);
+            }
+            list($type) = explode(' ', trim($annotations['param'][0]));
+            return array(true, $rmeth, $type, null);
         }
 
         $rprop = null;
@@ -660,6 +671,21 @@ class JsonMapper
     protected function getMapAnnotation($property)
     {
         $annotations = $this->parseAnnotations($property->getDocComment());
+        if (isset($annotations['maps'][0])) {
+            return $annotations['maps'][0];
+        }
+        return null;
+    }
+    
+    /**
+     * Get map annotation value from a parsed annotation list
+     * 
+     * @param array $annotation Parsed annotation list
+     * 
+     * @return string|null      Map annotation value
+     */
+    protected function getMapAnnotationFromParsed($annotations)
+    {
         if (isset($annotations['maps'][0])) {
             return $annotations['maps'][0];
         }

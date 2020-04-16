@@ -22,6 +22,7 @@ require_once 'JsonMapperTest/DerivedClass.php';
 require_once 'JsonMapperTest/DerivedClass2.php';
 require_once 'JsonMapperTest/FactoryMethod.php';
 require_once 'JsonMapperTest/FactoryMethodWithError.php';
+require_once 'JsonMapperTest/MapsWithSetters.php';
 
 use apimatic\jsonmapper\JsonMapper;
 use apimatic\jsonmapper\JsonMapperException;
@@ -936,6 +937,17 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"simple":"hello world"}'),
             new FactoryMethodWithError()
         );
+    }
+
+    public function testMapsAnnotationOnSetter()
+    {
+        $jm = new JsonMapper();
+        $fm = $jm->map(
+            json_decode('{"name":"hello","my_age":123123}'),
+            new MapsWithSetters()
+        );
+        $this->assertEquals("hello", $fm->getName());
+        $this->assertEquals(123123, $fm->getAge());
     }
 }
 ?>
