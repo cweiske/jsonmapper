@@ -1,3 +1,9 @@
+2020-04-16  Christian Weiske  <cweiske@cweiske.de>
+
+	* Add postMappingMethod property
+	  by @mrcnpdlk
+	* Version 2.1.0
+
 2020-03-04  Christian Weiske  <cweiske@cweiske.de>
 
 	* Fix PHP 7.4 warning: ReflectionType::__toString() is deprecated
