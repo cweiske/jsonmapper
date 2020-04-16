@@ -403,7 +403,7 @@ from the final object if they have not been in the JSON data:
 
 
 Private properties and functions
---------------------------------
+================================
 You can allow mapping to private and protected properties and
 setter methods by setting ``$bIgnoreVisibility`` to true:
 
@@ -415,7 +415,7 @@ setter methods by setting ``$bIgnoreVisibility`` to true:
 
 
 Simple types instead of objects
--------------------------------
+===============================
 When a variable's type is a class and JSON data is a simple type
 like ``string``, JsonMapper passes this value to the class' constructor.
 
@@ -431,7 +431,7 @@ An exception is then thrown in such cases.
 
 
 Passing arrays to ``map()``
----------------------------
+===========================
 You may wish to pass array data into ``map()`` that you got by calling
 
 .. code:: php
