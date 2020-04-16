@@ -185,8 +185,10 @@ a property:
     public $person;
 
    The property has to be public to be used directly.
-   Protected and private properties cannot be set; you will have to
-   provide a setter method for them.
+   You may also use `$bIgnoreVisibility`__ to utilize
+   protected and private properties.
+
+   .. __: #prop-bignorevisibility
 
    If no type could be detected, the property gets the plain JSON value set.
 
@@ -401,6 +403,8 @@ from the final object if they have not been in the JSON data:
     $jm->bRemoveUndefinedAttributes = true;
     $jm->map(...);
 
+
+.. _prop-bignorevisibility:
 
 Private properties and functions
 ================================
