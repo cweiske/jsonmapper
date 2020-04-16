@@ -453,6 +453,21 @@ You can circumvent that by setting ``$bEnforceMapType`` to ``false``:
     $jm->map(...);
 
 
+Post-mapping callback
+=====================
+JsonMapper is able to call a custom method directly on each object after
+mapping it is finished:
+
+.. code:: php
+
+    $jm = new JsonMapper();
+    $jm->postMappingMethod = 'afterMapping';
+    $jm->map(...);
+
+Now ``afterMapping()`` is called on each mapped object
+(if the class has that method).
+
+
 ============
 Installation
 ============
