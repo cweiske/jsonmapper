@@ -158,5 +158,22 @@ class JsonMapperTest_Simple
     {
         $this->valueObject = $valueObject;
     }
+
+    public $additional = [];
+
+    public function addAdditionalProperty($key, $value)
+    {
+        $this->additional[$key] = $value;
+    }
+
+    private function privateAddAdditionalProperty($key, $value)
+    {
+        $this->additional[$key] = $value;
+    }
+
+    public function brokenAddAdditionalProperty($value)
+    {
+        $this->additional[] = $value;
+    }
 }
 ?>

@@ -18,6 +18,7 @@ require_once 'JsonMapperTest/Logger.php';
 require_once 'JsonMapperTest/PrivateWithSetter.php';
 require_once 'JsonMapperTest/ValueObject.php';
 require_once 'JsonMapperTest/SimpleBase.php';
+require_once 'JsonMapperTest/SimpleBaseWithMissingDiscrimType.php';
 require_once 'JsonMapperTest/DerivedClass.php';
 require_once 'JsonMapperTest/DerivedClass2.php';
 require_once 'JsonMapperTest/FactoryMethod.php';
@@ -47,6 +48,20 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
         $sn = $jm->map(
             json_decode('{"str":"stringvalue"}'),
             new JsonMapperTest_Simple()
+        );
+        $this->assertInternalType('string', $sn->str);
+        $this->assertEquals('stringvalue', $sn->str);
+    }
+    
+    /**
+     * Test for "@var string"
+     */
+    public function testMapSimpleStringWithMapClass()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->mapClass(
+            json_decode('{"str":"stringvalue"}'),
+            'JsonMapperTest_Simple'
         );
         $this->assertInternalType('string', $sn->str);
         $this->assertEquals('stringvalue', $sn->str);
@@ -278,6 +293,13 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(1.2, $sn->typedArray[1]->fl);
     }
 
+    public function testMapTypedWithNullValue(Type $var = null)
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->mapClassArray(null, new JsonMapperTest_Array());
+        $this->assertEquals(null, $sn);
+    }
+
     /**
      * Test for an array of classes "@var ClassName[]" with
      * flat/simple json values (string, float)
@@ -300,6 +322,34 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(
             '2014-05-07', $sn->typedSimpleArray[2]->format('Y-m-d')
         );
+    }
+    
+    public function testMapClassSimple()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->mapClass(
+            json_decode('{"str":"stringvalue"}'),
+            'JsonMapperTest_Simple'
+        );
+        $this->assertInternalType('string', $sn->str);
+        $this->assertEquals('stringvalue', $sn->str);
+    }
+
+    public function testMapClassNullJson()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->mapClass(null, 'JsonMapperTest_Simple');
+        $this->assertEquals(null, $sn);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage JsonMapper::mapClass() requires first argument to be an object, integer given.
+     */
+    public function testMapClassWithNonObject()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->mapClass(123, 'JsonMapperTest_Simple');
     }
 
     /**
@@ -741,6 +791,24 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('database', $sn->simple->db);
     }
 
+    public function testDiscriminatorWithBaseTypeWithMissingDiscriminatorType()
+    {
+        $jm = new JsonMapper();
+        $jm->arChildClasses['JsonMapperTest_SimpleBase'] = array('JsonMapperTest_DerivedClass');
+        $jm->arChildClasses['JsonMapperTest_DerivedClass'] = array('JsonMapperTest_DerivedClass2');
+        $jm->arChildClasses['JsonMapperTest_DerivedClass2'] = array();
+
+        $sn = $jm->mapClass(
+            (object) array('afield' => 'abc', 'bfield' => 12, 'type' => 'base'),
+            'JsonMapperTest_SimpleBaseWithMissingDiscrimType'
+        );
+
+        $this->assertInstanceOf('JsonMapperTest_SimpleBaseWithMissingDiscrimType', $sn);
+        $this->assertEquals('abc', $sn->afield);
+        $this->assertEquals(12, $sn->bfield);
+        $this->assertEquals('base', $sn->type);
+    }
+
     public function testDiscriminatorWithBaseType()
     {
         $jm = new JsonMapper();
@@ -944,13 +1012,60 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $fm = $jm->map(
-            json_decode('{"name":"hello","my_age":123123, "factoryValue": "factval"}'),
+            json_decode('{"name":"hello","my_age":123123, "factoryValue": "factval", "public": "yes"}'),
             new MapsWithSetters()
         );
         $this->assertEquals("hello", $fm->getName());
         $this->assertEquals(123123, $fm->getAge());
         $this->assertEquals("value is factval", $fm->getMappedAndFactory());
+        $this->assertEquals("yes", $fm->publicProp);
     }
+
+    public function testAdditionalProperties()
+    {
+        $jm = new JsonMapper();
+        $jm->sAdditionalPropertiesCollectionMethod = 'addAdditionalProperty';
+        $fm = $jm->map(
+            json_decode('{"random11":"hello","random22":123123}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertEquals("hello", $fm->additional['random11']);
+        $this->assertEquals(123123, $fm->additional['random22']);
+        $this->assertEquals(2, count($fm->additional));
+    }
+
+    /**
+     * @expectedException        \InvalidArgumentException
+     * @expectedExceptionMessage privateAddAdditionalProperty method is not public on the given class.
+     */
+    public function testAdditionalPropertiesWithPrivateMethod()
+    {
+        $jm = new JsonMapper();
+        $jm->sAdditionalPropertiesCollectionMethod = 'privateAddAdditionalProperty';
+        $fm = $jm->map(new stdClass, new JsonMapperTest_Simple());
+    }
+    
+    /**
+     * @expectedException        \InvalidArgumentException
+     * @expectedExceptionMessage brokenAddAdditionalProperty method does not receive two args, $key and $value.
+     */
+    public function testAdditionalPropertiesWithBrokenMethod()
+    {
+        $jm = new JsonMapper();
+        $jm->sAdditionalPropertiesCollectionMethod = 'brokenAddAdditionalProperty';
+        $fm = $jm->map(new stdClass, new JsonMapperTest_Simple());
+    }
+    
+    /**
+     * @expectedException        \InvalidArgumentException
+     * @expectedExceptionMessage missingMethod method is not available on the given class.
+     */
+    public function testAdditionalPropertiesWithMissingMethod()
+    {
+        $jm = new JsonMapper();
+        $jm->sAdditionalPropertiesCollectionMethod = 'missingMethod';
+        $fm = $jm->map(new stdClass, new JsonMapperTest_Simple());
+    
     }
 }
 ?>

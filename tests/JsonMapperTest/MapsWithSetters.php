@@ -6,6 +6,11 @@ class MapsWithSetters
     private $age;
     private $mappedAndFactory;
 
+    /**
+     * @maps public
+     */
+    public $publicProp;
+
     public function setName($name)
     {
         $this->name = $name;

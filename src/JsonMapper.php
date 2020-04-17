@@ -470,7 +470,7 @@ class JsonMapper
                 if ($additionalPropertiesMethod->getNumberOfParameters() < 2) {
                     throw new  \InvalidArgumentException(
                         $this->sAdditionalPropertiesCollectionMethod . 
-                        " method does not receive two args, $key and $value."
+                        ' method does not receive two args, $key and $value.'
                     ); 
                 }
             } catch (\ReflectionException $e) {
@@ -597,7 +597,9 @@ class JsonMapper
                 }
             }
 
-            if (($pclass === null || $pclass === 'array') && isset($annotations['param'][0])) {
+            if (($pclass === null || $pclass === 'array')
+                && isset($annotations['param'][0])
+            ) {
                 list($type) = explode(' ', trim($annotations['param'][0]));
             }
 
@@ -685,7 +687,7 @@ class JsonMapper
     /**
      * Get map annotation value from a parsed annotation list
      * 
-     * @param array $annotation Parsed annotation list
+     * @param array $annotations Parsed annotation list
      * 
      * @return string|null      Map annotation value
      */
