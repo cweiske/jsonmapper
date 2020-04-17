@@ -912,7 +912,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $fm = $jm->map(
-            json_decode('{"simple":"hello world", "value":123, "bool": 0, "datetime": 1511247096, "object": "some value", "objObj":{"a":"b"}, "array": [1,2,3], "valueArr":[1,2,3]}'),
+            json_decode('{"simple":"hello world", "value":123, "bool": 0, "datetime": 1511247096, "object": "some value", "objObj":{"a":"b"}, "array": [1,2,3], "valueArr":[1,2,3], "privateValue": 4242}'),
             new FactoryMethod()
         );
         $this->assertEquals("hello world", $fm->simple);
@@ -924,6 +924,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf('JsonMapperTest_ValueObject', $fm->objObj);
         $this->assertEquals(array(1, 4, 9), $fm->array);
         $this->assertEquals(6, $fm->valueArr);
+        $this->assertEquals("value is 4242", $fm->getPrivateValue());
     }
 
     /**
@@ -943,11 +944,13 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $fm = $jm->map(
-            json_decode('{"name":"hello","my_age":123123}'),
+            json_decode('{"name":"hello","my_age":123123, "factoryValue": "factval"}'),
             new MapsWithSetters()
         );
         $this->assertEquals("hello", $fm->getName());
         $this->assertEquals(123123, $fm->getAge());
+        $this->assertEquals("value is factval", $fm->getMappedAndFactory());
+    }
     }
 }
 ?>

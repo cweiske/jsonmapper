@@ -20,6 +20,8 @@
  */
 class FactoryMethod
 {
+    private $privateValue;
+
     /**
      * @var string
      */
@@ -62,6 +64,19 @@ class FactoryMethod
      * @factory FactoryMethod::createValueFromArray
      */
     public $valueArr;
+
+    /**
+     * @factory FactoryMethod::createFromValue
+     */
+    public function setPrivateValue($val)
+    {
+        $this->privateValue = $val;
+    }
+
+    public function getPrivateValue()
+    {
+        return $this->privateValue;
+    }
 
     public static function createFromValue($value)
     {

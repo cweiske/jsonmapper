@@ -4,6 +4,7 @@ class MapsWithSetters
 {
     private $name;
     private $age;
+    private $mappedAndFactory;
 
     public function setName($name)
     {
@@ -18,6 +19,15 @@ class MapsWithSetters
         $this->age = $age;
     }
 
+    /**
+     * @factory MapsWithSetters::factory
+     * @maps factoryValue
+     */
+    public function setMappedAndFactory($val)
+    {
+        $this->mappedAndFactory = $val;
+    }
+
     public function getName()
     {
         return $this->name;
@@ -26,5 +36,15 @@ class MapsWithSetters
     public function getAge()
     {
         return $this->age;
+    }
+
+    public function getMappedAndFactory()
+    {
+        return $this->mappedAndFactory;
+    }
+
+    public static function factory($val)
+    {
+        return 'value is ' . $val;
     }
 }

@@ -587,21 +587,26 @@ class JsonMapper
         }
 
         if ($rmeth !== null && $rmeth->isPublic()) {
+            $type = null;
+            $factoryMethod = null;
             $rparams = $rmeth->getParameters();
             if (count($rparams) > 0) {
                 $pclass = $rparams[0]->getClass();
                 if ($pclass !== null) {
-                    return array(
-                        true, $rmeth, '\\' . $pclass->getName(), null
-                    );
+                    $type = '\\' . $pclass->getName();
                 }
             }
 
-            if (!isset($annotations['param'][0])) {
-                return array(true, $rmeth, null, null);
+            if (($pclass === null || $pclass === 'array') && isset($annotations['param'][0])) {
+                list($type) = explode(' ', trim($annotations['param'][0]));
             }
-            list($type) = explode(' ', trim($annotations['param'][0]));
-            return array(true, $rmeth, $type, null);
+
+            //support "@factory method_name"
+            if (isset($annotations['factory'][0])) {
+                list($factoryMethod) = explode(' ', $annotations['factory'][0]);
+            }
+
+            return array(true, $rmeth, $type, $factoryMethod);
         }
 
         $rprop = null;
