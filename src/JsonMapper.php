@@ -711,11 +711,11 @@ class JsonMapper
     /**
      * Get name for a ReflectionType instance
      * 
-     * @codeCoverageIgnore
-     * 
      * @param \ReflectionTpye $type Reflection type instance
      * 
      * @return string
+     * 
+     * @codeCoverageIgnore
      */
     protected static function reflectionTypeToString(\ReflectionType $type)
     {
