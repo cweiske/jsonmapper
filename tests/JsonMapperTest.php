@@ -26,7 +26,10 @@ require_once 'JsonMapperTest/FactoryMethodWithError.php';
 require_once 'JsonMapperTest/MapsWithSetters.php';
 require_once 'JsonMapperTest/ClassWithCtor.php';
 require_once 'JsonMapperTest/ComplexClassWithCtor.php';
-require_once 'JsonMapperTest/Php7TypedClass.php';
+
+if (PHP_VERSION_ID >= 70000) {
+    require_once 'JsonMapperTest/Php7TypedClass.php';
+}
 
 use apimatic\jsonmapper\JsonMapper;
 use apimatic\jsonmapper\JsonMapperException;

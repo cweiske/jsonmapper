@@ -28,12 +28,12 @@ class Php7TypedClass
         return $this->age;
     }
 
-    public function setValue(?JsonMapperTest_ValueObject $value)
+    public function setValue(JsonMapperTest_ValueObject $value)
     {
         $this->value = $value;
     }    
 
-    public function getValue(): ?JsonMapperTest_ValueObject
+    public function getValue(): JsonMapperTest_ValueObject
     {
         return $this->value;
     }
