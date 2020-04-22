@@ -9,4 +9,9 @@ class JsonMapperTest_ValueObject
     {
         $this->value = $value;
     }
+
+    public function getValue()
+    {
+        return $this->value;
+    }
 }

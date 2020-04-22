@@ -24,6 +24,9 @@ require_once 'JsonMapperTest/DerivedClass2.php';
 require_once 'JsonMapperTest/FactoryMethod.php';
 require_once 'JsonMapperTest/FactoryMethodWithError.php';
 require_once 'JsonMapperTest/MapsWithSetters.php';
+require_once 'JsonMapperTest/ClassWithCtor.php';
+require_once 'JsonMapperTest/ComplexClassWithCtor.php';
+require_once 'JsonMapperTest/Php7TypedClass.php';
 
 use apimatic\jsonmapper\JsonMapper;
 use apimatic\jsonmapper\JsonMapperException;
@@ -791,6 +794,16 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('database', $sn->simple->db);
     }
 
+    /**
+     * @expectedException        apimatic\JsonMapper\JsonMapperException
+     * @expectedExceptionMessage ClassWithCtor class requires 2 arguments in constructor but none provided
+     */
+    public function testDependencyInjectionWithMissingCtorArgs()
+    {
+        $jm = new JsonMapperTest_DependencyInjector();
+        $jm->createInstance('ClassWithCtor');
+    }
+
     public function testDiscriminatorWithBaseTypeWithMissingDiscriminatorType()
     {
         $jm = new JsonMapper();
@@ -1065,7 +1078,66 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
         $jm = new JsonMapper();
         $jm->sAdditionalPropertiesCollectionMethod = 'missingMethod';
         $fm = $jm->map(new stdClass, new JsonMapperTest_Simple());
+    }
     
+    public function testMapTypeWithCtor()
+    {
+        $jm = new JsonMapper();
+        $fm = $jm->mapClass(
+            json_decode('{"attr1":"hello","attr2":123123}'),
+            'ClassWithCtor'
+        );
+        
+        $this->assertEquals("hello", $fm->getAttr1());
+
+        $this->assertInstanceOf('JsonMapperTest_ValueObject', $fm->getAttr2());
+        $this->assertEquals(123123, $fm->getAttr2()->getValue());
+    }
+    
+    /**
+     * @expectedException        apimatic\JsonMapper\JsonMapperException
+     * @expectedExceptionMessage Could not find required constructor arguments for ClassWithCtor: attr2
+     */
+    public function testMapTypeWithCtorMissingArgument()
+    {
+        $jm = new JsonMapper();
+        $fm = $jm->mapClass(
+            json_decode('{"attr1":"hello"}'),
+            'ClassWithCtor'
+        );
+    }
+        
+    public function testMapTypeWithCtorComplex()
+    {
+        $jm = new JsonMapper();
+        $fm = $jm->mapClass(
+            json_decode('{"anotherSetter":"something","attr1":"hello","attr2":123123,"attr3":1,"attr4":true,"attr5":["abc"],"anotherProp":"foo"}'),
+            'ComplexClassWithCtor'
+        );
+        $this->assertEquals("hello", $fm->getAttr1());
+        $this->assertEquals(123123, $fm->getAttr2());
+        $this->assertEquals(2, $fm->attr3);
+        $this->assertEquals(true, $fm->foo);
+        $this->assertEquals("abc", $fm->getAttr5()[0]);
+        $this->assertEquals("last", $fm->getAttr5()[1]);
+        $this->assertEquals("foo", $fm->anotherProp);
+        $this->assertEquals("something new", $fm->getAnotherSetter());
+    }
+
+    public function testPhp7BasicTypeHints()
+    {
+        if (PHP_VERSION_ID >= 70000) {
+            $jm = new JsonMapper();
+            $fm = $jm->mapClass(
+                json_decode('{"name":"abcdef","age":30,"value":"givenvalue"}'),
+                'Php7TypedClass'
+            );
+            $this->assertEquals("abcdef", $fm->getName());
+            $this->assertEquals(30, $fm->getAge());
+            $this->assertEquals("givenvalue", $fm->getValue()->getValue());
+        } else {
+            $this->assertTrue(true);
+        }
     }
 }
 ?>

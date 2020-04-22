@@ -6,3 +6,5 @@
 .project
 .settings
 /composer*.lock
+/coverage
+/.vscode

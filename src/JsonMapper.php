@@ -165,47 +165,6 @@ class JsonMapper
                 );
             }
 
-            if ($isAdditional) {
-                if ($additionalPropertiesMethod !== null) {
-                    $additionalPropertiesMethod->invoke($object, $key, $jvalue); 
-                }
-                continue;
-            }
-
-            //use factory method generated value if factory provided
-            if ($factoryMethod !== null) {
-                if (!is_callable($factoryMethod)) {
-                    throw new JsonMapperException(
-                        'Factory method "' . $factoryMethod . '" referenced by "'
-                        . $strClassName . '" is not callable'
-                    );
-                }
-                $factoryValue = call_user_func($factoryMethod, $jvalue);
-                $this->setProperty($object, $accessor, $factoryValue);
-                continue;
-            }
-
-            if ($this->isNullable($type)) {
-                if ($jvalue === null) {
-                    $this->setProperty($object, $accessor, null);
-                    continue;
-                }
-                $type = $this->removeNullable($type);
-            }
-
-            if ($type === null || $type === 'mixed') {
-                //no given type - simply set the json data
-                $this->setProperty($object, $accessor, $jvalue);
-                continue;
-            } else if ($this->isObjectOfSameType($type, $jvalue)) {
-                $this->setProperty($object, $accessor, $jvalue);
-                continue;
-            } else if ($this->isSimpleType($type)) {
-                settype($jvalue, $type);
-                $this->setProperty($object, $accessor, $jvalue);
-                continue;
-            }
-
             //FIXME: check if type exists, give detailled error message if not
             if ($type === '') {
                 throw new JsonMapperException(
@@ -214,59 +173,21 @@ class JsonMapper
                 );
             }
 
-            $array = null;
-            $subtype = null;
-            if (substr($type, -2) == '[]') {
-                //array
-                $array = array();
-                $subtype = substr($type, 0, -2);
-            } else if (substr($type, -1) == ']') {
-                list($proptype, $subtype) = explode('[', substr($type, 0, -1));
-                if (!$this->isSimpleType($proptype)) {
-                    $proptype = $this->getFullNamespace($proptype, $strNs);
+            if ($isAdditional) {
+                if ($additionalPropertiesMethod !== null) {
+                    $additionalPropertiesMethod->invoke($object, $key, $jvalue); 
                 }
-                $array = $this->createInstance($proptype);
-            } else if ($type == 'ArrayObject'
-                || is_subclass_of($type, 'ArrayObject')
-            ) {
-                $array = $this->createInstance($type);
+                continue;
             }
 
-            if ($array !== null) {
-                if (!$this->isSimpleType($subtype)) {
-                    $subtype = $this->getFullNamespace($subtype, $strNs);
-                }
-                if ($jvalue === null) {
-                    $child = null;
-                } else if ($this->isRegisteredType(
-                    $this->getFullNamespace($subtype, $strNs)
-                )
-                ) {
-                    $child = $this->mapClassArray($jvalue, $subtype);
-                } else {
-                    $child = $this->mapArray($jvalue, $array, $subtype);
-                }
-            } else if ($this->isFlatType(gettype($jvalue))) {
-                //use constructor parameter if we have a class
-                // but only a flat type (i.e. string, int)
-                if ($jvalue === null) {
-                    $child = null;
-                } else {
-                    $type = $this->getFullNamespace($type, $strNs);
-                    $child = $this->createInstance($type, true, $jvalue);
-                }
-            } else if ($this->isRegisteredType(
-                $this->getFullNamespace($type, $strNs)
-            )
-            ) {
-                $type = $this->getFullNamespace($type, $strNs);
-                $child = $this->mapClass($jvalue, $type);
-            } else {
-                $type = $this->getFullNamespace($type, $strNs);
-                $child = $this->createInstance($type);
-                $this->map($jvalue, $child);
-            }
-            $this->setProperty($object, $accessor, $child);
+            $value = $this->getMappedValue(
+                $jvalue,
+                $type,
+                $factoryMethod,
+                $rc->getNamespaceName(),
+                $rc->getName()
+            );
+            $this->setProperty($object, $accessor, $value, $strNs);
         }
 
         if ($this->bExceptionOnMissingData) {
@@ -274,6 +195,102 @@ class JsonMapper
         }
 
         return $object;
+    }
+
+    /**
+     * Get mapped value for a property in an object.
+     * 
+     * @param $jvalue        mixed Raw normalized data for the property
+     * @param $type          string Type of the data found by inspectProperty()
+     * @param $factoryMethod string Callable factory method for property
+     * @param $namespace     string Namespace of the class
+     * @param $className     string Name of the class 
+     * 
+     * @return mixed
+     */
+    protected function getMappedValue(
+        $jvalue,
+        $type,
+        $factoryMethod,
+        $namespace,
+        $className
+    ) {
+        //use factory method generated value if factory provided
+        if ($factoryMethod !== null) {
+            if (!is_callable($factoryMethod)) {
+                throw new JsonMapperException(
+                    'Factory method "' . $factoryMethod . '" referenced by "'
+                    . $className . '" is not callable'
+                );
+            }
+            $factoryValue = call_user_func($factoryMethod, $jvalue);
+            return $factoryValue;
+        }
+
+        if ($this->isNullable($type)) {
+            if ($jvalue === null) {
+                return null;
+            }
+            $type = $this->removeNullable($type);
+        }
+
+        if ($type === null || $type === 'mixed' || $type === '') {
+            //no given type - simply return the json data
+            return $jvalue;
+        } else if ($this->isObjectOfSameType($type, $jvalue)) {
+            return $jvalue;
+        } else if ($this->isSimpleType($type)) {
+            settype($jvalue, $type);
+            return $jvalue;
+        }
+
+        $array = null;
+        $subtype = null;
+        if (substr($type, -2) == '[]') {
+            //array
+            $array = array();
+            $subtype = substr($type, 0, -2);
+        } else if (substr($type, -1) == ']') {
+            list($proptype, $subtype) = explode('[', substr($type, 0, -1));
+            if (!$this->isSimpleType($proptype)) {
+                $proptype = $this->getFullNamespace($proptype, $namespace);
+            }
+            $array = $this->createInstance($proptype);
+        } else if ($type == 'ArrayObject'
+            || is_subclass_of($type, 'ArrayObject')
+        ) {
+            $array = $this->createInstance($type);
+        }
+
+        if ($array !== null) {
+            if (!$this->isSimpleType($subtype)) {
+                $subtype = $this->getFullNamespace($subtype, $namespace);
+            }
+            if ($jvalue === null) {
+                $child = null;
+            } else if ($this->isRegisteredType(
+                $this->getFullNamespace($subtype, $namespace)
+            )
+            ) {
+                $child = $this->mapClassArray($jvalue, $subtype);
+            } else {
+                $child = $this->mapArray($jvalue, $array, $subtype);
+            }
+        } else if ($this->isFlatType(gettype($jvalue))) {
+            //use constructor parameter if we have a class
+            // but only a flat type (i.e. string, int)
+            if ($jvalue === null) {
+                $child = null;
+            } else {
+                $type = $this->getFullNamespace($type, $namespace);
+                $child = new $type($jvalue);
+            }
+        } else {
+            $type = $this->getFullNamespace($type, $namespace);
+            $child = $this->mapClass($jvalue, $type);
+        }
+
+        return $child;
     }
 
     /**
@@ -298,6 +315,8 @@ class JsonMapper
             );
         }
 
+        $ttype = ltrim($type, "\\");
+        
         if (!class_exists($type)) {
             throw new \InvalidArgumentException(
                 'JsonMapper::mapClass() requires second argument to be a class name'
@@ -305,15 +324,16 @@ class JsonMapper
             );
         }
 
-        $ttype = ltrim($type, "\\");
         $rc = new \ReflectionClass($ttype);
 
         //try and find a class with matching discriminator
-        $instance = $this->getDiscriminatorMatch($json, $rc);
+        $matchedRc = $this->getDiscriminatorMatch($json, $rc);
 
         //otherwise fallback to an instance of $type class
-        if ($instance === null) {
-            $instance = $this->createInstance($ttype);
+        if ($matchedRc === null) {
+            $instance = $this->createInstance($ttype, $json);
+        } else {
+            $instance = $this->createInstance($matchedRc->getName(), $json);
         }
 
         return $this->map($json, $instance);
@@ -330,7 +350,7 @@ class JsonMapper
      *                               If no matches is found, then the current
      *                               class's instance is returned.
      *                                
-     * @return object|null           Object instance if match is found.
+     * @return \ReflectionClass|null Object instance if match is found.
      */
     protected function getDiscriminatorMatch($json, $rc)
     {
@@ -338,15 +358,15 @@ class JsonMapper
         if ($discriminator) {
             list($fieldName, $fieldValue) = $discriminator;
             if (isset($json->{$fieldName}) && $json->{$fieldName} === $fieldValue) {
-                return $rc->newInstance();
+                return $rc;
             }
             if (!$this->isRegisteredType($rc->name)) {
                 return null;
             }
             foreach ($this->getChildClasses($rc) as $clazz) {
-                $instance = $this->getDiscriminatorMatch($json, $clazz);
-                if ($instance) {
-                    return $instance;
+                $childRc = $this->getDiscriminatorMatch($json, $clazz);
+                if ($childRc) {
+                    return $childRc;
                 }
             }
         } else {
@@ -391,7 +411,7 @@ class JsonMapper
         $children  = array();
         foreach ($this->arChildClasses[$rc->name] as $class) {
             $child = new \ReflectionClass($class);
-            if ($rc->isInstance($child->newInstance())) {
+            if ($child->isSubclassOf($rc)) {
                 $children[] = $child;
             }
         }
@@ -513,15 +533,12 @@ class JsonMapper
                         settype($jvalue, $class);
                         $array[$key] = $jvalue;
                     } else {
-                        $array[$key] = $this->createInstance(
-                            $class, true, $jvalue
-                        );
+                        $array[$key] = new $class($jvalue);
                     }
                 }
             } else {
-                $array[$key] = $this->map(
-                    $jvalue, $this->createInstance($class)
-                );
+                $instance = $this->createInstance($class, $jvalue);
+                $array[$key] = $this->map($jvalue, $instance);
             }
         }
         return $array;
@@ -591,13 +608,10 @@ class JsonMapper
             $factoryMethod = null;
             $rparams = $rmeth->getParameters();
             if (count($rparams) > 0) {
-                $pclass = $rparams[0]->getClass();
-                if ($pclass !== null) {
-                    $type = '\\' . $pclass->getName();
-                }
+                $type = $this->getParameterType($rparams[0]);
             }
 
-            if (($pclass === null || $pclass === 'array')
+            if (($type === null || $type === 'array')
                 && isset($annotations['param'][0])
             ) {
                 list($type) = explode(' ', trim($annotations['param'][0]));
@@ -669,6 +683,52 @@ class JsonMapper
     }
 
     /**
+     * Get Phpdoc typehint for parameter
+     * 
+     * @param \ReflectionParameter $param ReflectionParameter instance for parameter
+     * 
+     * @return string|null
+     */
+    protected function getParameterType(\ReflectionParameter $param)
+    {
+        if (null !== $class = $param->getClass()) {
+            return "\\" . $class->getName();
+        }
+
+        if (is_callable([$param, 'hasType']) && $param->hasType()) {
+            $type = $param->getType();
+            if ($type->isBuiltIn()) {
+                $typeName = static::reflectionTypeToString($type); 
+            } else {
+                $typeName = "\\" + static::reflectionTypeToString($type);
+            }
+            return $type->allowsNull() ? "$typeName|null" : $typeName;
+        }
+
+        return null;
+    }
+
+    /**
+     * Get name for a ReflectionType instance
+     * 
+     * @codeCoverageIgnore
+     * 
+     * @param \ReflectionTpye $type Reflection type instance
+     * 
+     * @return string
+     */
+    protected static function reflectionTypeToString(\ReflectionType $type)
+    {
+        if (\class_exists('ReflectionNamedType')
+            && $type instanceof \ReflectionNamedType
+        ) {
+            return $type->getName();
+        } else {
+            return (string) $type;
+        }
+    }
+
+    /**
      * Get map annotation value for a property
      * 
      * @param object $property Property of a class
@@ -724,23 +784,114 @@ class JsonMapper
     /**
      * Create a new object of the given type.
      *
-     * This method exists to be overwritten in child classes,
-     * so you can do dependency injection or so.
-     *
-     * @param string  $class        Class name to instantiate
-     * @param boolean $useParameter Pass $parameter to the constructor or not
-     * @param mixed   $parameter    Constructor parameter
+     * @param string $class   Class name to instantiate
+     * @param object $jobject Use jobject for constructor args
      *
      * @return object Freshly created object
      */
-    public function createInstance(
-        $class, $useParameter = false, $parameter = null
-    ) {
-        if ($useParameter) {
-            return new $class($parameter);
-        } else {
+    protected function createInstance($class, &$jobject = null)
+    {
+        $rc = new \ReflectionClass($class);
+        $ctor = $rc->getConstructor();
+        if ($ctor === null
+            || 0 === $ctorReqParamsCount = $ctor->getNumberOfRequiredParameters()
+        ) {
             return new $class();
+        } else if ($jobject === null) {
+            throw new JsonMapperException(
+                "$class class requires " . $ctor->getNumberOfRequiredParameters()
+                . " arguments in constructor but none provided"
+            );
         }
+
+        $ctorRequiredParams = array_slice(
+            $ctor->getParameters(),
+            0,
+            $ctorReqParamsCount
+        );
+        $ctorRequiredParamsName = array_map(
+            function (\ReflectionParameter $param) {
+                return $param->getName();
+            }, $ctorRequiredParams
+        );
+        $ctorRequiredParams = array_combine(
+            $ctorRequiredParamsName,
+            $ctorRequiredParams
+        );
+        $ctorArgs = [];
+
+        foreach ($jobject as $key => $jvalue) {
+            if (count($ctorArgs) === $ctorReqParamsCount) {
+                break;
+            }
+
+            // Store the property inspection results so we don't have to do it
+            // again for subsequent objects of the same type
+            if (!isset($this->arInspectedClasses[$class][$key])) {
+                $this->arInspectedClasses[$class][$key]
+                    = $this->inspectProperty($rc, $key);
+            }
+
+            list($hasProperty, $accessor, $type, $factoryMethod)
+                = $this->arInspectedClasses[$class][$key];
+
+            if (!$hasProperty) {
+                // if no matching property or setter method found
+                if (isset($ctorRequiredParams[$key])) {
+                    $rp = $ctorRequiredParams[$key];
+                    $jtype = null;
+                } else {
+                    continue;
+                }
+            } else if ($accessor instanceof \ReflectionProperty) {
+                // if a property was found
+                if (isset($ctorRequiredParams[$accessor->getName()])) {
+                    $rp = $ctorRequiredParams[$accessor->getName()];
+                    $jtype = $type;
+                } else {
+                    continue;
+                }
+            } else {
+                // if a setter method was found
+                $methodName = $accessor->getName();
+                $methodName = substr($methodName, 0, 3) === 'set' ?
+                    lcfirst(substr($methodName, 3)) : $methodName;
+                if (isset($ctorRequiredParams[$methodName])) {
+                    $rp = $ctorRequiredParams[$methodName];
+                    $jtype = $type;
+                } else {
+                    continue;
+                }
+            }
+
+            $ttype = $this->getParameterType($rp);
+            if (($ttype !== null && $ttype !== 'array') || $jtype === null) {
+                // when $ttype is too generic, fallback to $jtype
+                $jtype = $ttype;
+            }
+
+            $ctorArgs[$rp->getPosition()]
+                = $this->getMappedValue(
+                    $jvalue,
+                    $jtype,
+                    $factoryMethod,
+                    $rc->getNamespaceName(),
+                    $rc->getName()
+                );
+
+            unset($jobject->{$key});
+            unset($ctorRequiredParamsName[$rp->getPosition()]);
+        }
+
+        if (count($ctorArgs) < $ctorReqParamsCount) {
+            throw new JsonMapperException(
+                "Could not find required constructor arguments for $class: "
+                . \implode(", ", $ctorRequiredParamsName)
+            );
+        }
+
+        ksort($ctorArgs);
+        return $rc->newInstanceArgs($ctorArgs);
     }
 
     /**

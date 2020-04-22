@@ -14,9 +14,9 @@ class JsonMapperTest_DependencyInjector extends \apimatic\jsonmapper\JsonMapper
      * @return object Freshly created object
      */
     public function createInstance(
-        $class, $useParameter = false, $parameter = null
+        $class, &$jobject = null
     ) {
-        $object = parent::createInstance($class, $useParameter, $parameter);
+        $object = parent::createInstance($class, $jobject);
 
         //dummy dependency injection
         $object->db = 'database';
