@@ -534,10 +534,9 @@ class JsonMapper
         }
         if ($rprop !== null) {
             if ($rprop->isPublic() || $this->bIgnoreVisibility) {
-                if (PHP_MAJOR_VERSION >= 7 && $rprop->hasType()) {
-                    $rPropType = $rprop->getType();
-                    $type = $rPropType->getName();
-                    
+                if (PHP_VERSION_ID >= 70400 && $rprop->hasType()) {
+                    $type = $rprop->getType()->getName();
+
                     return array(true, $rprop, $type);
                 }
                 
