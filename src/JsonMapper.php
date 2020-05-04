@@ -328,9 +328,7 @@ class JsonMapper
      */
     protected function getFullNamespace($type, $strNs)
     {
-        if ($type === null || $type === '' || $type[0] == '\\'
-            || $strNs == ''
-        ) {
+        if ($type === null || $type === '' || $strNs == '' || false !== strpos($type, '\\')) {
             return $type;
         }
         list($first) = explode('[', $type, 2);
@@ -536,6 +534,13 @@ class JsonMapper
         }
         if ($rprop !== null) {
             if ($rprop->isPublic() || $this->bIgnoreVisibility) {
+                if (PHP_MAJOR_VERSION >= 7 && $rprop->hasType()) {
+                    $rPropType = $rprop->getType();
+                    $type = $rPropType->getName();
+                    
+                    return array(true, $rprop, $type);
+                }
+                
                 $docblock    = $rprop->getDocComment();
                 $annotations = $this->parseAnnotations($docblock);
 
