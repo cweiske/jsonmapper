@@ -458,7 +458,7 @@ class JsonMapper
      * Checks property first, falls back to setter method.
      *
      * @param ReflectionClass $rc   Reflection class to check
-     * @param string $name Property name
+     * @param string          $name Property name
      *
      * @return array First value: if the property exists
      *               Second value: the accessor to use (
@@ -539,10 +539,20 @@ class JsonMapper
                     $propTypeName = $rPropType->getName();
 
                     if ($this->isSimpleType($propTypeName)) {
-                        return array(true, $rprop, $propTypeName, $rPropType->allowsNull());
+                        return array(
+                            true,
+                            $rprop,
+                            $propTypeName,
+                            $rPropType->allowsNull()
+                        );
                     }
 
-                    return array(true, $rprop, '\\' . $propTypeName, $rPropType->allowsNull());
+                    return array(
+                        true,
+                        $rprop,
+                        '\\' . $propTypeName,
+                        $rPropType->allowsNull()
+                    );
                 }
                 
                 $docblock    = $rprop->getDocComment();
