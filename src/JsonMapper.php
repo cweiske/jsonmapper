@@ -478,11 +478,12 @@ class JsonMapper
                 $rparams = $rmeth->getParameters();
                 if (count($rparams) > 0) {
                     $pclass = $rparams[0]->getClass();
+                    $isNullable = $rparams[0]->allowsNull();
                     if ($pclass !== null) {
                         return array(
                             true, $rmeth,
                             '\\' . $pclass->getName(),
-                            $rparams[0]->allowsNull(),
+                            $isNullable,
                         );
                     }
                 }
@@ -495,16 +496,21 @@ class JsonMapper
                     // if there's a scalar type being defined
                     if (PHP_MAJOR_VERSION >= 7) {
                         $ptype = $rparams[0]->getType();
-                        if ($ptype !== null) {
-                            // ReflectionType::__toString() is deprecated
-                            if (PHP_VERSION >= 7.1
-                                && $ptype instanceof ReflectionNamedType
-                            ) {
-                                $isNullable = $ptype->allowsNull();
-                                $ptype = $ptype->getName();
-                            }
+                        if (is_string($ptype)) {
                             return array(true, $rmeth, $ptype, $isNullable);
                         }
+                        if (PHP_VERSION >= 7.1
+                            && $ptype instanceof ReflectionNamedType
+                        ) {
+                            return array(
+                                true,
+                                $rmeth,
+                                $ptype->getName(),
+                                $ptype->allowsNull()
+                            );
+                        }
+
+                        return array(true, $rmeth, null, $isNullable);
                     }
                     return array(true, $rmeth, null, $isNullable);
                 }

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Unit tests for JsonMapper's support for PHP 7.4 strict types
  *
