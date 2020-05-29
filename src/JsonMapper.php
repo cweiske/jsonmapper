@@ -612,7 +612,7 @@ class JsonMapper
     protected function getFilteredName($name)
     {
         //remove digits on first position
-        $name = ltrim($name, "1 2 3 4 5 6 7 8 9 0" );
+        $name = ltrim($name, "1 2 3 4 5 6 7 8 9 0");
         return preg_replace('/[^A-Za-z0-9\-_]/', '', $name);
     }
 

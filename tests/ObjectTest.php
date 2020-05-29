@@ -231,7 +231,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
         $jm = new JsonMapper();
         $jm->bSanitizePropertyNames = true;
         $sn = $jm->map(
-            json_decode('{"1, pPlainObject":{"key":"val"}}'),
+            json_decode('{"1. pPlainObject":{"key":"val"}}'),
             new JsonMapperTest_Object()
         );
         $this->assertInternalType('object', $sn->pPlainObject);
