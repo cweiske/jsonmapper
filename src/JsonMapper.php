@@ -96,7 +96,7 @@ class JsonMapper
      *
      * @var boolean
      */
-    public $bFilterNames = false;
+    public $bSanitizePropertyNames = false;
 
     /**
      * Override class names that JsonMapper uses to create objects.
@@ -591,7 +591,7 @@ class JsonMapper
      */
     protected function getSafeName($name)
     {
-        if($this->bFilterNames === true) {
+        if ($this->bSanitizePropertyNames === true) {
             $name = $this->getFilteredName($name);
         }
 
@@ -605,12 +605,15 @@ class JsonMapper
     /**
      * Removes all invalid characters from the name.
      *
-     * @param string $name
-     * @return string
+     * @param string $name Property name
+     *
+     * @return string Name without special chars
      */
     protected function getFilteredName($name)
     {
-        return preg_replace('/[^A-Za-z\-_]/', '', $name);
+        //remove digits on first position
+        $name = ltrim($name, "1 2 3 4 5 6 7 8 9 0" );
+        return preg_replace('/[^A-Za-z0-9\-_]/', '', $name);
     }
 
     /**

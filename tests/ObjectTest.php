@@ -229,9 +229,9 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
     public function testFilterStrangeNamesOn()
     {
         $jm = new JsonMapper();
-        $jm->bFilterNames = true;
+        $jm->bSanitizePropertyNames = true;
         $sn = $jm->map(
-            json_decode('{"1. pPlainObject":{"key":"val"}}'),
+            json_decode('{"1, pPlainObject":{"key":"val"}}'),
             new JsonMapperTest_Object()
         );
         $this->assertInternalType('object', $sn->pPlainObject);
