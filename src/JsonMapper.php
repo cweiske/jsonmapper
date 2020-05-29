@@ -90,6 +90,15 @@ class JsonMapper
     public $bRemoveUndefinedAttributes = false;
 
     /**
+     * If you expect strange Keys in the JSON like "1. Information",
+     * you can filter them for proper camel case conversion,
+     * The key "1. Information" result would be "information"
+     *
+     * @var boolean
+     */
+    public $bFilterNames = false;
+
+    /**
      * Override class names that JsonMapper uses to create objects.
      * Useful when your setter methods accept abstract classes or interfaces.
      *
@@ -582,11 +591,26 @@ class JsonMapper
      */
     protected function getSafeName($name)
     {
+        if($this->bFilterNames === true) {
+            $name = $this->getFilteredName($name);
+        }
+
         if (strpos($name, '-') !== false) {
             $name = $this->getCamelCaseName($name);
         }
 
         return $name;
+    }
+
+    /**
+     * Removes all invalid characters from the name.
+     *
+     * @param string $name
+     * @return string
+     */
+    protected function getFilteredName($name)
+    {
+        return preg_replace('/[^A-Za-z\-_]/', '', $name);
     }
 
     /**

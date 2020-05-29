@@ -179,6 +179,8 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertInternalType('null', $sn->pValueObjectNullable);
     }
 
+
+
     /**
      * Test for "@var string" with object value
      *
@@ -219,6 +221,33 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
         );
 
         $this->assertEquals('optional', $objs[0]->foo);
+    }
+
+    /**
+     * Filter for strange key/names on, the object should be mapped correctly
+     */
+    public function testFilterStrangeNamesOn()
+    {
+        $jm = new JsonMapper();
+        $jm->bFilterNames = true;
+        $sn = $jm->map(
+            json_decode('{"1. pPlainObject":{"key":"val"}}'),
+            new JsonMapperTest_Object()
+        );
+        $this->assertInternalType('object', $sn->pPlainObject);
+    }
+
+    /**
+     * Filter for strange key/names off, the object should not be mapped
+     */
+    public function testFilterStrangeNamesOff()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"1. pPlainObject":{"key":"val"}}'),
+            new JsonMapperTest_Object()
+        );
+        $this->assertInternalType('null', $sn->pPlainObject);
     }
 }
 ?>
