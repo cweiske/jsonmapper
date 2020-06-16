@@ -131,8 +131,8 @@ class JsonMapper
     /**
      * Map data all data in $json into the given $object instance.
      *
-     * @param object $json   JSON object structure from json_decode()
-     * @param object $object Object to map $json data into
+     * @param object|array $json   JSON object structure from json_decode()
+     * @param object       $object Object to map $json data into
      *
      * @return mixed Mapped object is returned.
      * @see    mapArray()
