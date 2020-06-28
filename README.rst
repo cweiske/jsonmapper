@@ -177,6 +177,10 @@ a property:
    #. If no type could be detected, the plain JSON value is passed
       to the setter method.
 
+#. Class property types (since PHP 7.4)::
+
+     public Contact $person;
+
 #. ``@var $type`` docblock annotation of class properties::
 
     /**
