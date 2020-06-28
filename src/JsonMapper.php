@@ -167,7 +167,7 @@ class JsonMapper
                     = $this->inspectProperty($rc, $key);
             }
 
-            list($hasProperty, $accessor, $type)
+            list($hasProperty, $accessor, $type, $isNullable)
                 = $this->arInspectedClasses[$strClassName][$key];
 
             if (!$hasProperty) {
@@ -206,7 +206,7 @@ class JsonMapper
                 continue;
             }
 
-            if ($this->isNullable($type) || !$this->bStrictNullTypes) {
+            if ($isNullable || !$this->bStrictNullTypes) {
                 if ($jvalue === null) {
                     $this->setProperty($object, $accessor, null);
                     continue;
@@ -464,6 +464,7 @@ class JsonMapper
      *               Second value: the accessor to use (
      *                 ReflectionMethod or ReflectionProperty, or null)
      *               Third value: type of the property
+     *               Fourth value: if the property is nullable
      */
     protected function inspectProperty(ReflectionClass $rc, $name)
     {
@@ -473,17 +474,16 @@ class JsonMapper
         if ($rc->hasMethod($setter)) {
             $rmeth = $rc->getMethod($setter);
             if ($rmeth->isPublic() || $this->bIgnoreVisibility) {
+                $isNullable = false;
                 $rparams = $rmeth->getParameters();
                 if (count($rparams) > 0) {
                     $pclass = $rparams[0]->getClass();
-                    $nullability = '';
-                    if ($rparams[0]->allowsNull()) {
-                        $nullability = '|null';
-                    }
+                    $isNullable = $rparams[0]->allowsNull();
                     if ($pclass !== null) {
                         return array(
                             true, $rmeth,
-                            '\\' . $pclass->getName() . $nullability
+                            '\\' . $pclass->getName(),
+                            $isNullable,
                         );
                     }
                 }
@@ -496,20 +496,26 @@ class JsonMapper
                     // if there's a scalar type being defined
                     if (PHP_MAJOR_VERSION >= 7) {
                         $ptype = $rparams[0]->getType();
-                        if ($ptype !== null) {
-                            // ReflectionType::__toString() is deprecated
-                            if (PHP_VERSION >= 7.1
-                                && $ptype instanceof ReflectionNamedType
-                            ) {
-                                $ptype = $ptype->getName();
-                            }
-                            return array(true, $rmeth, $ptype . $nullability);
+                        if (is_string($ptype)) {
+                            return array(true, $rmeth, $ptype, $isNullable);
                         }
+                        if (PHP_VERSION >= 7.1
+                            && $ptype instanceof ReflectionNamedType
+                        ) {
+                            return array(
+                                true,
+                                $rmeth,
+                                $ptype->getName(),
+                                $ptype->allowsNull()
+                            );
+                        }
+
+                        return array(true, $rmeth, null, $isNullable);
                     }
-                    return array(true, $rmeth, null);
+                    return array(true, $rmeth, null, $isNullable);
                 }
                 list($type) = explode(' ', trim($annotations['param'][0]));
-                return array(true, $rmeth, $type);
+                return array(true, $rmeth, $type, $this->isNullable($type));
             }
         }
 
@@ -534,25 +540,46 @@ class JsonMapper
         }
         if ($rprop !== null) {
             if ($rprop->isPublic() || $this->bIgnoreVisibility) {
+                if (PHP_VERSION_ID >= 70400 && $rprop->hasType()) {
+                    $rPropType = $rprop->getType();
+                    $propTypeName = $rPropType->getName();
+
+                    if ($this->isSimpleType($propTypeName)) {
+                        return array(
+                            true,
+                            $rprop,
+                            $propTypeName,
+                            $rPropType->allowsNull()
+                        );
+                    }
+
+                    return array(
+                        true,
+                        $rprop,
+                        '\\' . $propTypeName,
+                        $rPropType->allowsNull()
+                    );
+                }
+
                 $docblock    = $rprop->getDocComment();
                 $annotations = static::parseAnnotations($docblock);
 
                 if (!isset($annotations['var'][0])) {
-                    return array(true, $rprop, null);
+                    return array(true, $rprop, null, false);
                 }
 
                 //support "@var type description"
                 list($type) = explode(' ', $annotations['var'][0]);
 
-                return array(true, $rprop, $type);
+                return array(true, $rprop, $type, $this->isNullable($type));
             } else {
                 //no setter, private property
-                return array(true, null, null);
+                return array(true, null, null, false);
             }
         }
 
         //no setter, no property
-        return array(false, null, null);
+        return array(false, null, null, false);
     }
 
     /**
