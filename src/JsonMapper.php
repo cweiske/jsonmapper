@@ -332,7 +332,7 @@ class JsonMapper
             return $type;
         }
         list($first) = explode('[', $type, 2);
-        if ($this->isSimpleType($first) || $first === 'mixed') {
+        if ($first === 'mixed' || $this->isSimpleType($first)) {
             return $type;
         }
 
