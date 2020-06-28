@@ -328,9 +328,7 @@ class JsonMapper
      */
     protected function getFullNamespace($type, $strNs)
     {
-        if ($type === null || $type === '' || $type[0] == '\\'
-            || $strNs == ''
-        ) {
+        if ($type === null || $type === '' || $type[0] === '\\' || $strNs === '') {
             return $type;
         }
         list($first) = explode('[', $type, 2);
@@ -357,7 +355,7 @@ class JsonMapper
         foreach ($rc->getProperties() as $property) {
             $rprop = $rc->getProperty($property->name);
             $docblock = $rprop->getDocComment();
-            $annotations = $this->parseAnnotations($docblock);
+            $annotations = static::parseAnnotations($docblock);
             if (isset($annotations['required'])
                 && !isset($providedProperties[$property->name])
             ) {
@@ -459,8 +457,8 @@ class JsonMapper
      * Try to find out if a property exists in a given class.
      * Checks property first, falls back to setter method.
      *
-     * @param object $rc   Reflection class to check
-     * @param string $name Property name
+     * @param ReflectionClass $rc   Reflection class to check
+     * @param string          $name Property name
      *
      * @return array First value: if the property exists
      *               Second value: the accessor to use (
@@ -491,7 +489,7 @@ class JsonMapper
                 }
 
                 $docblock    = $rmeth->getDocComment();
-                $annotations = $this->parseAnnotations($docblock);
+                $annotations = static::parseAnnotations($docblock);
 
                 if (!isset($annotations['param'][0])) {
                     // If there is no annotations (higher priority) inspect
@@ -537,7 +535,7 @@ class JsonMapper
         if ($rprop !== null) {
             if ($rprop->isPublic() || $this->bIgnoreVisibility) {
                 $docblock    = $rprop->getDocComment();
-                $annotations = $this->parseAnnotations($docblock);
+                $annotations = static::parseAnnotations($docblock);
 
                 if (!isset($annotations['var'][0])) {
                     return array(true, $rprop, null);
