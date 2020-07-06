@@ -545,6 +545,16 @@ class JsonMapper
                     $propTypeName = $rPropType->getName();
 
                     if ($this->isSimpleType($propTypeName)) {
+
+                        if($propTypeName === 'array'){
+                            $docblock    = $rprop->getDocComment();
+                            if($docblock !== false){
+                                $annotations = static::parseAnnotations($docblock);
+                                list($type) = explode(' ', $annotations['var'][0]);
+                                return array(true, $rprop, $type, $this->isNullable($type));
+                            }
+                        }
+
                         return array(
                             true,
                             $rprop,
