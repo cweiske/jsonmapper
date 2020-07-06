@@ -13,6 +13,7 @@
 class PHP74_StrictTypesTest extends \PHPUnit\Framework\TestCase
 {
     const TEST_DATA = '{"id": 123, "importedNs": {"name": "Name"}, "otherNs": {"name": "Foo"}, "withoutType": "anything", "docDefinedType": {"name": "Name"}, "nullable": "value"}';
+    const TEST_WITH_ARRAY_DATA = '{"id": 123, "users":  [{"name": "Name"},{"name": "Name2"}],  "simpleArray":  [{"name": "Name"},{"name": "Name2"}]}';
 
     /**
      * Sets up test cases loading required classes.
@@ -23,6 +24,7 @@ class PHP74_StrictTypesTest extends \PHPUnit\Framework\TestCase
     protected function setUp()
     {
         require_once 'namespacetest/PhpStrictTypes.php';
+        require_once 'namespacetest/PhpWithArrayStrictTypes.php';
         require_once 'namespacetest/model/User.php';
         require_once 'othernamespace/Foo.php';
     }
@@ -44,5 +46,19 @@ class PHP74_StrictTypesTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(\othernamespace\Foo::class, $sn->otherNs);
         $this->assertEquals('anything', $sn->withoutType);
         $this->assertTrue(isset($sn->nullable));
+    }
+
+    public function testArrayOfObjectsTypeMapping()
+    {
+
+        $jm = new JsonMapper();
+        /** @var \namespacetest\PhpStrictTypes $sn */
+        $sn = $jm->map(
+            json_decode(self::TEST_WITH_ARRAY_DATA),
+            new \namespacetest\PhpWithArrayStrictTypes()
+        );
+
+       $this->assertInstanceOf(\namespacetest\model\User::class, $sn->users[0]);
+       $this->assertInstanceOf(stdClass::class, $sn->simpleArray[0]);
     }
 }
