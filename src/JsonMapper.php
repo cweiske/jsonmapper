@@ -865,7 +865,9 @@ class JsonMapper
             }
 
             $ttype = $this->getParameterType($rp);
-            if (($ttype !== null && $ttype !== 'array' && $ttype !== 'array|null') || $jtype === null) {
+            if (($ttype !== null && $ttype !== 'array' && $ttype !== 'array|null')
+                || $jtype === null
+            ) {
                 // when $ttype is too generic, fallback to $jtype
                 $jtype = $ttype;
             }
