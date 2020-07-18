@@ -31,6 +31,10 @@ if (PHP_VERSION_ID >= 70000) {
     require_once 'JsonMapperTest/Php7TypedClass.php';
 }
 
+if (PHP_VERSION_ID >= 70100) {
+    require_once 'JsonMapperTest/Php7_1TypedClass.php';
+}
+
 use apimatic\jsonmapper\JsonMapper;
 use apimatic\jsonmapper\JsonMapperException;
 
@@ -1138,6 +1142,21 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             $this->assertEquals("abcdef", $fm->getName());
             $this->assertEquals(30, $fm->getAge());
             $this->assertEquals("givenvalue", $fm->getValue()->getValue());
+        } else {
+            $this->assertTrue(true);
+        }
+    }
+
+    public function testPhp7_1BasicTypeHints()
+    {
+        if (PHP_VERSION_ID >= 70100) {
+            $jm = new JsonMapper();
+            $fm = $jm->mapClass(
+                json_decode('{"nullableArray":["value1","value2"]}'),
+                'Php7_1TypedClass'
+            );
+            $this->assertEquals("value1", $fm->getNullableArray()[0]->getValue());
+            $this->assertEquals("value2", $fm->getNullableArray()[1]->getValue());
         } else {
             $this->assertTrue(true);
         }
