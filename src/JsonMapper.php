@@ -540,31 +540,33 @@ class JsonMapper
         }
         if ($rprop !== null) {
             if ($rprop->isPublic() || $this->bIgnoreVisibility) {
-                if (PHP_VERSION_ID >= 70400 && $rprop->hasType()) {
-                    $rPropType = $rprop->getType();
-                    $propTypeName = $rPropType->getName();
-
-                    if ($this->isSimpleType($propTypeName)) {
-                        return array(
-                            true,
-                            $rprop,
-                            $propTypeName,
-                            $rPropType->allowsNull()
-                        );
-                    }
-
-                    return array(
-                        true,
-                        $rprop,
-                        '\\' . $propTypeName,
-                        $rPropType->allowsNull()
-                    );
-                }
-
                 $docblock    = $rprop->getDocComment();
                 $annotations = static::parseAnnotations($docblock);
 
                 if (!isset($annotations['var'][0])) {
+                    // If there is no annotations (higher priority) inspect
+                    // if there's a scalar type being defined
+                    if (PHP_VERSION_ID >= 70400 && $rprop->hasType()) {
+                        $rPropType = $rprop->getType();
+                        $propTypeName = $rPropType->getName();
+
+                        if ($this->isSimpleType($propTypeName)) {
+                            return array(
+                              true,
+                              $rprop,
+                              $propTypeName,
+                              $rPropType->allowsNull()
+                            );
+                        }
+
+                        return array(
+                          true,
+                          $rprop,
+                          '\\'.$propTypeName,
+                          $rPropType->allowsNull()
+                        );
+                    }
+
                     return array(true, $rprop, null, false);
                 }
 

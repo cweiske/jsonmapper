@@ -12,7 +12,7 @@
  */
 class PHP74_StrictTypesTest extends \PHPUnit\Framework\TestCase
 {
-    const TEST_DATA = '{"id": 123, "importedNs": {"name": "Name"}, "otherNs": {"name": "Foo"}, "withoutType": "anything", "docDefinedType": {"name": "Name"}, "nullable": "value"}';
+    const TEST_DATA = '{"id": 123, "importedNs": {"name": "Name"}, "otherNs": {"name": "Foo"}, "withoutType": "anything", "docDefinedType": {"name": "Name"}, "nullable": "value", "fooArray": [{"name": "Foo 1"}, {"name": "Foo 2"}]}';
 
     /**
      * Sets up test cases loading required classes.
@@ -44,5 +44,9 @@ class PHP74_StrictTypesTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(\othernamespace\Foo::class, $sn->otherNs);
         $this->assertEquals('anything', $sn->withoutType);
         $this->assertTrue(isset($sn->nullable));
+        $this->assertIsArray($sn->fooArray);
+        $this->assertCount(2, $sn->fooArray);
+        $this->assertInstanceOf(\othernamespace\Foo::class, $sn->fooArray[0]);
+        $this->assertInstanceOf(\othernamespace\Foo::class, $sn->fooArray[1]);
     }
 }

@@ -17,4 +17,9 @@ class PhpStrictTypes
     public $withoutType;
 
     public ?string $nullable;
+
+    /**
+     * @var \othernamespace\Foo[] Array containing foos.
+     */
+    public array $fooArray;
 }
