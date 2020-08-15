@@ -1,3 +1,9 @@
+2020-08-15  Christian Weiske  <cweiske@cweiske.de>
+
+	* Prefer docblock annotations above reflected type for properties
+	  by @jorrit
+	* Version 3.1.0
+
 2020-06-28  Christian Weiske  <cweiske@cweiske.de>
 
 	* Add support for PHP 7.4 class type properties
