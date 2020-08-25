@@ -499,7 +499,7 @@ class JsonMapper
                         if (is_string($ptype)) {
                             return array(true, $rmeth, $ptype, $isNullable);
                         }
-                        if (PHP_VERSION >= 7.1
+                        if (PHP_VERSION_ID >= 70100
                             && $ptype instanceof ReflectionNamedType
                         ) {
                             return array(
