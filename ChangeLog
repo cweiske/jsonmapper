@@ -1,3 +1,9 @@
+2020-11-02  Christian Weiske  <cweiske@cweiske.de>
+
+	* Fix PHP version check that breaks in PHP 8
+	  by @TysonAndre
+	* Version 3.1.1
+
 2020-08-15  Christian Weiske  <cweiske@cweiske.de>
 
 	* Prefer docblock annotations above reflected type for properties
