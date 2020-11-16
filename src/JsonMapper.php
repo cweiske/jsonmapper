@@ -477,7 +477,8 @@ class JsonMapper
                 $isNullable = false;
                 $rparams = $rmeth->getParameters();
                 if (count($rparams) > 0) {
-                    $ptype = PHP_MAJOR_VERSION >= 7 ? $rparams[0]->getType() : $rparams[0]->getClass();
+                    $ptype = PHP_MAJOR_VERSION >= 7
+                        ? $rparams[0]->getType() : $rparams[0]->getClass();
                     $isNullable = $rparams[0]->allowsNull();
                     if ($ptype !== null) {
                         return array(
