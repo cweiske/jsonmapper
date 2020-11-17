@@ -488,7 +488,9 @@ class JsonMapper
                             } else {
                                 $typeName = (string)$ptype;
                             }
-                            if ($ptype instanceof ReflectionUnionType || !$ptype->isBuiltin()) {
+                            if ($ptype instanceof ReflectionUnionType
+                                || !$ptype->isBuiltin()
+                            ) {
                                 $typeName = '\\' . $typeName;
                             }
                             return array(
