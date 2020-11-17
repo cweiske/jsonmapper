@@ -493,11 +493,13 @@ class JsonMapper
                             ) {
                                 $typeName = '\\' . $typeName;
                             }
-                            return array(
-                                true, $rmeth,
-                                $typeName,
-                                $isNullable,
-                            );
+                            if ($typeName !== 'array') {
+                                return array(
+                                    true, $rmeth,
+                                    $typeName,
+                                    $isNullable,
+                                );
+                            }
                         }
                     } else {
                         $pclass = $rparams[0]->getClass();
