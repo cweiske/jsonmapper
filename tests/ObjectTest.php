@@ -1,7 +1,5 @@
 <?php
 
-require_once 'TestCase.php';
-
 /**
  * Part of JsonMapper
  *
@@ -13,6 +11,7 @@ require_once 'TestCase.php';
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
  */
+require_once 'TestCase.php';
 require_once 'JsonMapperTest/Simple.php';
 require_once 'JsonMapperTest/Object.php';
 require_once 'JsonMapperTest/PlainObject.php';
@@ -113,10 +112,6 @@ class ObjectTest extends TestCase
         $this->assertEquals('abc', $sn->pPlainObject->pStr);
     }
 
-    /**
-     * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "pValueObject" must be an object, string given
-     */
     public function testStrictTypeCheckingObjectError()
     {
         $this->expectException(JsonMapper_Exception::class);
@@ -170,9 +165,6 @@ class ObjectTest extends TestCase
 
     /**
      * Test for "@var object" with null value
-     *
-     * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "pValueObject" in class "JsonMapperTest_Object" must not be NULL
      */
     public function testObjectInvalidNull()
     {
@@ -188,9 +180,6 @@ class ObjectTest extends TestCase
 
     /**
      * Test for "@var string" with object value
-     *
-     * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "pString" in class "JsonMapperTest_Object" is an object and cannot be converted to a string
      */
     public function testObjectInsteadOfString()
     {

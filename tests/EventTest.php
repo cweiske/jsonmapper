@@ -1,7 +1,5 @@
 <?php
 
-require_once 'TestCase.php';
-
 /**
  * Part of JsonMapper
  *
@@ -13,7 +11,7 @@ require_once 'TestCase.php';
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
  */
-
+require_once 'TestCase.php';
 require_once 'JsonMapperTest/EventObject.php';
 
 /**

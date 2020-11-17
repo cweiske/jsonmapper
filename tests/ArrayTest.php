@@ -1,7 +1,5 @@
 <?php
 
-require_once 'TestCase.php';
-
 /**
  * Part of JsonMapper
  *
@@ -16,6 +14,7 @@ require_once 'TestCase.php';
 
 use namespacetest\model\MyArrayObject;
 
+require_once 'TestCase.php';
 require_once 'JsonMapperTest/Array.php';
 require_once 'JsonMapperTest/Broken.php';
 require_once 'JsonMapperTest/Simple.php';
@@ -224,10 +223,6 @@ class ArrayTest extends TestCase
         $this->assertEquals(1, $sn->pSimpleArrayObject['zwei']);
     }
 
-    /**
-     * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "flArray" must be an array, integer given
-     */
     public function testInvalidArray()
     {
         $this->expectException(JsonMapper_Exception::class);
@@ -239,10 +234,6 @@ class ArrayTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "pArrayObject" must be an array, double given
-     */
     public function testInvalidArrayObject()
     {
         $this->expectException(JsonMapper_Exception::class);
@@ -269,9 +260,6 @@ class ArrayTest extends TestCase
 
     /**
      * An ArrayObject which may not be null but is.
-     *
-     * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "pArrayObject" in class "JsonMapperTest_Array" must not be NULL
      */
     public function testArrayObjectInvalidNull()
     {
@@ -480,9 +468,6 @@ class ArrayTest extends TestCase
 
     /**
      * Test for "@var string[]" with object value
-     *
-     * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "strArray" is an array of type "string" but contained a value of type "object"
      */
     public function testObjectInsteadOfString()
     {

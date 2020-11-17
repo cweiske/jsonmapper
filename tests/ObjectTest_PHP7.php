@@ -1,7 +1,5 @@
 <?php
 
-require_once 'TestCase.php';
-
 /**
  * Part of JsonMapper
  *
@@ -13,6 +11,7 @@ require_once 'TestCase.php';
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
  */
+require_once 'TestCase.php';
 
 /**
  * Unit tests for JsonMapper's object handling using PHP 7.1 syntax
@@ -24,7 +23,7 @@ require_once 'TestCase.php';
  * @link     https://github.com/cweiske/jsonmapper
  * @requires PHP >= 7.1
  */
-class PHP7_1_ObjectTest extends TestCase
+class ObjectTest_PHP7 extends TestCase
 {
     /**
      * Sets up test cases loading required classes.
@@ -52,9 +51,6 @@ class PHP7_1_ObjectTest extends TestCase
 
     /**
      * Test for non-nullable types like "@param object" with null value
-     *
-     * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "nonNullableObject" in class "JsonMapperTest_PHP7_Object" must not be NULL
      */
     public function testObjectSetterDocblockInvalidNull()
     {
