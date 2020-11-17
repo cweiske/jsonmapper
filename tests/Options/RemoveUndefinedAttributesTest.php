@@ -1,7 +1,4 @@
 <?php
-
-require_once __DIR__ . '/../TestCase.php';
-
 /**
  * Part of JsonMapper
  *
@@ -12,6 +9,7 @@ require_once __DIR__ . '/../TestCase.php';
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     http://cweiske.de/
  */
+require_once __DIR__ . '/../TestCase.php';
 require_once __DIR__ . '/../JsonMapperTest/Simple.php';
 
 /**
@@ -22,7 +20,7 @@ require_once __DIR__ . '/../JsonMapperTest/Simple.php';
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     http://cweiske.de/
  */
-class Options_RemoveUndefinedAttributesTest extends \TestCase
+class Options_RemoveUndefinedAttributesTest extends TestCase
 {
     public function testRemoveUndefinedAttributes()
     {
