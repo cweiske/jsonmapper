@@ -1,5 +1,7 @@
 <?php
 
+require_once 'TestCase.php';
+
 /**
  * Unit tests for JsonMapper's support for PHP 7.4 strict types
  *
@@ -10,7 +12,7 @@
  * @link     https://github.com/cweiske/jsonmapper
  * @requires PHP 7.4
  */
-class PHP74_StrictTypesTest extends \PHPUnit\Framework\TestCase
+class PHP74_StrictTypesTest extends TestCase
 {
     const TEST_DATA = '{"id": 123, "importedNs": {"name": "Name"}, "otherNs": {"name": "Foo"}, "withoutType": "anything", "docDefinedType": {"name": "Name"}, "nullable": "value", "fooArray": [{"name": "Foo 1"}, {"name": "Foo 2"}]}';
 
@@ -20,7 +22,7 @@ class PHP74_StrictTypesTest extends \PHPUnit\Framework\TestCase
      * This is in setUp and not at the top of this file to ensure this is only
      * executed with PHP 7.4 (due to the `@requires` tag).
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         require_once 'namespacetest/PhpStrictTypes.php';
         require_once 'namespacetest/model/User.php';

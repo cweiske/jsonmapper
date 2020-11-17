@@ -1,4 +1,7 @@
 <?php
+
+require_once 'TestCase.php';
+
 /**
  * Part of JsonMapper
  *
@@ -30,7 +33,7 @@ require_once 'JsonMapperTest/Zoo/Fish.php';
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
  */
-class ArrayTest extends \PHPUnit\Framework\TestCase
+class ArrayTest extends TestCase
 {
     /**
      * Test for an array of classes "@var Classname[]"
@@ -227,6 +230,8 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
      */
     public function testInvalidArray()
     {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('JSON property "flArray" must be an array, integer given');
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"flArray": 4 }'),
@@ -240,6 +245,8 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
      */
     public function testInvalidArrayObject()
     {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('JSON property "pArrayObject" must be an array, double given');
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"pArrayObject": 4.2 }'),
@@ -268,6 +275,8 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
      */
     public function testArrayObjectInvalidNull()
     {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('JSON property "pArrayObject" in class "JsonMapperTest_Array" must not be NULL');
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"pArrayObject": null}'),
@@ -477,6 +486,8 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
      */
     public function testObjectInsteadOfString()
     {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('JSON property "strArray" is an array of type "string" but contained a value of type "object"');
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"strArray":[{}]}'),

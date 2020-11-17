@@ -1,5 +1,6 @@
 <?php
 namespace namespacetest;
+require_once __DIR__ . '/../TestCase.php';
 require_once __DIR__ . '/Unit.php';
 require_once __DIR__ . '/UnitData.php';
 require_once __DIR__ . '/model/MyArrayObject.php';
@@ -7,7 +8,7 @@ require_once __DIR__ . '/model/User.php';
 require_once __DIR__ . '/model/UserList.php';
 require_once __DIR__ . '/../othernamespace/Foo.php';
 
-class NamespaceTest extends \PHPUnit\Framework\TestCase
+class NamespaceTest extends \TestCase
 {
     public function testMapArrayNamespace()
     {
@@ -75,11 +76,13 @@ class NamespaceTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException JsonMapper_Exception
+     * @expectedException \JsonMapper_Exception
      * @expectedExceptionMessage Empty type at property "namespacetest\UnitData::$empty"
      */
     public function testMapEmpty()
     {
+        $this->expectException(\JsonMapper_Exception::class);
+        $this->expectExceptionMessage('Empty type at property "namespacetest\UnitData::$empty"');
         $mapper = new \JsonMapper();
         $json = '{"empty":{}}';
         /* @var \namespacetest\UnitData $res */

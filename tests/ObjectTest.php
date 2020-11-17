@@ -1,4 +1,7 @@
 <?php
+
+require_once 'TestCase.php';
+
 /**
  * Part of JsonMapper
  *
@@ -27,7 +30,7 @@ require_once 'JsonMapperTest/ObjectConstructorOptional.php';
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
  */
-class ObjectTest extends \PHPUnit\Framework\TestCase
+class ObjectTest extends TestCase
 {
     /**
      * Test for a class name "@var Classname"
@@ -116,6 +119,8 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
      */
     public function testStrictTypeCheckingObjectError()
     {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('JSON property "pValueObject" must be an object, string given');
         $jm = new JsonMapper();
         $jm->bStrictObjectTypeChecking = true;
         $sn = $jm->map(
@@ -171,6 +176,8 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
      */
     public function testObjectInvalidNull()
     {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('JSON property "pValueObject" in class "JsonMapperTest_Object" must not be NULL');
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"pValueObject":null}'),
@@ -187,6 +194,8 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
      */
     public function testObjectInsteadOfString()
     {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('JSON property "pString" in class "JsonMapperTest_Object" is an object and cannot be converted to a string');
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"pString":{"key":"val"}}'),
