@@ -1,6 +1,6 @@
 <?php
 
-abstract class TestCase extends \PHPUnit\Framework\TestCase
+trait TestCase
 {
     /**
      * Asserts that a variable is of a given type.
