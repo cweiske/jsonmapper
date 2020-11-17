@@ -478,7 +478,7 @@ class JsonMapper
                 $rparams = $rmeth->getParameters();
                 if (count($rparams) > 0) {
                     $isNullable = $rparams[0]->allowsNull();
-                    if (PHP_MAJOR_VERSION >= 7) {
+                    if (PHP_VERSION_ID >= 70000) {
                         $ptype = $rparams[0]->getType();
                         if ($ptype !== null) {
                             if (PHP_VERSION_ID >= 70100
@@ -519,7 +519,7 @@ class JsonMapper
                 if (!isset($annotations['param'][0])) {
                     // If there is no annotations (higher priority) inspect
                     // if there's a scalar type being defined
-                    if (PHP_MAJOR_VERSION >= 7) {
+                    if (PHP_VERSION_ID >= 70000) {
                         $ptype = $rparams[0]->getType();
                         if (is_string($ptype)) {
                             return array(true, $rmeth, $ptype, $isNullable);
