@@ -8,10 +8,8 @@ require_once __DIR__ . '/model/User.php';
 require_once __DIR__ . '/model/UserList.php';
 require_once __DIR__ . '/../othernamespace/Foo.php';
 
-class NamespaceTest extends \PHPUnit\Framework\TestCase
+class NamespaceTest extends \TestCase
 {
-    use \TestCase;
-
     public function testMapArrayNamespace()
     {
         $mapper = new \JsonMapper();

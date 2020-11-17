@@ -28,10 +28,8 @@ require_once 'JsonMapperTest/ComplexObject.php';
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
  */
-class ClassMapTest extends \PHPUnit\Framework\TestCase
+class ClassMapTest extends TestCase
 {
-    use TestCase;
-
     /**
      * Abuse self
      */

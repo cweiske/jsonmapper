@@ -30,10 +30,8 @@ require_once 'JsonMapperTest/ObjectConstructorOptional.php';
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
  */
-class ObjectTest extends \PHPUnit\Framework\TestCase
+class ObjectTest extends TestCase
 {
-    use TestCase;
-
     /**
      * Test for a class name "@var Classname"
      */

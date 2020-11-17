@@ -25,10 +25,8 @@ require_once 'JsonMapperTest/EventObject.php';
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
  */
-class EventTest extends \PHPUnit\Framework\TestCase
+class EventTest extends TestCase
 {
-    use TestCase;
-
     /**
      * Test for deserialize post event
      *
