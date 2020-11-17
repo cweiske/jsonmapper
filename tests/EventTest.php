@@ -10,9 +10,7 @@
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
  */
-
-use PHPUnit\Framework\TestCase;
-
+require_once 'TestCase.php';
 require_once 'JsonMapperTest/EventObject.php';
 
 /**
@@ -40,7 +38,7 @@ class EventTest extends TestCase
             json_decode('{"pStr":"one"}', false),
             new JsonMapperTest_EventObject()
         );
-        $this->assertInternalType('string', $sn->pStr);
+        $this->assertIsType('string', $sn->pStr);
         $this->assertEquals('two', $sn->pStr);
     }
 }

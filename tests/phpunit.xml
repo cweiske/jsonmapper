@@ -5,6 +5,12 @@
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTestsThatDoNotTestAnything="true"
 >
+    <testsuites>
+        <testsuite name="My Test Suite">
+            <directory suffix="Test.php">.</directory>
+            <directory suffix="Test_PHP7.php" phpVersion="7.0.0" phpVersionOperator=">=">.</directory>
+        </testsuite>
+    </testsuites>
     <filter>
         <whitelist>
             <directory suffix=".php">../src/</directory>

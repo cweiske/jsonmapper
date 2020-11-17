@@ -10,6 +10,7 @@
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
  */
+require_once 'TestCase.php';
 require_once 'JsonMapperTest/Simple.php';
 require_once 'JsonMapperTest/Object.php';
 require_once 'JsonMapperTest/PlainObject.php';
@@ -25,7 +26,7 @@ require_once 'JsonMapperTest/ComplexObject.php';
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
  */
-class ClassMapTest extends \PHPUnit\Framework\TestCase
+class ClassMapTest extends TestCase
 {
     /**
      * Abuse self
@@ -73,7 +74,7 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Object()
         );
 
-        $this->assertInternalType('object', $sn->pPlainObject);
+        $this->assertIsType('object', $sn->pPlainObject);
         $this->assertInstanceOf('DateTime', $sn->pPlainObject);
         $this->assertEquals(
             self::CLASS_MAP_DATA,
@@ -116,7 +117,7 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
             new \namespacetest\UnitData()
         );
 
-        $this->assertInternalType('string', $data->user);
+        $this->assertIsType('string', $data->user);
     }
 
     public function testMapArraySubtype()
@@ -127,9 +128,9 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
             json_decode('{"typedSimpleArray":["2019-03-23"]}'),
             new JsonMapperTest_Array()
         );
-        $this->assertInternalType('array', $data->typedSimpleArray);
+        $this->assertIsType('array', $data->typedSimpleArray);
         $this->assertEquals(1, count($data->typedSimpleArray));
-        $this->assertInternalType('string', $data->typedSimpleArray[0]);
+        $this->assertIsType('string', $data->typedSimpleArray[0]);
     }
 }
 ?>

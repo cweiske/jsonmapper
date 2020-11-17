@@ -13,6 +13,7 @@
 
 use namespacetest\model\MyArrayObject;
 
+require_once 'TestCase.php';
 require_once 'JsonMapperTest/Array.php';
 require_once 'JsonMapperTest/Broken.php';
 require_once 'JsonMapperTest/Simple.php';
@@ -30,7 +31,7 @@ require_once 'JsonMapperTest/Zoo/Fish.php';
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
  */
-class ArrayTest extends \PHPUnit\Framework\TestCase
+class ArrayTest extends TestCase
 {
     /**
      * Test for an array of classes "@var Classname[]"
@@ -42,7 +43,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             json_decode('{"typedArray":[{"str":"stringvalue"},{"fl":"1.2"}]}'),
             new JsonMapperTest_Array()
         );
-        $this->assertInternalType('array', $sn->typedArray);
+        $this->assertIsType('array', $sn->typedArray);
         $this->assertEquals(2, count($sn->typedArray));
         $this->assertInstanceOf('JsonMapperTest_Simple', $sn->typedArray[0]);
         $this->assertInstanceOf('JsonMapperTest_Simple', $sn->typedArray[1]);
@@ -61,7 +62,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             json_decode('{"typedSimpleArray":["2014-01-02",null,"2014-05-07"]}'),
             new JsonMapperTest_Array()
         );
-        $this->assertInternalType('array', $sn->typedSimpleArray);
+        $this->assertIsType('array', $sn->typedSimpleArray);
         $this->assertEquals(3, count($sn->typedSimpleArray));
         $this->assertInstanceOf('DateTime', $sn->typedSimpleArray[0]);
         $this->assertNull($sn->typedSimpleArray[1]);
@@ -105,7 +106,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             json_decode('{"flArray":[1.23,3.14,2.048]}'),
             new JsonMapperTest_Array()
         );
-        $this->assertInternalType('array', $sn->flArray);
+        $this->assertIsType('array', $sn->flArray);
         $this->assertEquals(3, count($sn->flArray));
         $this->assertTrue(is_float($sn->flArray[0]));
         $this->assertTrue(is_float($sn->flArray[1]));
@@ -122,7 +123,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             json_decode('{"flArray":{"foo":1.23,"bar":3.14,"baz":2.048}}'),
             new JsonMapperTest_Array()
         );
-        $this->assertInternalType('array', $sn->flArray);
+        $this->assertIsType('array', $sn->flArray);
         $this->assertEquals(3, count($sn->flArray));
         $this->assertTrue(is_float($sn->flArray['foo']));
         $this->assertTrue(is_float($sn->flArray['bar']));
@@ -139,11 +140,11 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             json_decode('{"strArray":["str",false,2.048]}'),
             new JsonMapperTest_Array()
         );
-        $this->assertInternalType('array', $sn->strArray);
+        $this->assertIsType('array', $sn->strArray);
         $this->assertEquals(3, count($sn->strArray));
-        $this->assertInternalType('string', $sn->strArray[0]);
-        $this->assertInternalType('string', $sn->strArray[1]);
-        $this->assertInternalType('string', $sn->strArray[2]);
+        $this->assertIsType('string', $sn->strArray[0]);
+        $this->assertIsType('string', $sn->strArray[1]);
+        $this->assertIsType('string', $sn->strArray[2]);
     }
 
     /**
@@ -156,11 +157,11 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             json_decode('{"strArrayV2":["str",false,2.048]}'),
             new JsonMapperTest_Array()
         );
-        $this->assertInternalType('array', $sn->strArrayV2);
+        $this->assertIsType('array', $sn->strArrayV2);
         $this->assertEquals(3, count($sn->strArrayV2));
-        $this->assertInternalType('string', $sn->strArrayV2[0]);
-        $this->assertInternalType('string', $sn->strArrayV2[1]);
-        $this->assertInternalType('string', $sn->strArrayV2[2]);
+        $this->assertIsType('string', $sn->strArrayV2[0]);
+        $this->assertIsType('string', $sn->strArrayV2[1]);
+        $this->assertIsType('string', $sn->strArrayV2[2]);
     }
 
     /**
@@ -215,18 +216,16 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertInstanceOf('ArrayObject', $sn->pSimpleArrayObject);
         $this->assertEquals(2, count($sn->pSimpleArrayObject));
-        $this->assertInternalType('int', $sn->pSimpleArrayObject['eins']);
-        $this->assertInternalType('int', $sn->pSimpleArrayObject['zwei']);
+        $this->assertIsType('int', $sn->pSimpleArrayObject['eins']);
+        $this->assertIsType('int', $sn->pSimpleArrayObject['zwei']);
         $this->assertEquals(1, $sn->pSimpleArrayObject['eins']);
         $this->assertEquals(1, $sn->pSimpleArrayObject['zwei']);
     }
 
-    /**
-     * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "flArray" must be an array, integer given
-     */
     public function testInvalidArray()
     {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('JSON property "flArray" must be an array, integer given');
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"flArray": 4 }'),
@@ -234,12 +233,10 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "pArrayObject" must be an array, double given
-     */
     public function testInvalidArrayObject()
     {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('JSON property "pArrayObject" must be an array, double given');
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"pArrayObject": 4.2 }'),
@@ -262,12 +259,11 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
 
     /**
      * An ArrayObject which may not be null but is.
-     *
-     * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "pArrayObject" in class "JsonMapperTest_Array" must not be NULL
      */
     public function testArrayObjectInvalidNull()
     {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('JSON property "pArrayObject" in class "JsonMapperTest_Array" must not be NULL');
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"pArrayObject": null}'),
@@ -346,7 +342,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Array()
         );
         $this->assertNotNull($sn->pArrayObjectList);
-        $this->assertInternalType('array', $sn->pArrayObjectList);
+        $this->assertIsType('array', $sn->pArrayObjectList);
         $this->assertCount(2, $sn->pArrayObjectList);
         $this->assertContainsOnlyInstancesOf(\ArrayObject::class, $sn->pArrayObjectList);
         // test first element data
@@ -366,7 +362,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Array()
         );
         $this->assertNotNull($sn->pArrayObjectSubclassList);
-        $this->assertInternalType('array', $sn->pArrayObjectSubclassList);
+        $this->assertIsType('array', $sn->pArrayObjectSubclassList);
         $this->assertCount(2, $sn->pArrayObjectSubclassList);
         $this->assertContainsOnlyInstancesOf(MyArrayObject::class, $sn->pArrayObjectSubclassList);
         // test first element data
@@ -384,15 +380,15 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             json_decode('{"nMatrix":[[1,2],[3,4],[5]]}'),
             new JsonMapperTest_Array()
         );
-        $this->assertInternalType('array', $sn->nMatrix);
+        $this->assertIsType('array', $sn->nMatrix);
         $this->assertEquals(3, count($sn->nMatrix));
-        $this->assertInternalType('array', $sn->nMatrix[0]);
-        $this->assertInternalType('array', $sn->nMatrix[1]);
-        $this->assertInternalType('array', $sn->nMatrix[2]);
+        $this->assertIsType('array', $sn->nMatrix[0]);
+        $this->assertIsType('array', $sn->nMatrix[1]);
+        $this->assertIsType('array', $sn->nMatrix[2]);
 
         $this->assertEquals(2, count($sn->nMatrix[0]));
-        $this->assertInternalType('int', $sn->nMatrix[0][0]);
-        $this->assertInternalType('int', $sn->nMatrix[0][1]);
+        $this->assertIsType('int', $sn->nMatrix[0][0]);
+        $this->assertIsType('int', $sn->nMatrix[0][1]);
 
         $this->assertEquals(2, count($sn->nMatrix[1]));
         $this->assertEquals(1, count($sn->nMatrix[2]));
@@ -409,13 +405,13 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             json_decode('{"pMultiverse":[[[{"pint":23}]]]}'),
             new JsonMapperTest_Array()
         );
-        $this->assertInternalType('array', $sn->pMultiverse);
+        $this->assertIsType('array', $sn->pMultiverse);
         $this->assertEquals(1, count($sn->pMultiverse));
 
-        $this->assertInternalType('array', $sn->pMultiverse[0]);
+        $this->assertIsType('array', $sn->pMultiverse[0]);
         $this->assertEquals(1, count($sn->pMultiverse[0]));
 
-        $this->assertInternalType('array', $sn->pMultiverse[0][0]);
+        $this->assertIsType('array', $sn->pMultiverse[0][0]);
         $this->assertEquals(1, count($sn->pMultiverse[0][0]));
 
         $this->assertInstanceOf(
@@ -460,7 +456,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             json_decode('{"typedSimpleArray":{"en-US":"2014-01-02"}}'),
             new JsonMapperTest_Array()
         );
-        $this->assertInternalType('array', $sn->typedSimpleArray);
+        $this->assertIsType('array', $sn->typedSimpleArray);
         $this->assertEquals(1, count($sn->typedSimpleArray));
         $this->assertArrayHasKey('en-US', $sn->typedSimpleArray);
         $this->assertInstanceOf('DateTime', $sn->typedSimpleArray['en-US']);
@@ -471,18 +467,17 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test for "@var string[]" with object value
-     *
-     * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "strArray" is an array of type "string" but contained a value of type "object"
      */
     public function testObjectInsteadOfString()
     {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('JSON property "strArray" is an array of type "string" but contained a value of type "object"');
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"strArray":[{}]}'),
             new JsonMapperTest_Array()
         );
-        $this->assertInternalType('array', $sn->strArray);
+        $this->assertIsType('array', $sn->strArray);
         $this->assertNotEmpty($sn->strArray);
     }
 
