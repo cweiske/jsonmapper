@@ -24,8 +24,10 @@ require_once 'TestCase.php';
  * @link     https://github.com/cweiske/jsonmapper
  * @requires PHP 7.1
  */
-class PHP7_1_ObjectTest extends TestCase
+class PHP7_1_ObjectTest extends \PHPUnit\Framework\TestCase
 {
+    use TestCase;
+
     /**
      * Sets up test cases loading required classes.
      *

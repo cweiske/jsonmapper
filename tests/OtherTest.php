@@ -28,8 +28,9 @@ require_once 'JsonMapperTest/ValueObject.php';
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     http://cweiske.de/
  */
-class OtherTest extends TestCase
+class OtherTest extends \PHPUnit\Framework\TestCase
 {
+    use TestCase;
 
     /**
      * @expectedException InvalidArgumentException
