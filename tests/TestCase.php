@@ -10,7 +10,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      *
      * @codeCoverageIgnore
      */
-    public static function assertInternalType($expected, $actual, $message = '')
+    public static function assertIsType($expected, $actual, $message = '')
     {
         static::assertThat(
             $actual,

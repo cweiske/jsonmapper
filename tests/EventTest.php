@@ -41,7 +41,7 @@ class EventTest extends TestCase
             json_decode('{"pStr":"one"}', false),
             new JsonMapperTest_EventObject()
         );
-        $this->assertInternalType('string', $sn->pStr);
+        $this->assertIsType('string', $sn->pStr);
         $this->assertEquals('two', $sn->pStr);
     }
 }

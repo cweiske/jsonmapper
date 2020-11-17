@@ -42,7 +42,7 @@ class ObjectTest extends TestCase
             json_decode('{"simple":{"str":"stringvalue"}}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('object', $sn->simple);
+        $this->assertIsType('object', $sn->simple);
         $this->assertInstanceOf('JsonMapperTest_Simple', $sn->simple);
         $this->assertEquals('stringvalue', $sn->simple->str);
     }
@@ -108,7 +108,7 @@ class ObjectTest extends TestCase
             new JsonMapperTest_Object()
         );
 
-        $this->assertInternalType('object', $sn->pPlainObject);
+        $this->assertIsType('object', $sn->pPlainObject);
         $this->assertInstanceOf('JsonMapperTest_PlainObject', $sn->pPlainObject);
         $this->assertEquals('abc', $sn->pPlainObject->pStr);
     }
@@ -183,7 +183,7 @@ class ObjectTest extends TestCase
             json_decode('{"pValueObject":null}'),
             new JsonMapperTest_Object()
         );
-        $this->assertInternalType('null', $sn->pValueObjectNullable);
+        $this->assertIsType('null', $sn->pValueObjectNullable);
     }
 
     /**
@@ -201,7 +201,7 @@ class ObjectTest extends TestCase
             json_decode('{"pString":{"key":"val"}}'),
             new JsonMapperTest_Object()
         );
-        $this->assertInternalType('null', $sn->pValueObjectNullable);
+        $this->assertIsType('null', $sn->pValueObjectNullable);
     }
 
     public function testConstructorWithoutParams()

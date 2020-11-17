@@ -36,7 +36,7 @@ class SimpleTest extends TestCase
             json_decode('{"str":"stringvalue"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('string', $sn->str);
+        $this->assertIsType('string', $sn->str);
         $this->assertEquals('stringvalue', $sn->str);
     }
 
@@ -50,7 +50,7 @@ class SimpleTest extends TestCase
             json_decode('{"fl":"1.2"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('float', $sn->fl);
+        $this->assertIsType('float', $sn->fl);
         $this->assertEquals(1.2, $sn->fl);
     }
 
@@ -64,7 +64,7 @@ class SimpleTest extends TestCase
             json_decode('{"pbool":"1"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('boolean', $sn->pbool);
+        $this->assertIsType('boolean', $sn->pbool);
         $this->assertEquals(true, $sn->pbool);
     }
 
@@ -78,7 +78,7 @@ class SimpleTest extends TestCase
             json_decode('{"pboolean":"0"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('boolean', $sn->pboolean);
+        $this->assertIsType('boolean', $sn->pboolean);
         $this->assertEquals(false, $sn->pboolean);
     }
 
@@ -92,7 +92,7 @@ class SimpleTest extends TestCase
             json_decode('{"pint":"123"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('integer', $sn->pint);
+        $this->assertIsType('integer', $sn->pint);
         $this->assertEquals(123, $sn->pint);
     }
 
@@ -106,7 +106,7 @@ class SimpleTest extends TestCase
             json_decode('{"pinteger":"12345"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('integer', $sn->pinteger);
+        $this->assertIsType('integer', $sn->pinteger);
         $this->assertEquals(12345, $sn->pinteger);
     }
 
@@ -120,14 +120,14 @@ class SimpleTest extends TestCase
             json_decode('{"mixed":12345}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('integer', $sn->mixed);
+        $this->assertIsType('integer', $sn->mixed);
         $this->assertEquals('12345', $sn->mixed);
 
         $sn = $jm->map(
             json_decode('{"mixed":"12345"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('string', $sn->mixed);
+        $this->assertIsType('string', $sn->mixed);
         $this->assertEquals(12345, $sn->mixed);
     }
 
@@ -141,7 +141,7 @@ class SimpleTest extends TestCase
             json_decode('{"pnullable":0}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('integer', $sn->pnullable);
+        $this->assertIsType('integer', $sn->pnullable);
         $this->assertEquals(0, $sn->pnullable);
     }
 
@@ -155,7 +155,7 @@ class SimpleTest extends TestCase
             json_decode('{"pnullable":null}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('null', $sn->pnullable);
+        $this->assertIsType('null', $sn->pnullable);
         $this->assertEquals(null, $sn->pnullable);
     }
 
@@ -169,7 +169,7 @@ class SimpleTest extends TestCase
             json_decode('{"pnullable":"12345"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('integer', $sn->pnullable);
+        $this->assertIsType('integer', $sn->pnullable);
         $this->assertEquals(12345, $sn->pnullable);
     }
 
@@ -183,7 +183,7 @@ class SimpleTest extends TestCase
             json_decode('{"notype":{"k":"v"}}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('object', $sn->notype);
+        $this->assertIsType('object', $sn->notype);
         $this->assertEquals((object) array('k' => 'v'), $sn->notype);
     }
 
@@ -197,7 +197,7 @@ class SimpleTest extends TestCase
             json_decode('{"under_score":"f"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('string', $sn->under_score);
+        $this->assertIsType('string', $sn->under_score);
         $this->assertEquals('f', $sn->under_score);
     }
 
@@ -212,7 +212,7 @@ class SimpleTest extends TestCase
             json_decode('{"under_score_setter":"blubb"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType(
+        $this->assertIsType(
             'string', $sn->internalData['under_score_setter']
         );
         $this->assertEquals(
@@ -231,7 +231,7 @@ class SimpleTest extends TestCase
             new JsonMapperTest_Simple()
         );
 
-        $this->assertInternalType('string', $sn->hyphenValue);
+        $this->assertIsType('string', $sn->hyphenValue);
         $this->assertEquals('test', $sn->hyphenValue);
 
     }
@@ -246,7 +246,7 @@ class SimpleTest extends TestCase
             json_decode('{"hyphen-value-setter":"blubb"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType(
+        $this->assertIsType(
             'string', $sn->internalData['hyphen-value-setter']
         );
         $this->assertEquals(

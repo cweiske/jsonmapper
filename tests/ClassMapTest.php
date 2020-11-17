@@ -76,7 +76,7 @@ class ClassMapTest extends TestCase
             new JsonMapperTest_Object()
         );
 
-        $this->assertInternalType('object', $sn->pPlainObject);
+        $this->assertIsType('object', $sn->pPlainObject);
         $this->assertInstanceOf('DateTime', $sn->pPlainObject);
         $this->assertEquals(
             self::CLASS_MAP_DATA,
@@ -119,7 +119,7 @@ class ClassMapTest extends TestCase
             new \namespacetest\UnitData()
         );
 
-        $this->assertInternalType('string', $data->user);
+        $this->assertIsType('string', $data->user);
     }
 
     public function testMapArraySubtype()
@@ -130,9 +130,9 @@ class ClassMapTest extends TestCase
             json_decode('{"typedSimpleArray":["2019-03-23"]}'),
             new JsonMapperTest_Array()
         );
-        $this->assertInternalType('array', $data->typedSimpleArray);
+        $this->assertIsType('array', $data->typedSimpleArray);
         $this->assertEquals(1, count($data->typedSimpleArray));
-        $this->assertInternalType('string', $data->typedSimpleArray[0]);
+        $this->assertIsType('string', $data->typedSimpleArray[0]);
     }
 }
 ?>
