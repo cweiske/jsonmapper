@@ -477,15 +477,35 @@ class JsonMapper
                 $isNullable = false;
                 $rparams = $rmeth->getParameters();
                 if (count($rparams) > 0) {
-                    $ptype = PHP_MAJOR_VERSION >= 7
-                        ? $rparams[0]->getType() : $rparams[0]->getClass();
                     $isNullable = $rparams[0]->allowsNull();
-                    if ($ptype !== null) {
-                        return array(
-                            true, $rmeth,
-                            '\\' . $ptype,
-                            $isNullable,
-                        );
+                    if (PHP_MAJOR_VERSION >= 7) {
+                        $ptype = $rparams[0]->getType();
+                        if ($ptype !== null) {
+                            if (PHP_VERSION_ID >= 70100
+                                && $ptype instanceof ReflectionNamedType
+                            ) {
+                                $typeName = $ptype->getName();
+                            } else {
+                                $typeName = (string)$ptype;
+                            }
+                            if ($ptype instanceof ReflectionUnionType || !$ptype->isBuiltin()) {
+                                $typeName = '\\' . $typeName;
+                            }
+                            return array(
+                                true, $rmeth,
+                                $typeName,
+                                $isNullable,
+                            );
+                        }
+                    } else {
+                        $pclass = $rparams[0]->getClass();
+                        if ($pclass !== null) {
+                            return array(
+                                true, $rmeth,
+                                '\\' . $pclass->getName(),
+                                $isNullable,
+                            );
+                        }
                     }
                 }
 
