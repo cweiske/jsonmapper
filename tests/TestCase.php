@@ -10,7 +10,7 @@ trait TestCase
      *
      * @codeCoverageIgnore
      */
-    public static function assertInternalType($expected, $actual, $message = '')
+    private static function assertInternalType($expected, $actual, $message = '')
     {
         static::assertThat(
             $actual,
