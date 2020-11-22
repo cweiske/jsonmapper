@@ -494,24 +494,19 @@ class JsonMapper
                 if (!isset($annotations['param'][0])) {
                     // If there is no annotations (higher priority) inspect
                     // if there's a scalar type being defined
-                    if (PHP_MAJOR_VERSION >= 7) {
-                        $ptype = $rparams[0]->getType();
-                        if (is_string($ptype)) {
-                            return array(true, $rmeth, $ptype, $isNullable);
-                        }
-                        if (PHP_VERSION_ID >= 70100
-                            && $ptype instanceof ReflectionNamedType
-                        ) {
-                            return array(
-                                true,
-                                $rmeth,
-                                $ptype->getName(),
-                                $ptype->allowsNull()
-                            );
-                        }
-
-                        return array(true, $rmeth, null, $isNullable);
+                    $ptype = $rparams[0]->getType();
+                    if (is_string($ptype)) {
+                        return array(true, $rmeth, $ptype, $isNullable);
                     }
+                    if ($ptype instanceof ReflectionNamedType) {
+                        return array(
+                            true,
+                            $rmeth,
+                            $ptype->getName(),
+                            $ptype->allowsNull()
+                        );
+                    }
+
                     return array(true, $rmeth, null, $isNullable);
                 }
                 list($type) = explode(' ', trim($annotations['param'][0]));
