@@ -201,6 +201,17 @@ a property:
    A JSON property ``isempty`` would then be mapped to a PHP property
    ``isEmpty``.
 
+   .. note::
+      You have to provide the fully qualified namespace
+      for the type to work. Relative class names are evaluated
+      in the context of the current classes namespace, NOT
+      respecting any imports that may be present.
+
+      PHP does not provide the imports via Reflection; the comment text only
+      contains the literal text of the type.
+      For performance reasons JsonMapper does not parse the source code on its
+      own to detect and expand any imports.
+
 
 Supported type names
 --------------------
