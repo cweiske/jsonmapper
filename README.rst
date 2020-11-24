@@ -188,6 +188,15 @@ a property:
      */
     public $person;
 
+   Note that you have to provide the fully qualified namespace
+   for the type to work. Relative class names are evaluated
+   in the context of the current classes namespace, NOT
+   respecting any imports that may be present. PHP does not
+   provide the imports via Reflection, the comment text only 
+   contains the literal text of the type, and for performance
+   reasons JsonMapper does not parse the source code on its own
+   to detect and expand any imports.
+   
    The property has to be public to be used directly.
    You may also use `$bIgnoreVisibility`__ to utilize
    protected and private properties.
