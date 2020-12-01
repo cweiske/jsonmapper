@@ -39,7 +39,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
             json_decode('{"simple":{"str":"stringvalue"}}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('object', $sn->simple);
+        $this->assertIsObject($sn->simple);
         $this->assertInstanceOf('JsonMapperTest_Simple', $sn->simple);
         $this->assertEquals('stringvalue', $sn->simple->str);
     }
@@ -105,17 +105,15 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Object()
         );
 
-        $this->assertInternalType('object', $sn->pPlainObject);
+        $this->assertIsObject($sn->pPlainObject);
         $this->assertInstanceOf('JsonMapperTest_PlainObject', $sn->pPlainObject);
         $this->assertEquals('abc', $sn->pPlainObject->pStr);
     }
 
-    /**
-     * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "pValueObject" must be an object, string given
-     */
     public function testStrictTypeCheckingObjectError()
     {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('JSON property "pValueObject" must be an object, string given');
         $jm = new JsonMapper();
         $jm->bStrictObjectTypeChecking = true;
         $sn = $jm->map(
@@ -165,34 +163,32 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test for "@var object" with null value
-     *
-     * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "pValueObject" in class "JsonMapperTest_Object" must not be NULL
      */
     public function testObjectInvalidNull()
     {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('JSON property "pValueObject" in class "JsonMapperTest_Object" must not be NULL');
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"pValueObject":null}'),
             new JsonMapperTest_Object()
         );
-        $this->assertInternalType('null', $sn->pValueObjectNullable);
+        $this->assertNull($sn->pValueObjectNullable);
     }
 
     /**
      * Test for "@var string" with object value
-     *
-     * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "pString" in class "JsonMapperTest_Object" is an object and cannot be converted to a string
      */
     public function testObjectInsteadOfString()
     {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('JSON property "pString" in class "JsonMapperTest_Object" is an object and cannot be converted to a string');
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"pString":{"key":"val"}}'),
             new JsonMapperTest_Object()
         );
-        $this->assertInternalType('null', $sn->pValueObjectNullable);
+        $this->assertNull($sn->pValueObjectNullable);
     }
 
     public function testConstructorWithoutParams()

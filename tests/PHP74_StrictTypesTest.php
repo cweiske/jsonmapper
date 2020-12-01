@@ -20,7 +20,7 @@ class PHP74_StrictTypesTest extends \PHPUnit\Framework\TestCase
      * This is in setUp and not at the top of this file to ensure this is only
      * executed with PHP 7.4 (due to the `@requires` tag).
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         require_once 'namespacetest/PhpStrictTypes.php';
         require_once 'namespacetest/model/User.php';
