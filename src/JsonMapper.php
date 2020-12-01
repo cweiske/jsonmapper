@@ -477,14 +477,26 @@ class JsonMapper
                 $isNullable = false;
                 $rparams = $rmeth->getParameters();
                 if (count($rparams) > 0) {
-                    $pclass = $rparams[0]->getClass();
                     $isNullable = $rparams[0]->allowsNull();
-                    if ($pclass !== null) {
-                        return array(
-                            true, $rmeth,
-                            '\\' . $pclass->getName(),
-                            $isNullable,
-                        );
+                    $ptype      = $rparams[0]->getType();
+                    if ($ptype !== null) {
+                        if ($ptype instanceof ReflectionNamedType) {
+                            $typeName = $ptype->getName();
+                        }
+                        if ($ptype instanceof ReflectionUnionType
+                            || !$ptype->isBuiltin()
+                        ) {
+                            $typeName = '\\' . $typeName;
+                        }
+                        //allow overriding an "array" type hint
+                        // with a more specific class in the docblock
+                        if ($typeName !== 'array') {
+                            return array(
+                                true, $rmeth,
+                                $typeName,
+                                $isNullable,
+                            );
+                        }
                     }
                 }
 
@@ -492,18 +504,6 @@ class JsonMapper
                 $annotations = static::parseAnnotations($docblock);
 
                 if (!isset($annotations['param'][0])) {
-                    // If there is no annotations (higher priority) inspect
-                    // if there's a scalar type being defined
-                    $ptype = $rparams[0]->getType();
-                    if ($ptype instanceof ReflectionNamedType) {
-                        return array(
-                            true,
-                            $rmeth,
-                            $ptype->getName(),
-                            $ptype->allowsNull()
-                        );
-                    }
-
                     return array(true, $rmeth, null, $isNullable);
                 }
                 list($type) = explode(' ', trim($annotations['param'][0]));
