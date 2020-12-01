@@ -11,7 +11,5 @@ before_script:
   - composer install --no-interaction --prefer-source --dev
   - phpenv rehash
 script:
-  - cd tests
-  - ./../vendor/bin/phpunit --coverage-text .
-  - cd ..
+  - ./vendor/bin/phpunit --coverage-text
   - ./vendor/bin/phpcs --standard=PEAR src/

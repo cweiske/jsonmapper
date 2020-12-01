@@ -1,13 +1,18 @@
 <phpunit backupGlobals="false"
-         bootstrap="bootstrap.php"
+         bootstrap="tests/bootstrap.php"
          colors="true"
          beStrictAboutChangesToGlobalState="true"
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTestsThatDoNotTestAnything="true"
 >
+    <testsuites>
+        <testsuite name="all">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
     <filter>
         <whitelist>
-            <directory suffix=".php">../src/</directory>
+            <directory suffix=".php">src/</directory>
         </whitelist>
     </filter>
 </phpunit>
