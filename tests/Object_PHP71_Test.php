@@ -21,7 +21,7 @@
  * @link     https://github.com/cweiske/jsonmapper
  * @requires PHP 7.1
  */
-class PHP7_1_ObjectTest extends \PHPUnit\Framework\TestCase
+class Object_PHP71_Test extends \PHPUnit\Framework\TestCase
 {
     /**
      * Sets up test cases loading required classes.

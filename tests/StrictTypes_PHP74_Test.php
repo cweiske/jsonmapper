@@ -10,7 +10,7 @@
  * @link     https://github.com/cweiske/jsonmapper
  * @requires PHP 7.4
  */
-class PHP74_StrictTypesTest extends \PHPUnit\Framework\TestCase
+class StrictTypes_PHP74_Test extends \PHPUnit\Framework\TestCase
 {
     const TEST_DATA = '{"id": 123, "importedNs": {"name": "Name"}, "otherNs": {"name": "Foo"}, "withoutType": "anything", "docDefinedType": {"name": "Name"}, "nullable": "value", "fooArray": [{"name": "Foo 1"}, {"name": "Foo 2"}]}';
 
