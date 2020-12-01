@@ -39,7 +39,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
             json_decode('{"simple":{"str":"stringvalue"}}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('object', $sn->simple);
+        $this->assertIsObject($sn->simple);
         $this->assertInstanceOf('JsonMapperTest_Simple', $sn->simple);
         $this->assertEquals('stringvalue', $sn->simple->str);
     }
@@ -105,7 +105,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Object()
         );
 
-        $this->assertInternalType('object', $sn->pPlainObject);
+        $this->assertIsObject($sn->pPlainObject);
         $this->assertInstanceOf('JsonMapperTest_PlainObject', $sn->pPlainObject);
         $this->assertEquals('abc', $sn->pPlainObject->pStr);
     }
@@ -173,7 +173,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
             json_decode('{"pValueObject":null}'),
             new JsonMapperTest_Object()
         );
-        $this->assertInternalType('null', $sn->pValueObjectNullable);
+        $this->assertNull($sn->pValueObjectNullable);
     }
 
     /**
@@ -188,7 +188,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
             json_decode('{"pString":{"key":"val"}}'),
             new JsonMapperTest_Object()
         );
-        $this->assertInternalType('null', $sn->pValueObjectNullable);
+        $this->assertNull($sn->pValueObjectNullable);
     }
 
     public function testConstructorWithoutParams()

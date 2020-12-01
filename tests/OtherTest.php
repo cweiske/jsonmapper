@@ -71,7 +71,7 @@ class OtherTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Simple()
         );
 
-        $this->assertInternalType('object', $sn->internalData['typehint']);
+        $this->assertIsObject($sn->internalData['typehint']);
         $this->assertInstanceOf(
             'JsonMapperTest_Simple', $sn->internalData['typehint']
         );
@@ -91,7 +91,7 @@ class OtherTest extends \PHPUnit\Framework\TestCase
             json_decode('{"simpleSetterOnlyDocblock":{"str":"stringvalue"}}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('object', $sn->internalData['docblock']);
+        $this->assertIsObject($sn->internalData['docblock']);
         $this->assertInstanceOf(
             'JsonMapperTest_Simple', $sn->internalData['docblock']
         );
@@ -110,7 +110,7 @@ class OtherTest extends \PHPUnit\Framework\TestCase
             json_decode('{"simpleSetterOnlyNoType":{"str":"stringvalue"}}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('object', $sn->internalData['notype']);
+        $this->assertIsObject($sn->internalData['notype']);
         $this->assertInstanceOf(
             'stdClass', $sn->internalData['notype']
         );
@@ -131,7 +131,7 @@ class OtherTest extends \PHPUnit\Framework\TestCase
             json_decode('{"protectedStrNoSetter":"stringvalue"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('null', $sn->getProtectedStrNoSetter());
+        $this->assertNull($sn->getProtectedStrNoSetter());
         $this->assertEquals(
             array(
                 array(
@@ -355,7 +355,7 @@ class OtherTest extends \PHPUnit\Framework\TestCase
             json_decode('{"setterPreferredOverProperty":"foo"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('string', $sn->setterPreferredOverProperty);
+        $this->assertIsString($sn->setterPreferredOverProperty);
         $this->assertEquals(
             'set via setter: foo', $sn->setterPreferredOverProperty
         );
