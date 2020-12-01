@@ -74,12 +74,10 @@ class NamespaceTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf('\namespacetest\model\User', $res->user);
     }
 
-    /**
-     * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage Empty type at property "namespacetest\UnitData::$empty"
-     */
     public function testMapEmpty()
     {
+        $this->expectException(\JsonMapper_Exception::class);
+        $this->expectExceptionMessage('Empty type at property "namespacetest\UnitData::$empty"');
         $mapper = new \JsonMapper();
         $json = '{"empty":{}}';
         /* @var \namespacetest\UnitData $res */

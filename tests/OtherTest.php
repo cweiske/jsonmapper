@@ -27,35 +27,29 @@ require_once 'JsonMapperTest/ValueObject.php';
  */
 class OtherTest extends \PHPUnit\Framework\TestCase
 {
-
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage JsonMapper::map() requires first argument to be an object, NULL given.
-     */
     public function testMapNullJson()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('JsonMapper::map() requires first argument to be an object, NULL given.');
         $jm = new JsonMapper();
         $sn = $jm->map(null, new JsonMapperTest_Simple());
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage JsonMapper::map() requires second argument to be an object, NULL given.
-     */
     public function testMapNullObject()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('JsonMapper::map() requires second argument to be an object, NULL given.');
         $jm = new JsonMapper();
         $sn = $jm->map(new stdClass(), null);
     }
 
     /**
      * Test for "@var "
-     *
-     * @expectedException JsonMapper_Exception
-     * @expectedExceptionMessage Empty type at property "JsonMapperTest_Simple::$empty"
      */
     public function testMapEmpty()
     {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('Empty type at property "JsonMapperTest_Simple::$empty"');
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode(
@@ -153,12 +147,10 @@ class OtherTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException        JsonMapper_Exception
-     * @expectedExceptionMessage Required property "pMissingData" of class JsonMapperTest_Broken is missing in JSON data
-     */
     public function testMissingDataException()
     {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('Required property "pMissingData" of class JsonMapperTest_Broken is missing in JSON data');
         $jm = new JsonMapper();
         $jm->bExceptionOnMissingData = true;
         $sn = $jm->map(
@@ -181,12 +173,10 @@ class OtherTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(true);
     }
 
-    /**
-     * @expectedException        JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "undefinedProperty" does not exist in object of type JsonMapperTest_Broken
-     */
     public function testUndefinedPropertyException()
     {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('JSON property "undefinedProperty" does not exist in object of type JsonMapperTest_Broken');
         $jm = new JsonMapper();
         $jm->bExceptionOnUndefinedProperty = true;
         $sn = $jm->map(
@@ -226,12 +216,10 @@ class OtherTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(empty($logger->log));
     }
 
-    /**
-     * @expectedException        JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "privateNoSetter" has no public setter method in object of type PrivateWithSetter
-     */
     public function testPrivatePropertyWithNoSetter()
     {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('JSON property "privateNoSetter" has no public setter method in object of type PrivateWithSetter');
         $jm = new JsonMapper();
         $jm->bExceptionOnUndefinedProperty = true;
         $logger = new JsonMapperTest_Logger();
@@ -266,12 +254,10 @@ class OtherTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(1, $result->getPrivateNoSetter());
     }
 
-    /**
-     * @expectedException        JsonMapper_Exception
-     * @expectedExceptionMessage JSON property "privatePropertyPrivateSetter" has no public setter method in object of type PrivateWithSetter
-     */
     public function testPrivatePropertyWithPrivateSetter()
     {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('JSON property "privatePropertyPrivateSetter" has no public setter method in object of type PrivateWithSetter');
         $jm = new JsonMapper();
         $jm->bExceptionOnUndefinedProperty = true;
         $logger = new JsonMapperTest_Logger();
