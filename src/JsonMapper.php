@@ -495,9 +495,6 @@ class JsonMapper
                     // If there is no annotations (higher priority) inspect
                     // if there's a scalar type being defined
                     $ptype = $rparams[0]->getType();
-                    if (is_string($ptype)) {
-                        return array(true, $rmeth, $ptype, $isNullable);
-                    }
                     if ($ptype instanceof ReflectionNamedType) {
                         return array(
                             true,
