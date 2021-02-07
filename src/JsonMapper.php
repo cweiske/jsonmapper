@@ -454,6 +454,33 @@ class JsonMapper
     }
 
     /**
+     * Converts a ReflectionType to a string representation
+     *
+     * @param ReflectionType $type The type to stringify
+     *
+     * @return string
+     */
+    protected function stringifyReflectionType(\ReflectionType $type) : string
+    {
+        if ($type instanceof ReflectionNamedType) {
+            $typeName = ($type->isBuiltin() ? "" : '\\') . $type->getName();
+        } elseif (PHP_VERSION_ID >= 80000
+            && $type instanceof ReflectionUnionType
+        ) {
+            $typeName = implode(
+                "|", array_map(
+                    function (ReflectionNamedType $type) : string {
+                        return ($type->isBuiltin() ? "" : "\\") . $type->getName();
+                    }, $type->getTypes()
+                )
+            );
+        } else {
+            throw new \AssertionError("Unreachable");
+        }
+        return $typeName;
+    }
+
+    /**
      * Try to find out if a property exists in a given class.
      * Checks property first, falls back to setter method.
      *
@@ -480,14 +507,7 @@ class JsonMapper
                     $isNullable = $rparams[0]->allowsNull();
                     $ptype      = $rparams[0]->getType();
                     if ($ptype !== null) {
-                        if ($ptype instanceof ReflectionNamedType) {
-                            $typeName = $ptype->getName();
-                        }
-                        if ($ptype instanceof ReflectionUnionType
-                            || !$ptype->isBuiltin()
-                        ) {
-                            $typeName = '\\' . $typeName;
-                        }
+                        $typeName = $this->stringifyReflectionType($ptype);
                         //allow overriding an "array" type hint
                         // with a more specific class in the docblock
                         if ($typeName !== 'array') {
@@ -540,7 +560,7 @@ class JsonMapper
                     // if there's a scalar type being defined
                     if (PHP_VERSION_ID >= 70400 && $rprop->hasType()) {
                         $rPropType = $rprop->getType();
-                        $propTypeName = $rPropType->getName();
+                        $propTypeName = $this->stringifyReflectionType($rPropType);
 
                         if ($this->isSimpleType($propTypeName)) {
                             return array(
@@ -554,7 +574,7 @@ class JsonMapper
                         return array(
                           true,
                           $rprop,
-                          '\\'.$propTypeName,
+                          $propTypeName,
                           $rPropType->allowsNull()
                         );
                     }
