@@ -456,7 +456,7 @@ class JsonMapper
     /**
      * Converts a ReflectionType to a string representation
      *
-     * @param ReflectionType $type
+     * @param ReflectionType $type The type to stringify
      *
      * @return string
      */
