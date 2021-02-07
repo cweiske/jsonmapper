@@ -453,13 +453,20 @@ class JsonMapper
         return $array;
     }
 
-    protected function stringifyReflectionType(\ReflectionType $type) : string{
+    protected function stringifyReflectionType(\ReflectionType $type) : string
+    {
         if ($type instanceof ReflectionNamedType) {
             $typeName = ($type->isBuiltin() ? "" : '\\') . $type->getName();
-        } elseif (PHP_VERSION_ID >= 80000 && $type instanceof ReflectionUnionType) {
-            $typeName = implode("|", array_map(function(ReflectionNamedType $type) : string{
-                return ($type->isBuiltin() ? "" : "\\") . $type->getName();
-            }, $type->getTypes()));
+        } elseif (PHP_VERSION_ID >= 80000
+            && $type instanceof ReflectionUnionType
+        ) {
+            $typeName = implode(
+                "|", array_map(
+                    function (ReflectionNamedType $type) : string {
+                        return ($type->isBuiltin() ? "" : "\\") . $type->getName();
+                    }, $type->getTypes()
+                )
+            );
         } else {
             throw new \AssertionError("Unreachable");
         }
