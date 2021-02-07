@@ -453,6 +453,13 @@ class JsonMapper
         return $array;
     }
 
+    /**
+     * Converts a ReflectionType to a string representation
+     *
+     * @param ReflectionType $type
+     *
+     * @return string
+     */
     protected function stringifyReflectionType(\ReflectionType $type) : string
     {
         if ($type instanceof ReflectionNamedType) {
