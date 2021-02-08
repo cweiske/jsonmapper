@@ -74,7 +74,7 @@ class JsonMapper
      * This is only needed if discriminators are to be used. PHP reflection is not
      * used to get child classes because most code bases use autoloaders where
      * classes are lazily loaded.
-     * 
+     *
      * @var array
      */
     public $arChildClasses = array();
@@ -132,7 +132,7 @@ class JsonMapper
                 = $this->arInspectedClasses[$strClassName][$key];
 
             if ($accessor !== null) {
-                $providedProperties[$accessor->getName()] = true; 
+                $providedProperties[$accessor->getName()] = true;
             }
 
             if (!$hasProperty) {
@@ -175,7 +175,7 @@ class JsonMapper
 
             if ($isAdditional) {
                 if ($additionalPropertiesMethod !== null) {
-                    $additionalPropertiesMethod->invoke($object, $key, $jvalue); 
+                    $additionalPropertiesMethod->invoke($object, $key, $jvalue);
                 }
                 continue;
             }
@@ -199,13 +199,13 @@ class JsonMapper
 
     /**
      * Get mapped value for a property in an object.
-     * 
+     *
      * @param $jvalue        mixed Raw normalized data for the property
      * @param $type          string Type of the data found by inspectProperty()
      * @param $factoryMethod string Callable factory method for property
      * @param $namespace     string Namespace of the class
-     * @param $className     string Name of the class 
-     * 
+     * @param $className     string Name of the class
+     *
      * @return mixed
      */
     protected function getMappedValue(
@@ -316,7 +316,7 @@ class JsonMapper
         }
 
         $ttype = ltrim($type, "\\");
-        
+
         if (!class_exists($type)) {
             throw new \InvalidArgumentException(
                 'JsonMapper::mapClass() requires second argument to be a class name'
@@ -341,7 +341,7 @@ class JsonMapper
 
     /**
      * Get class instance that best matches the class
-     * 
+     *
      * @param object|null      $json JSON object structure from json_decode()
      * @param \ReflectionClass $rc   Class to get instance of. This method
      *                               will try to first match the discriminator
@@ -349,7 +349,7 @@ class JsonMapper
      *                               the current class or its child class.
      *                               If no matches is found, then the current
      *                               class's instance is returned.
-     *                                
+     *
      * @return \ReflectionClass|null Object instance if match is found.
      */
     protected function getDiscriminatorMatch($json, $rc)
@@ -376,9 +376,9 @@ class JsonMapper
 
     /**
      * Get discriminator info
-     * 
+     *
      * @param \ReflectionClass $rc ReflectionClass of class to inspect
-     * 
+     *
      * @return array|null          An array with discriminator arguments
      *                             Element 1 is discriminator field name
      *                             and element 2 is discriminator value.
@@ -401,9 +401,9 @@ class JsonMapper
 
     /**
      * Get child classes from a ReflectionClass
-     * 
+     *
      * @param \ReflectionClass $rc ReflectionClass of class to inspect
-     * 
+     *
      * @return \ReflectionClass[]  ReflectionClass instances for child classes
      */
     protected function getChildClasses($rc)
@@ -469,7 +469,7 @@ class JsonMapper
      * Get additional properties setter method for the class.
      *
      * @param \ReflectionClass $rc Reflection class to check
-     * 
+     *
      * @return \ReflectionMethod    Method or null if disabled.
      */
     protected function getAdditionalPropertiesMethod(\ReflectionClass $rc)
@@ -479,23 +479,23 @@ class JsonMapper
         ) {
             $additionalPropertiesMethod = null;
             try {
-                $additionalPropertiesMethod 
+                $additionalPropertiesMethod
                     = $rc->getMethod($this->sAdditionalPropertiesCollectionMethod);
                 if (!$additionalPropertiesMethod->isPublic()) {
                     throw new  \InvalidArgumentException(
-                        $this->sAdditionalPropertiesCollectionMethod . 
+                        $this->sAdditionalPropertiesCollectionMethod .
                         " method is not public on the given class."
-                    ); 
+                    );
                 }
                 if ($additionalPropertiesMethod->getNumberOfParameters() < 2) {
                     throw new  \InvalidArgumentException(
-                        $this->sAdditionalPropertiesCollectionMethod . 
+                        $this->sAdditionalPropertiesCollectionMethod .
                         ' method does not receive two args, $key and $value.'
-                    ); 
+                    );
                 }
             } catch (\ReflectionException $e) {
                 throw new  \InvalidArgumentException(
-                    $this->sAdditionalPropertiesCollectionMethod . 
+                    $this->sAdditionalPropertiesCollectionMethod .
                     " method is not available on the given class."
                 );
             }
@@ -546,10 +546,10 @@ class JsonMapper
 
     /**
      * Map an array
-     * 
+     *
      * @param array|null $jsonArray JSON array structure from json_decode()
      * @param string     $type      Class name
-     * 
+     *
      * @return array                A new array containing object of $type
      *                              which is mapped from $jsonArray
      */
@@ -637,14 +637,14 @@ class JsonMapper
 
         //now try to set the property directly
         if ($rprop === null) {
-            if ($rc->hasProperty($name) 
+            if ($rc->hasProperty($name)
                 && $this->getMapAnnotation($rc->getProperty($name)) === null
             ) {
                 $rprop = $rc->getProperty($name);
             } else {
                 //case-insensitive property matching
                 foreach ($rc->getProperties(\ReflectionProperty::IS_PUBLIC) as $p) {
-                    if ((strcasecmp($p->name, $name) === 0) 
+                    if ((strcasecmp($p->name, $name) === 0)
                         && $this->getMapAnnotation($p) === null
                     ) {
                         $rprop = $p;
@@ -684,23 +684,23 @@ class JsonMapper
 
     /**
      * Get Phpdoc typehint for parameter
-     * 
+     *
      * @param \ReflectionParameter $param ReflectionParameter instance for parameter
-     * 
+     *
      * @return string|null
      */
     protected function getParameterType(\ReflectionParameter $param)
     {
-        if (null !== $class = $param->getClass()) {
+        if (PHP_VERSION_ID <= 80000 && null !== $class = $param->getClass()) {
             return "\\" . $class->getName();
         }
 
         if (is_callable([$param, 'hasType']) && $param->hasType()) {
             $type = $param->getType();
             if ($type->isBuiltIn()) {
-                $typeName = static::reflectionTypeToString($type); 
+                $typeName = static::reflectionTypeToString($type);
             } else {
-                $typeName = "\\" + static::reflectionTypeToString($type);
+                $typeName = "\\" . static::reflectionTypeToString($type);
             }
             return $type->allowsNull() ? "$typeName|null" : $typeName;
         }
@@ -710,11 +710,11 @@ class JsonMapper
 
     /**
      * Get name for a ReflectionType instance
-     * 
+     *
      * @param \ReflectionTpye $type Reflection type instance
-     * 
+     *
      * @return string
-     * 
+     *
      * @codeCoverageIgnore
      */
     protected static function reflectionTypeToString(\ReflectionType $type)
@@ -730,9 +730,9 @@ class JsonMapper
 
     /**
      * Get map annotation value for a property
-     * 
+     *
      * @param object $property Property of a class
-     * 
+     *
      * @return string|null      Map annotation value
      */
     protected function getMapAnnotation($property)
@@ -743,12 +743,12 @@ class JsonMapper
         }
         return null;
     }
-    
+
     /**
      * Get map annotation value from a parsed annotation list
-     * 
+     *
      * @param array $annotations Parsed annotation list
-     * 
+     *
      * @return string|null      Map annotation value
      */
     protected function getMapAnnotationFromParsed($annotations)
@@ -947,9 +947,9 @@ class JsonMapper
 
     /**
      * Is type registered with mapper
-     * 
+     *
      * @param string $type Class name
-     *                      
+     *
      * @return boolean     True if registered with $this->arChildClasses
      */
     protected function isRegisteredType($type)
