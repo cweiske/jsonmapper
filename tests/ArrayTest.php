@@ -51,6 +51,28 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * A typed array should be an array of items, but if provided an object it should error
+     * In the example given the JSON shows an object but PHP will see this still as an
+     * array (given it does not have a separate list type) so the mapper should error
+     * if strict type checking is enabled
+     */
+    public function testTypedArrayFailsWithObject()
+    {
+        $jm = new JsonMapper();
+        $jm->bStrictObjectTypeChecking = true;
+        try {
+            $sn = $jm->map(
+                json_decode('{"typedArray":{"str":"stringvalue"}}'),
+                new JsonMapperTest_Array()
+            );
+            $this->fail('The mapper should throw an exception when an invalid object is passed as a list. Result was: '.json_encode($sn));
+        }
+        catch (InvalidArgumentException $e){
+            $this->assertStringContainsStringIgnoringCase('type', $e->getMessage());
+        }
+    }
+
+    /**
      * Test for an array of classes "@var ClassName[]" with
      * flat/simple json values (string)
      */
