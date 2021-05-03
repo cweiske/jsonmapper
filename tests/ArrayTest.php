@@ -32,6 +32,20 @@ require_once 'JsonMapperTest/Zoo/Fish.php';
  */
 class ArrayTest extends \PHPUnit\Framework\TestCase
 {
+    public function testMapArrayWithKeysInSnakeCase(){
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"typed_array":[{"str":"stringvalue"},{"fl":"1.2"}]}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertIsArray($sn->typedArray);
+        $this->assertEquals(2, count($sn->typedArray));
+        $this->assertInstanceOf('JsonMapperTest_Simple', $sn->typedArray[0]);
+        $this->assertInstanceOf('JsonMapperTest_Simple', $sn->typedArray[1]);
+        $this->assertEquals('stringvalue', $sn->typedArray[0]->str);
+        $this->assertEquals(1.2, $sn->typedArray[1]->fl);
+    }
+
     /**
      * Test for an array of classes "@var Classname[]"
      */
