@@ -34,6 +34,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
 {
     public function testMapArrayWithKeysInSnakeCase(){
         $jm = new JsonMapper();
+        $jm->bUnderScoreToSnakeCase = true;
         $sn = $jm->map(
             json_decode('{"typed_array":[{"str":"stringvalue"},{"fl":"1.2"}]}'),
             new JsonMapperTest_Array()

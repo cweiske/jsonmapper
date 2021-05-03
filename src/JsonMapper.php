@@ -48,6 +48,14 @@ class JsonMapper
     public $bExceptionOnMissingData = false;
 
     /**
+     * If the json key written in snakeCase,
+     * than jsonMapper will map to class property in camelCase.
+     *
+     * @var boolean
+     */
+    public $bUnderScoreToSnakeCase = false;
+
+    /**
      * If the types of map() parameters shall be checked.
      *
      * You have to disable it if you're using the json_decode "assoc" parameter.
@@ -601,7 +609,13 @@ class JsonMapper
      */
     protected function getSafeName($name)
     {
-        if (strpos($name, '-') !== false || strpos($name, '_') !== false) {
+        $isRenameToCamelCase = strpos($name, '-') !== false;
+
+        if($this->bUnderScoreToSnakeCase){
+            $isRenameToCamelCase = $isRenameToCamelCase || strpos($name, '_') !== false;
+        }
+
+        if ($isRenameToCamelCase) {
             $name = $this->getCamelCaseName($name);
         }
 
