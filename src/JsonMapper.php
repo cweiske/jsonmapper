@@ -601,7 +601,7 @@ class JsonMapper
      */
     protected function getSafeName($name)
     {
-        if (strpos($name, '-') !== false) {
+        if (strpos($name, '-') !== false || strpos($name, '_') !== false) {
             $name = $this->getCamelCaseName($name);
         }
 
