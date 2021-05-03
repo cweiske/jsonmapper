@@ -611,8 +611,9 @@ class JsonMapper
     {
         $isRenameToCamelCase = strpos($name, '-') !== false;
 
-        if($this->bUnderScoreToSnakeCase) {
-            $isRenameToCamelCase = $isRenameToCamelCase || strpos($name, '_') !== false;
+        if ($this->bUnderScoreToSnakeCase) {
+            $isRenameToCamelCase = $isRenameToCamelCase
+                || strpos($name, '_') !== false;
         }
 
         if ($isRenameToCamelCase) {
