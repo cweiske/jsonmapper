@@ -691,7 +691,7 @@ class JsonMapper
      */
     protected function getParameterType(\ReflectionParameter $param)
     {
-        if (PHP_VERSION_ID <= 80000 && null !== $class = $param->getClass()) {
+        if (PHP_VERSION_ID < 80000 && null !== $class = $param->getClass()) {
             return "\\" . $class->getName();
         }
 
