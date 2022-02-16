@@ -1,6 +1,6 @@
 <?php
 
-require_once 'JsonMapperTest/ValueObject.php';
+require_once 'ValueObject.php';
 
 class Php7_1TypedClass
 {

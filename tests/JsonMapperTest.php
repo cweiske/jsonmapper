@@ -46,6 +46,9 @@ use apimatic\jsonmapper\JsonMapperException;
  * @author   Christian Weiske <christian.weiske@netresearch.de>
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     http://www.netresearch.de/
+ * @covers \apimatic\jsonmapper\JsonMapper
+ * @covers \apimatic\jsonmapper\TypeCombination
+ * @covers \apimatic\jsonmapper\JsonMapperException
  */
 class JsonMapperTest extends \PHPUnit\Framework\TestCase
 {
@@ -59,7 +62,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"str":"stringvalue"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('string', $sn->str);
+        $this->assertTrue(is_string($sn->str));
         $this->assertEquals('stringvalue', $sn->str);
     }
     
@@ -73,7 +76,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"str":"stringvalue"}'),
             'JsonMapperTest_Simple'
         );
-        $this->assertInternalType('string', $sn->str);
+        $this->assertTrue(is_string($sn->str));
         $this->assertEquals('stringvalue', $sn->str);
     }
 
@@ -87,7 +90,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"fl":"1.2"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('float', $sn->fl);
+        $this->assertTrue(is_float($sn->fl));
         $this->assertEquals(1.2, $sn->fl);
     }
 
@@ -101,7 +104,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"db":"1.2"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('float', $sn->db);
+        $this->assertTrue(is_float($sn->db));
         $this->assertEquals(1.2, $sn->db);
     }
 
@@ -115,7 +118,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"pbool":"1"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('boolean', $sn->pbool);
+        $this->assertTrue(is_bool($sn->pbool));
         $this->assertEquals(true, $sn->pbool);
     }
 
@@ -129,7 +132,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"pboolean":"0"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('boolean', $sn->pboolean);
+        $this->assertTrue(is_bool($sn->pboolean));
         $this->assertEquals(false, $sn->pboolean);
     }
 
@@ -143,7 +146,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"pint":"123"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('integer', $sn->pint);
+        $this->assertTrue(is_int($sn->pint));
         $this->assertEquals(123, $sn->pint);
     }
 
@@ -157,7 +160,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"pinteger":"12345"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('integer', $sn->pinteger);
+        $this->assertTrue(is_int($sn->pinteger));
         $this->assertEquals(12345, $sn->pinteger);
     }
 
@@ -171,14 +174,14 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"mixed":12345}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('integer', $sn->mixed);
+        $this->assertTrue(is_int($sn->mixed));
         $this->assertEquals('12345', $sn->mixed);
 
         $sn = $jm->map(
             json_decode('{"mixed":"12345"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('string', $sn->mixed);
+        $this->assertTrue(is_string($sn->mixed));
         $this->assertEquals(12345, $sn->mixed);
     }
 
@@ -192,7 +195,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"pnullable":0}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('integer', $sn->pnullable);
+        $this->assertTrue(is_int($sn->pnullable));
         $this->assertEquals(0, $sn->pnullable);
     }
 
@@ -206,7 +209,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"pnullable":null}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('null', $sn->pnullable);
+        $this->assertNull($sn->pnullable);
         $this->assertEquals(null, $sn->pnullable);
     }
 
@@ -220,7 +223,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"pnullable":"12345"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('integer', $sn->pnullable);
+        $this->assertTrue(is_int($sn->pnullable));
         $this->assertEquals(12345, $sn->pnullable);
     }
 
@@ -234,7 +237,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"notype":{"k":"v"}}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('object', $sn->notype);
+        $this->assertTrue(is_object($sn->notype));
         $this->assertEquals((object) array('k' => 'v'), $sn->notype);
     }
 
@@ -248,7 +251,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"under_score":"f"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('string', $sn->under_score);
+        $this->assertTrue(is_string($sn->under_score));
         $this->assertEquals('f', $sn->under_score);
     }
 
@@ -262,9 +265,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"under_score_setter":"blubb"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType(
-            'string', $sn->internalData['under_score_setter']
-        );
+        $this->assertTrue(is_string($sn->internalData['under_score_setter']));
         $this->assertEquals(
             'blubb', $sn->internalData['under_score_setter']
         );
@@ -280,7 +281,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"simple":{"str":"stringvalue"}}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('object', $sn->simple);
+        $this->assertTrue(is_object($sn->simple));
         $this->assertInstanceOf('JsonMapperTest_Simple', $sn->simple);
         $this->assertEquals('stringvalue', $sn->simple->str);
     }
@@ -291,16 +292,61 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
     public function testMapTypedArray()
     {
         $jm = new JsonMapper();
+        $jm->arChildClasses['JsonMapperTest_Simple'] = array();
         $sn = $jm->map(
             json_decode('{"typedArray":[{"str":"stringvalue"},{"fl":"1.2"}]}'),
             new JsonMapperTest_Array()
         );
-        $this->assertInternalType('array', $sn->typedArray);
+        $this->assertTrue(is_array($sn->typedArray));
         $this->assertEquals(2, count($sn->typedArray));
         $this->assertInstanceOf('JsonMapperTest_Simple', $sn->typedArray[0]);
         $this->assertInstanceOf('JsonMapperTest_Simple', $sn->typedArray[1]);
         $this->assertEquals('stringvalue', $sn->typedArray[0]->str);
         $this->assertEquals(1.2, $sn->typedArray[1]->fl);
+    }
+
+    /**
+     * Test for a map of classes "@var array<string,Classname>"
+     */
+    public function testMapTypedMap()
+    {
+        $jm = new JsonMapper();
+        $jm->arChildClasses['JsonMapperTest_Simple'] = array();
+        $sn = $jm->map(
+            json_decode('{"typedMap":{"key0":{"str":"stringvalue"},"key1":{"fl":"1.2"}}}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertTrue(is_array($sn->typedMap));
+        $this->assertEquals(2, count($sn->typedMap));
+        $this->assertInstanceOf('JsonMapperTest_Simple', $sn->typedMap['key0']);
+        $this->assertInstanceOf('JsonMapperTest_Simple', $sn->typedMap['key1']);
+        $this->assertEquals('stringvalue', $sn->typedMap['key0']->str);
+        $this->assertEquals(1.2, $sn->typedMap['key1']->fl);
+    }
+
+    /**
+     * Test for an array of map of classes "@var array<string,Classname>[]"
+     */
+    public function testMapTypedArrayOfMap()
+    {
+        $jm = new JsonMapper();
+        $jm->arChildClasses['JsonMapperTest_Simple'] = array();
+        $sn = $jm->map(
+            json_decode('{"typedArrayOfMap":[{"class1":{"str":"stringvalue"},"class2":{"fl":"1.2"}},{"class3":{"pbool":true}}]}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertTrue(is_array($sn->typedArrayOfMap));
+        $this->assertEquals(2, count($sn->typedArrayOfMap));
+        $this->assertTrue(is_array($sn->typedArrayOfMap[0]));
+        $this->assertTrue(is_array($sn->typedArrayOfMap[1]));
+        $this->assertEquals(2, count($sn->typedArrayOfMap[0]));
+        $this->assertInstanceOf('JsonMapperTest_Simple', $sn->typedArrayOfMap[0]['class1']);
+        $this->assertInstanceOf('JsonMapperTest_Simple', $sn->typedArrayOfMap[0]['class2']);
+        $this->assertEquals(1, count($sn->typedArrayOfMap[1]));
+        $this->assertInstanceOf('JsonMapperTest_Simple', $sn->typedArrayOfMap[1]['class3']);
+        $this->assertEquals('stringvalue', $sn->typedArrayOfMap[0]['class1']->str);
+        $this->assertEquals(1.2, $sn->typedArrayOfMap[0]['class2']->fl);
+        $this->assertEquals(true, $sn->typedArrayOfMap[1]['class3']->pbool);
     }
 
     public function testMapTypedWithNullValue(Type $var = null)
@@ -321,7 +367,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"typedSimpleArray":["2014-01-02",null,"2014-05-07"]}'),
             new JsonMapperTest_Array()
         );
-        $this->assertInternalType('array', $sn->typedSimpleArray);
+        $this->assertTrue(is_array($sn->typedSimpleArray));
         $this->assertEquals(3, count($sn->typedSimpleArray));
         $this->assertInstanceOf('DateTime', $sn->typedSimpleArray[0]);
         $this->assertNull($sn->typedSimpleArray[1]);
@@ -341,7 +387,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"str":"stringvalue"}'),
             'JsonMapperTest_Simple'
         );
-        $this->assertInternalType('string', $sn->str);
+        $this->assertTrue(is_string($sn->str));
         $this->assertEquals('stringvalue', $sn->str);
     }
 
@@ -352,32 +398,26 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(null, $sn);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage JsonMapper::mapClass() requires first argument to be an object, integer given.
-     */
     public function testMapClassWithNonObject()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('JsonMapper::mapClass() requires first argument to be an object, integer given.');
         $jm = new JsonMapper();
         $sn = $jm->mapClass(123, 'JsonMapperTest_Simple');
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage JsonMapper::map() requires first argument to be an object, NULL given.
-     */
     public function testMapNullJson()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('JsonMapper::map() requires first argument to be an object, NULL given.');
         $jm = new JsonMapper();
         $sn = $jm->map(null, new JsonMapperTest_Simple());
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage JsonMapper::map() requires second argument to be an object, NULL given.
-     */
     public function testMapNullObject()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('JsonMapper::map() requires second argument to be an object, NULL given.');
         $jm = new JsonMapper();
         $sn = $jm->map(new stdClass(), null);
     }
@@ -400,7 +440,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"flArray":[1.23,3.14,2.048]}'),
             new JsonMapperTest_Array()
         );
-        $this->assertInternalType('array', $sn->flArray);
+        $this->assertTrue(is_array($sn->flArray));
         $this->assertEquals(3, count($sn->flArray));
         $this->assertTrue(is_float($sn->flArray[0]));
         $this->assertTrue(is_float($sn->flArray[1]));
@@ -417,11 +457,80 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"strArray":["str",false,2.048]}'),
             new JsonMapperTest_Array()
         );
-        $this->assertInternalType('array', $sn->strArray);
+        $this->assertTrue(is_array($sn->strArray));
         $this->assertEquals(3, count($sn->strArray));
-        $this->assertInternalType('string', $sn->strArray[0]);
-        $this->assertInternalType('string', $sn->strArray[1]);
-        $this->assertInternalType('string', $sn->strArray[2]);
+        $this->assertTrue(is_string($sn->strArray[0]));
+        $this->assertTrue(is_string($sn->strArray[1]));
+        $this->assertTrue(is_string($sn->strArray[2]));
+    }
+
+    /**
+     * Test for a map of strings - "@var array<string,string>"
+     */
+    public function testStrMap()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"strMap":{"key0":"str","key1":false,"key2":2.048}}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertTrue(is_array($sn->strMap));
+        $this->assertEquals(3, count($sn->strMap));
+        $this->assertTrue(is_string($sn->strMap['key0']));
+        $this->assertTrue(is_string($sn->strMap['key1']));
+        $this->assertTrue(is_string($sn->strMap['key2']));
+    }
+
+    /**
+     * Test for a map of array of strings - "@var array<string,string[]>"
+     */
+    public function testStrMapOfArray()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"strMapOfArray":{"key0":["str","other"],"key1":[false,3],"key2":[2.048,"asad"]}}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertTrue(is_array($sn->strMapOfArray));
+        $this->assertEquals(3, count($sn->strMapOfArray));
+        $this->assertTrue(is_array($sn->strMapOfArray['key0']));
+        $this->assertEquals(2, count($sn->strMapOfArray['key0']));
+        $this->assertTrue(is_string($sn->strMapOfArray['key0'][0]));
+        $this->assertTrue(is_string($sn->strMapOfArray['key0'][1]));
+        $this->assertTrue(is_array($sn->strMapOfArray['key1']));
+        $this->assertEquals(2, count($sn->strMapOfArray['key1']));
+        $this->assertTrue(is_string($sn->strMapOfArray['key1'][0]));
+        $this->assertTrue(is_string($sn->strMapOfArray['key1'][1]));
+        $this->assertTrue(is_array($sn->strMapOfArray['key2']));
+        $this->assertEquals(2, count($sn->strMapOfArray['key2']));
+        $this->assertTrue(is_string($sn->strMapOfArray['key2'][0]));
+        $this->assertTrue(is_string($sn->strMapOfArray['key2'][1]));
+    }
+
+    /**
+     * Test for an array of map of strings - "@var array<string,string>[]"
+     */
+    public function testStrArrayOfMap()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"strArrayOfMap":[{"key0":"str","key1":"other"},{"key0":false,"key1":3},{"key0":2.048,"key1":"asad"}]}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertTrue(is_array($sn->strArrayOfMap));
+        $this->assertEquals(3, count($sn->strArrayOfMap));
+        $this->assertTrue(is_array($sn->strArrayOfMap[0]));
+        $this->assertEquals(2, count($sn->strArrayOfMap[0]));
+        $this->assertTrue(is_string($sn->strArrayOfMap[0]['key0']));
+        $this->assertTrue(is_string($sn->strArrayOfMap[0]['key1']));
+        $this->assertTrue(is_array($sn->strArrayOfMap[1]));
+        $this->assertEquals(2, count($sn->strArrayOfMap[1]));
+        $this->assertTrue(is_string($sn->strArrayOfMap[1]['key0']));
+        $this->assertTrue(is_string($sn->strArrayOfMap[1]['key1']));
+        $this->assertTrue(is_array($sn->strArrayOfMap[2]));
+        $this->assertEquals(2, count($sn->strArrayOfMap[2]));
+        $this->assertTrue(is_string($sn->strArrayOfMap[2]['key0']));
+        $this->assertTrue(is_string($sn->strArrayOfMap[2]['key1']));
     }
 
     /**
@@ -476,20 +585,19 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertInstanceOf('ArrayObject', $sn->pSimpleArrayObject);
         $this->assertEquals(2, count($sn->pSimpleArrayObject));
-        $this->assertInternalType('int', $sn->pSimpleArrayObject['eins']);
-        $this->assertInternalType('int', $sn->pSimpleArrayObject['zwei']);
+        $this->assertTrue(is_int($sn->pSimpleArrayObject['eins']));
+        $this->assertTrue(is_int($sn->pSimpleArrayObject['zwei']));
         $this->assertEquals(1, $sn->pSimpleArrayObject['eins']);
         $this->assertEquals(1, $sn->pSimpleArrayObject['zwei']);
     }
 
     /**
      * Test for "@var "
-     *
-     * @expectedException apimatic\jsonmapper\JsonMapperException
-     * @expectedExceptionMessage Empty type at property "JsonMapperTest_Simple::$empty"
      */
     public function testMapEmpty()
     {
+        $this->expectException(JsonMapperException::class);
+        $this->expectExceptionMessage('Empty type at property "JsonMapperTest_Simple::$empty"');
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode(
@@ -555,7 +663,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Simple()
         );
 
-        $this->assertInternalType('object', $sn->internalData['typehint']);
+        $this->assertTrue(is_object($sn->internalData['typehint']));
         $this->assertInstanceOf(
             'JsonMapperTest_Simple', $sn->internalData['typehint']
         );
@@ -575,7 +683,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"simpleSetterOnlyDocblock":{"str":"stringvalue"}}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('object', $sn->internalData['docblock']);
+        $this->assertTrue(is_object($sn->internalData['docblock']));
         $this->assertInstanceOf(
             'JsonMapperTest_Simple', $sn->internalData['docblock']
         );
@@ -594,7 +702,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"simpleSetterOnlyNoType":{"str":"stringvalue"}}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('object', $sn->internalData['notype']);
+        $this->assertTrue(is_object($sn->internalData['notype']));
         $this->assertInstanceOf(
             'stdClass', $sn->internalData['notype']
         );
@@ -615,7 +723,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"protectedStrNoSetter":"stringvalue"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('null', $sn->getProtectedStrNoSetter());
+        $this->assertNull($sn->getProtectedStrNoSetter());
         $this->assertEquals(
             array(
                 array(
@@ -655,12 +763,10 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($sn->datetime);
     }
 
-    /**
-     * @expectedException        apimatic\jsonmapper\JsonMapperException
-     * @expectedExceptionMessage Required property "pMissingData" of class JsonMapperTest_Broken is missing in JSON data
-     */
     public function testMissingDataException()
     {
+        $this->expectException(JsonMapperException::class);
+        $this->expectExceptionMessage('Required property "pMissingData" of class JsonMapperTest_Broken is missing in JSON data');
         $jm = new JsonMapper();
         $jm->bExceptionOnMissingData = true;
         $sn = $jm->map(
@@ -683,12 +789,10 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(true);
     }
 
-    /**
-     * @expectedException        apimatic\jsonmapper\JsonMapperException
-     * @expectedExceptionMessage JSON property "undefinedProperty" does not exist in object of type JsonMapperTest_Broken
-     */
     public function testUndefinedPropertyException()
     {
+        $this->expectException(JsonMapperException::class);
+        $this->expectExceptionMessage('JSON property "undefinedProperty" does not exist in object of type JsonMapperTest_Broken');
         $jm = new JsonMapper();
         $jm->bExceptionOnUndefinedProperty = true;
         $sn = $jm->map(
@@ -711,12 +815,10 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(empty($logger->log));
     }
 
-    /**
-     * @expectedException        apimatic\jsonmapper\JsonMapperException
-     * @expectedExceptionMessage JSON property "privateNoSetter" has no public setter method in object of type PrivateWithSetter
-     */
     public function testPrivatePropertyWithNoSetter()
     {
+        $this->expectException(JsonMapperException::class);
+        $this->expectExceptionMessage('JSON property "privateNoSetter" has no public setter method in object of type PrivateWithSetter');
         $jm = new JsonMapper();
         $jm->bExceptionOnUndefinedProperty = true;
         $logger = new JsonMapperTest_Logger();
@@ -729,12 +831,10 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(empty($logger->log));
     }
 
-    /**
-     * @expectedException        apimatic\jsonmapper\JsonMapperException
-     * @expectedExceptionMessage JSON property "privatePropertyPrivateSetter" has no public setter method in object of type PrivateWithSetter
-     */
     public function testPrivatePropertyWithPrivateSetter()
     {
+        $this->expectException(JsonMapperException::class);
+        $this->expectExceptionMessage('JSON property "privatePropertyPrivateSetter" has no public setter method in object of type PrivateWithSetter');
         $jm = new JsonMapper();
         $jm->bExceptionOnUndefinedProperty = true;
         $logger = new JsonMapperTest_Logger();
@@ -751,7 +851,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             json_decode('{"setterPreferredOverProperty":"foo"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertInternalType('string', $sn->setterPreferredOverProperty);
+        $this->assertTrue(is_string($sn->setterPreferredOverProperty));
         $this->assertEquals(
             'set via setter: foo', $sn->setterPreferredOverProperty
         );
@@ -801,12 +901,10 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('database', $sn->simple->db);
     }
 
-    /**
-     * @expectedException        apimatic\JsonMapper\JsonMapperException
-     * @expectedExceptionMessage ClassWithCtor class requires 2 arguments in constructor but none provided
-     */
     public function testDependencyInjectionWithMissingCtorArgs()
     {
+        $this->expectException(JsonMapperException::class);
+        $this->expectExceptionMessage('ClassWithCtor class requires 2 arguments in constructor but none provided');
         $jm = new JsonMapperTest_DependencyInjector();
         $jm->createInstance('ClassWithCtor');
     }
@@ -882,12 +980,10 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('incorrect!', $sn->type);
     }
 
-    /**
-     * @expectedException        \InvalidArgumentException
-     * @expectedExceptionMessage JsonMapper::mapClass() requires second argument to be a class name, InvalidClassThatDoesNotExist given
-     */
     public function testDiscriminatorWithInvalidClassName()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('JsonMapper::mapClass() requires second argument to be a class name, InvalidClassThatDoesNotExist given');
         $jm = new JsonMapper();
 
         $sn = $jm->mapClass(
@@ -946,7 +1042,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
             'JsonMapperTest_SimpleBase'
         );
 
-        $this->assertInternalType('array', $sn);
+        $this->assertTrue(is_array($sn));
         $this->assertInstanceOf('JsonMapperTest_SimpleBase', $sn[0]);
         $this->assertInstanceOf('JsonMapperTest_DerivedClass', $sn[1]);
         $this->assertInstanceOf('JsonMapperTest_DerivedClass2', $sn[2]);
@@ -1006,7 +1102,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals("hello world", $fm->simple);
         $this->assertEquals("value is 123", $fm->value);
         $this->assertEquals(false, $fm->bool);
-        $this->assertInternalType('bool', $fm->bool);
+        $this->assertTrue(is_bool($fm->bool));
         $this->assertInstanceOf('DateTime', $fm->datetime);
         $this->assertInstanceOf('JsonMapperTest_ValueObject', $fm->object);
         $this->assertInstanceOf('JsonMapperTest_ValueObject', $fm->objObj);
@@ -1015,12 +1111,10 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals("value is 4242", $fm->getPrivateValue());
     }
 
-    /**
-     * @expectedException        apimatic\jsonmapper\JsonMapperException
-     * @expectedExceptionMessage  Factory method "NonExistentMethod" referenced by "FactoryMethodWithError" is not callable
-     */
     public function testFactoryMethodException()
     {
+        $this->expectException(JsonMapperException::class);
+        $this->expectExceptionMessage('Factory method "NonExistentMethod" referenced by "FactoryMethodWithError" is not callable');
         $jm = new JsonMapper();
         $fm = $jm->map(
             json_decode('{"simple":"hello world"}'),
@@ -1054,34 +1148,28 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(2, count($fm->additional));
     }
 
-    /**
-     * @expectedException        \InvalidArgumentException
-     * @expectedExceptionMessage privateAddAdditionalProperty method is not public on the given class.
-     */
     public function testAdditionalPropertiesWithPrivateMethod()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('privateAddAdditionalProperty method is not public on the given class.');
         $jm = new JsonMapper();
         $jm->sAdditionalPropertiesCollectionMethod = 'privateAddAdditionalProperty';
         $fm = $jm->map(new stdClass, new JsonMapperTest_Simple());
     }
-    
-    /**
-     * @expectedException        \InvalidArgumentException
-     * @expectedExceptionMessage brokenAddAdditionalProperty method does not receive two args, $key and $value.
-     */
+
     public function testAdditionalPropertiesWithBrokenMethod()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('brokenAddAdditionalProperty method does not receive two args, $key and $value.');
         $jm = new JsonMapper();
         $jm->sAdditionalPropertiesCollectionMethod = 'brokenAddAdditionalProperty';
         $fm = $jm->map(new stdClass, new JsonMapperTest_Simple());
     }
-    
-    /**
-     * @expectedException        \InvalidArgumentException
-     * @expectedExceptionMessage missingMethod method is not available on the given class.
-     */
+
     public function testAdditionalPropertiesWithMissingMethod()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('missingMethod method is not available on the given class.');
         $jm = new JsonMapper();
         $jm->sAdditionalPropertiesCollectionMethod = 'missingMethod';
         $fm = $jm->map(new stdClass, new JsonMapperTest_Simple());
@@ -1100,13 +1188,11 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf('JsonMapperTest_ValueObject', $fm->getAttr2());
         $this->assertEquals(123123, $fm->getAttr2()->getValue());
     }
-    
-    /**
-     * @expectedException        apimatic\JsonMapper\JsonMapperException
-     * @expectedExceptionMessage Could not find required constructor arguments for ClassWithCtor: attr2
-     */
+
     public function testMapTypeWithCtorMissingArgument()
     {
+        $this->expectException(JsonMapperException::class);
+        $this->expectExceptionMessage('Could not find required constructor arguments for ClassWithCtor: attr2');
         $jm = new JsonMapper();
         $fm = $jm->mapClass(
             json_decode('{"attr1":"hello"}'),

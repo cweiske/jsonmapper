@@ -7,7 +7,13 @@ require_once __DIR__ . '/model/UserList.php';
 require_once __DIR__ . '/../othernamespace/Foo.php';
 
 use apimatic\jsonmapper\JsonMapper;
+use apimatic\jsonmapper\JsonMapperException;
 
+/**
+ * @covers \apimatic\jsonmapper\JsonMapper
+ * @covers \apimatic\jsonmapper\TypeCombination
+ * @covers \apimatic\jsonmapper\JsonMapperException
+ */
 class NamespaceTest extends \PHPUnit\Framework\TestCase
 {
     public function testMapArrayNamespace()
@@ -66,12 +72,10 @@ class NamespaceTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf('\namespacetest\model\User', $res->user);
     }
 
-    /**
-     * @expectedException apimatic\jsonmapper\JsonMapperException
-     * @expectedExceptionMessage Empty type at property "namespacetest\UnitData::$empty"
-     */
     public function testMapEmpty()
     {
+        $this->expectException(JsonMapperException::class);
+        $this->expectExceptionMessage('Empty type at property "namespacetest\UnitData::$empty"');
         $mapper = new JsonMapper();
         $json = '{"empty":{}}';
         /* @var \namespacetest\UnitData $res */

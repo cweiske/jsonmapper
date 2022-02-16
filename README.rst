@@ -167,6 +167,13 @@ Map an array of objects (works similarly to ``mapArray``):
     $mapper = new JsonMapper();
     $contactsArray = $mapper->mapClassArray($jsonContacts, 'Contact');
 
+Map a value with any combination of types e.g oneOf(string,int) or anyOf(string,Contact):
+
+.. code:: php
+
+    $mapper = new JsonMapper();
+    $contactObject = $mapper->mapFor($value, 'oneOf(string,Contact)');
+
 Property type documentation
 ===========================
 ``JsonMapper`` uses several sources to detect the correct type of

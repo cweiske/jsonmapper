@@ -34,10 +34,37 @@ class JsonMapperTest_Array
     public $strArray;
 
     /**
+     * @var array<string,string>
+     */
+    public $strMap;
+
+    /**
+     * @var array<string,string[]>
+     */
+    public $strMapOfArray;
+
+    /**
+     * @var array<string,string>[]
+     */
+    public $strArrayOfMap;
+
+    /**
      * @var JsonMapperTest_Simple[]
      * @see http://phpdoc.org/docs/latest/references/phpdoc/types.html#arrays
      */
     public $typedArray;
+
+    /**
+     * @var array<string,JsonMapperTest_Simple>
+     * @see http://phpdoc.org/docs/latest/references/phpdoc/types.html#arrays
+     */
+    public $typedMap;
+
+    /**
+     * @var array<string,JsonMapperTest_Simple>[]
+     * @see http://phpdoc.org/docs/latest/references/phpdoc/types.html#arrays
+     */
+    public $typedArrayOfMap;
 
     /**
      * @var DateTime[]
