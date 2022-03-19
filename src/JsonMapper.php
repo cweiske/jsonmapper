@@ -650,7 +650,11 @@ class JsonMapper
         $class, $useParameter = false, $jvalue = null
     ) {
         if ($useParameter) {
-            return new $class($jvalue);
+            if (is_subclass_of($class, \UnitEnum::class)) {
+                return ($class)::from($jvalue);
+            } else {
+                return new $class($jvalue);
+            }
         } else {
             $reflectClass = new ReflectionClass($class);
             $constructor  = $reflectClass->getConstructor();
