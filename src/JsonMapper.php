@@ -650,7 +650,7 @@ class JsonMapper
         $class, $useParameter = false, $jvalue = null
     ) {
         if ($useParameter) {
-            if (is_subclass_of($class, \UnitEnum::class)) {
+            if (PHP_VERSION_ID >= 80100 && is_subclass_of($class, \UnitEnum::class)) {
                 return ($class)::from($jvalue);
             } else {
                 return new $class($jvalue);
