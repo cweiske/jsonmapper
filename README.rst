@@ -227,6 +227,9 @@ Supported type names
 - Class names, with and without namespaces
 
   - ``Contact`` - exception will be thrown if the JSON value is ``null``
+- Backed enums, with and without namespaces
+
+  - ``Suit:string|Suit:int`` - exception will be thrown if the JSON value is not present in the enum
 - Arrays of simple types and class names:
 
   - ``int[]``
