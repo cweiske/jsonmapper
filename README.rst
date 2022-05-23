@@ -17,7 +17,9 @@ gives you, but for JSON.
 Note that it does not rely on any schema, only your class definitions.
 
 Type detection works by parsing ``@var`` docblock annotations of
-class properties, as well as type hints in setter methods.
+class properties, as well as type hints in setter methods. If docblock comments,
+or comments in general are discarded through some configuration setting like ``opcache.save_comments=0``,
+or any other similar configuration, an exception is thrown, blocking any further operation.
 
 You do not have to modify your model classes by adding JSON specific code;
 it works automatically by parsing already-existing docblocks.

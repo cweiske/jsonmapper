@@ -52,6 +52,7 @@ class Car extends Vehicle implements \JsonSerializable
      *
      * @return array|stdClass
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize($asArrayWhenEmpty = false)
     {
         $json = [];

@@ -94,6 +94,75 @@ class JsonMapper
     protected $arInspectedClasses = array();
 
     /**
+     * An array of directives from php defined configuration files.
+     * 
+     * @var array|null Array of values from the configuration files.
+     */
+    protected $config = null;
+
+    protected $zendOptimizerPlusExtensionLoaded = null;
+
+    /**
+     * Constructor for JsonMapper.
+     * 
+     * @throws JsonMapperException
+     */
+    function __construct()
+    {
+        $zendOptimizerPlus = "Zend Optimizer+";
+        $zendOptimizerPlusSaveCommentKey = "zend_optimizerplus.save_comments";
+        $opCacheSaveCommentKey = "opcache.save_comments";
+
+        if (!isset($this->config)) {
+            $this->config = parse_ini_file(php_ini_loaded_file());
+        }
+        if (!isset($this->zendOptimizerPlusExtensionLoaded)) {
+            $this->zendOptimizerPlusExtensionLoaded
+                = extension_loaded($zendOptimizerPlus);
+        }
+
+        $zendOptimizerDiscardedComments
+            = $this->zendOptimizerPlusExtensionLoaded === true
+            && $this->commentsDiscardedFor($zendOptimizerPlusSaveCommentKey);
+
+        $opCacheDiscardedComments
+            = $this->commentsDiscardedFor($opCacheSaveCommentKey);
+        
+        if ($zendOptimizerDiscardedComments || $opCacheDiscardedComments) {
+            throw JsonMapperException::commentsDisabledInConfigurationException(
+                array($zendOptimizerPlusSaveCommentKey, $opCacheSaveCommentKey)
+            );
+        }
+    }
+
+    /**
+     * Returns true if comments are disabled locally or in php.ini file.
+     * However, if comments are enabled locally by overwriting global
+     * php.ini configurations then returns false.
+     *
+     * @param string $configKey Configuration key to be checked.
+     *
+     * @return bool Whether comments are disabled in environment or php.ini file.
+     */
+    protected function commentsDiscardedFor($configKey)
+    {
+        $localConfigVal = strtolower(ini_get($configKey));
+        $phpIniConfigVal = !array_key_exists($configKey, $this->config) ? ''
+            : strtolower($this->config[$configKey]);
+
+        $enableValues = ["1", "on", "true", "yes"];
+        $disableValues = ["0", "off", "false", "no"];
+
+        $notEnabled = in_array($localConfigVal, $enableValues, true) === false;
+        $isDisabled = in_array($localConfigVal, $disableValues, true) === true;
+        $isDisabledInPhpIniFile = in_array(
+            $phpIniConfigVal, $disableValues, true
+        ) === true;
+
+        return $notEnabled && ($isDisabled || $isDisabledInPhpIniFile);
+    }
+
+    /**
      * Map data all data in $json into the given $object instance.
      *
      * @param object $json             JSON object structure from json_decode()
@@ -1428,12 +1497,15 @@ class JsonMapper
     /**
      * Is type registered with mapper
      *
-     * @param string $type Class name
+     * @param string|null $type Class name
      *
-     * @return boolean     True if registered with $this->arChildClasses
+     * @return boolean True if registered with $this->arChildClasses
      */
     protected function isRegisteredType($type)
     {
+        if (!isset($type)) {
+            return false;
+        }
         return isset($this->arChildClasses[ltrim($type, "\\")]);
     }
 

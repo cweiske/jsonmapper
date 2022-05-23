@@ -53,6 +53,7 @@ class SimpleCaseA implements \JsonSerializable
      *
      * @return array|stdClass
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize($asArrayWhenEmpty = false)
     {
         $json = [];

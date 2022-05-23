@@ -214,6 +214,7 @@ class Person implements \JsonSerializable
      *
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize($asArrayWhenEmpty = false)
     {
         $json = [];
