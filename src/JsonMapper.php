@@ -114,7 +114,10 @@ class JsonMapper
         $opCacheSaveCommentKey = "opcache.save_comments";
 
         if (!isset($this->config)) {
-            $this->config = parse_ini_file(php_ini_loaded_file());
+            $iniPath = php_ini_loaded_file();
+            if ($iniPath) {
+                $this->config = parse_ini_file($iniPath);
+            }
         }
         if (!isset($this->zendOptimizerPlusExtensionLoaded)) {
             $this->zendOptimizerPlusExtensionLoaded
@@ -147,7 +150,7 @@ class JsonMapper
     protected function commentsDiscardedFor($configKey)
     {
         $localConfigVal = strtolower(ini_get($configKey));
-        $phpIniConfigVal = !array_key_exists($configKey, $this->config) ? ''
+        $phpIniConfigVal = !isset($this->config[$configKey]) ? ''
             : strtolower($this->config[$configKey]);
 
         $enableValues = ["1", "on", "true", "yes"];

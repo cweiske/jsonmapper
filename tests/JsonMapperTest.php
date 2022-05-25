@@ -410,25 +410,18 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
 
     public function testOpCacheSaveCommentsDiscarded()
     {
-        $On = ["1", "on", "true", "yes"];
-
-        $opCahceSaveCommentsLocal = in_array(
-            strtolower(ini_get("opcache.save_comments")), $On, true
-        );
-
-        if ($opCahceSaveCommentsLocal === false) {
+        $enable = ["1", "on", "true", "yes"];
+        if (in_array(strtolower(ini_get("opcache.save_comments")), $enable, true)) {
+            // if save_comments is enabled locally then JsonMapperException
+            // could never be thrown, since we can't use ini_set(save_comments).
+            // So we are not running the actual test of expectExceptionMessage
+            $this->assertInstanceOf(JsonMapper::class, new JsonMapper());
+        }
+        else {
             $this->expectException(JsonMapperException::class);
             $this->expectExceptionMessage("Comments cannot be discarded in the configuration file i.e. the php.ini file; doc comments are a requirement for JsonMapper. Following configuration keys must have a value set to \"1\": zend_optimizerplus.save_comments, opcache.save_comments.");
 
-            $config = parse_ini_file(php_ini_loaded_file());
-
-            $config["opcache.save_comments"] = "0";
-
-            new JsonMapperCommentsDiscardedException($config);
-        } 
-        
-        else {
-            $this->assertInstanceOf(JsonMapper::class, new JsonMapper());
+            new JsonMapperCommentsDiscardedException(["opcache.save_comments" => "0"]);
         }
     }
 
@@ -442,11 +435,7 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
         $this->expectException(JsonMapperException::class);
         $this->expectExceptionMessage("Comments cannot be discarded in the configuration file i.e. the php.ini file; doc comments are a requirement for JsonMapper. Following configuration keys must have a value set to \"1\": zend_optimizerplus.save_comments, opcache.save_comments.");
 
-        $config = parse_ini_file(php_ini_loaded_file());
-
-        $config["zend_optimizerplus.save_comments"] = "0";
-
-        new JsonMapperCommentsDiscardedException($config);
+        new JsonMapperCommentsDiscardedException(["zend_optimizerplus.save_comments" => "0"]);
     }
 
     public function testMapNullJson()
