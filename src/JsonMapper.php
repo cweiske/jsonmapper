@@ -217,9 +217,9 @@ class JsonMapper
 
             if (!$hasProperty) {
                 if ($this->bExceptionOnUndefinedProperty) {
-                    throw new JsonMapperException(
-                        'JSON property "' . $key . '" does not exist'
-                        . ' in object of type ' . $strClassName
+                    throw JsonMapperException::undefinedPropertyException(
+                        $key,
+                        $strClassName
                     );
                 }
                 $isAdditional = true;
@@ -232,11 +232,13 @@ class JsonMapper
 
             if ($accessor === null) {
                 if ($this->bExceptionOnUndefinedProperty) {
-                    throw new JsonMapperException(
-                        'JSON property "' . $key . '" has no public setter method'
-                        . ' in object of type ' . $strClassName
+                    throw JsonMapperException::undefinedPropertyException(
+                        $key,
+                        $strClassName,
+                        true
                     );
                 }
+
                 $isAdditional = true;
                 $this->log(
                     'info',
@@ -247,9 +249,9 @@ class JsonMapper
 
             //FIXME: check if type exists, give detailled error message if not
             if ($type === '') {
-                throw new JsonMapperException(
-                    'Empty type at property "'
-                    . $strClassName . '::$' . $key . '"'
+                throw JsonMapperException::missingTypePropertyException(
+                    $key,
+                    $strClassName
                 );
             }
 
@@ -312,20 +314,21 @@ class JsonMapper
      * @param $factoryMethod string factory method in the format "type method()"
      * @param $value         mixed  value to be passed in as param into factory
      *                       method.
-     * @param $className     string className referencing this factory method
+     * @param $strClassName  string strClassName referencing this factory method
      *
      * @return mixed|false
      * @throws JsonMapperException
      */
-    protected function callFactoryMethod($factoryMethod, $value, $className)
+    protected function callFactoryMethod($factoryMethod, $value, $strClassName)
     {
         $factoryMethod = explode(' ', $factoryMethod)[0];
         if (!is_callable($factoryMethod)) {
-            throw new JsonMapperException(
-                'Factory method "' . $factoryMethod . '" referenced by "' .
-                $className . '" is not callable'
+            throw JsonMapperException::unCallableFactoryMethodException(
+                $factoryMethod,
+                $strClassName
             );
         }
+
         return call_user_func($factoryMethod, $value);
     }
 
@@ -551,10 +554,10 @@ class JsonMapper
                 // IF value is not associative array with groupType == map
                 // Or value is not indexed array with groupType == array
                 $typeName = $isMapGroup ? 'Associative Array' : 'Array';
-                throw new JsonMapperException(
-                    "Unable to map $typeName: " .
-                    TypeCombination::generateTypeString($typeGroup) .
-                    ' on: ' . json_encode($value)
+                throw JsonMapperException::unableToMapException(
+                    $typeName,
+                    $typeGroup,
+                    $value
                 );
             }
             $mappedObject = [];
@@ -660,11 +663,10 @@ class JsonMapper
             if ($type->getGroupName() == 'oneOf' && $mappedWith) {
                 // if its oneOf and we have a value that is already mapped,
                 // then throw jsonMapperException
-                throw new JsonMapperException(
-                    'Cannot map more than OneOf { ' .
-                    TypeCombination::generateTypeString($matchedType) . ' and ' .
-                    TypeCombination::generateTypeString($mappedWith) . ' } on: ' .
-                    json_encode($json)
+                throw JsonMapperException::moreThanOneOfException(
+                    $matchedType,
+                    $mappedWith,
+                    $json
                 );
             }
             $mappedWith = $matchedType;
@@ -672,13 +674,11 @@ class JsonMapper
                 break; // break if its anyOf, and we already have mapped its value
             }
         }
+
         if (!$mappedWith) {
-            throw new JsonMapperException(
-                'Unable to map AnyOf ' .
-                TypeCombination::generateTypeString($type) .
-                ' on: ' . json_encode($json)
-            );
+            throw JsonMapperException::cannotMapAnyOfException($type, $json);
         }
+
         return $mappedObject;
     }
 
@@ -938,10 +938,9 @@ class JsonMapper
             if (isset($annotations['required'])
                 && !isset($providedProperties[$property->name])
             ) {
-                throw new JsonMapperException(
-                    'Required property "' . $property->name . '" of class '
-                    . $rc->getName()
-                    . ' is missing in JSON data'
+                throw JsonMapperException::requiredPropertyMissingException(
+                    $property,
+                    $rc
                 );
             }
         }
@@ -1347,10 +1346,7 @@ class JsonMapper
         ) {
             return new $class();
         } else if ($jobject === null) {
-            throw new JsonMapperException(
-                "$class class requires " . $ctor->getNumberOfRequiredParameters()
-                . " arguments in constructor but none provided"
-            );
+            throw JsonMapperException::noArgumentsException($class, $ctor, true);
         }
 
         $ctorRequiredParams = array_slice(
@@ -1438,9 +1434,11 @@ class JsonMapper
         }
 
         if (count($ctorArgs) < $ctorReqParamsCount) {
-            throw new JsonMapperException(
-                "Could not find required constructor arguments for $class: "
-                . \implode(", ", $ctorRequiredParamsName)
+            throw JsonMapperException::noArgumentsException(
+                $class,
+                null,
+                false,
+                $ctorRequiredParamsName
             );
         }
 
