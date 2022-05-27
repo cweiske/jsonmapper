@@ -15,7 +15,7 @@ class Car extends Vehicle implements \JsonSerializable
     private $haveTrunk;
 
     /**
-     * @param int $numberOfTyres
+     * @param string $numberOfTyres
      * @param bool $haveTrunk
      */
     public function __construct($numberOfTyres, $haveTrunk)

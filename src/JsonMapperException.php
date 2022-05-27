@@ -203,4 +203,17 @@ class JsonMapperException extends Exception
             . implode(", ", $ctorRequiredParamsName)
         );
     }
+
+    /**
+     * Provided type was not applicable on the given value.
+     *
+     * @param string $type  The type value could not be mapped to.
+     * @param string $value Concerned value.
+     *
+     * @return JsonMapperException
+     */
+    static function unableToSetTypeException($type, $value)
+    {
+        return new self("Could not set type '$type' on value: $value");
+    }
 }
