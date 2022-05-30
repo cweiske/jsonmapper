@@ -290,20 +290,11 @@ class JsonMapper
      */
     public function getArrayTypeAndDimensions($type, $dimensions = 0)
     {
-        $typeEnd = strrpos($type, '>');
-        $typeEnd = $typeEnd == false ? 0 : $typeEnd;
-        $arrayDepth = substr_count($type, '[]', $typeEnd);
-        if ($arrayDepth > 0) {
-            // if its array of some type
-            // excluding subtype from type: TYPE[]
-            $subtype = substr($type, 0, -2 * $arrayDepth);
-            $dimensions += $arrayDepth;
-            return $this->getArrayTypeAndDimensions($subtype, $dimensions);
-        } else if (strpos($type, 'array<string,') === 0 && $typeEnd > 0) {
-            // if its map of some type
-            // excluding subtype from type: array<string,TYPE>
-            $subtype = substr($type, strlen('array<string,'), -1);
-            return $this->getArrayTypeAndDimensions($subtype, ++$dimensions);
+        list($isMap, $isArray, $innerType) = TypeCombination::extractTypeInfo($type);
+        if ($isMap || $isArray) {
+            // if it's an array or map of some type
+            // increment dimension and check for innerType
+            return $this->getArrayTypeAndDimensions($innerType, ++$dimensions);
         }
         return array($type, $dimensions);
     }
@@ -517,6 +508,18 @@ class JsonMapper
     }
 
     /**
+     * Converts the given typeCombination into its string format.
+     *
+     * @param TypeCombination|string $type Combined type/Single type.
+     *
+     * @return string
+     */
+    protected static function formatType($type)
+    {
+        return is_string($type) ? $type : $type->getFormat();
+    }
+
+    /**
      * Map the data in $value by the provided $typeGroup i.e. oneOf(A,B)
      * will try to map value with only one of A or B, that matched. While
      * anyOf(A,B) will try to map it with any of A or B and sets its type to
@@ -564,8 +567,8 @@ class JsonMapper
                 $typeName = $isMapGroup ? 'Associative Array' : 'Array';
                 throw JsonMapperException::unableToMapException(
                     $typeName,
-                    $typeGroup,
-                    $value
+                    $this->formatType($typeGroup),
+                    json_encode($value)
                 );
             }
             $mappedObject = [];
@@ -672,9 +675,9 @@ class JsonMapper
                 // if its oneOf and we have a value that is already mapped,
                 // then throw jsonMapperException
                 throw JsonMapperException::moreThanOneOfException(
-                    $matchedType,
-                    $mappedWith,
-                    $json
+                    $this->formatType($matchedType),
+                    $this->formatType($mappedWith),
+                    json_encode($json)
                 );
             }
             $mappedWith = $matchedType;
@@ -684,7 +687,10 @@ class JsonMapper
         }
 
         if (!$mappedWith) {
-            throw JsonMapperException::cannotMapAnyOfException($type, $json);
+            throw JsonMapperException::cannotMapAnyOfException(
+                $this->formatType($type),
+                json_encode($json)
+            );
         }
 
         return $mappedObject;
@@ -727,20 +733,15 @@ class JsonMapper
                 return array(false, null);
             }
         }
-        $mapStart = 'array<string,';
-        $isMapType = substr($type, -1) == '>' && strpos($type, $mapStart) === 0;
-        $isArrayType = substr($type, -2) == '[]';
-        if ($isArrayType || $isMapType) {
+        list($isMap, $isArray, $innerType) = TypeCombination::extractTypeInfo($type);
+        if ($isMap || $isArray) {
             // if type is array like int[] or map like array<string,int>
             list($isAssociative, $isIndexed) = $this->isAssociativeOrIndexed($value);
-            if (($isMapType && $isAssociative) || ($isArrayType && $isIndexed)) {
+            if (($isMap && $isAssociative) || ($isArray && $isIndexed)) {
                 // Value must be associativeArray/object for MapType
                 // Or it must be indexed array for ArrayType
-                // Extracting inner type for arrays/maps
-                $type = $isMapType ? substr($type, strlen($mapStart), -1)
-                    : ($isArrayType ? substr($type, 0, -2) : $type);
                 foreach ($value as $v) {
-                    if (!$this->isValueOfType($v, $type, $namespace)[0]) {
+                    if (!$this->isValueOfType($v, $innerType, $namespace)[0]) {
                         // false if any element is not of same type
                         return array(false, null);
                     }
@@ -948,8 +949,8 @@ class JsonMapper
                 && !isset($providedProperties[$property->name])
             ) {
                 throw JsonMapperException::requiredPropertyMissingException(
-                    $property,
-                    $rc
+                    $property->name,
+                    $rc->getName()
                 );
             }
         }
@@ -1357,7 +1358,10 @@ class JsonMapper
         ) {
             return new $class();
         } else if ($jobject === null) {
-            throw JsonMapperException::noArgumentsException($class, $ctor, true);
+            throw JsonMapperException::noArgumentsException(
+                $class,
+                $ctor->getNumberOfRequiredParameters()
+            );
         }
 
         $ctorRequiredParams = array_slice(
@@ -1445,10 +1449,8 @@ class JsonMapper
         }
 
         if (count($ctorArgs) < $ctorReqParamsCount) {
-            throw JsonMapperException::noArgumentsException(
+            throw JsonMapperException::fewerArgumentsException(
                 $class,
-                null,
-                false,
                 $ctorRequiredParamsName
             );
         }

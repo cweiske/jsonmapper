@@ -983,7 +983,7 @@ class MultiTypeTest extends TestCase
     {
         $mapper = new JsonMapper();
         $this->expectException(JsonMapperException::class);
-        $this->expectExceptionMessage('Unable to map AnyOf (float[],(bool,(int,Atom)[],string)[][]) on: {"key0":["alpha",true],"key2":[false,true],"key3":[1.1,3.3],"key1":["beta",[12,{"numberOfElectrons":4}],[1,3]]}');
+        $this->expectExceptionMessage('Unable to map AnyOf (float[],anyOf(bool,oneOf(int,Atom)[],string)[][]) on: {"key0":["alpha",true],"key2":[false,true],"key3":[1.1,3.3],"key1":["beta",[12,{"numberOfElectrons":4}],[1,3]]}');
         $json = '{"key0":["alpha",true],"key2":[false,true],"key3":[1.1,3.3]' .
             ',"key1":["beta",[12,{"numberOfElectrons":4}],[1,3]]}';
         $mapper->mapFor(
@@ -998,7 +998,7 @@ class MultiTypeTest extends TestCase
     {
         $mapper = new JsonMapper();
         $this->expectException(JsonMapperException::class);
-        $this->expectExceptionMessage('Cannot map more than OneOf { array<string,array<string,(bool,array<string,(int,Atom)>,string)>> and array<string,array<string,array<string,int>>> } on: {"key":{"element":{"atom":1,"orbits":9},"compound":{"num1":4,"num2":8}}}');
+        $this->expectExceptionMessage('Cannot map more than OneOf { array<string,array<string,anyOf(bool,array<string,oneOf(int,Atom)>,string)>> and array<string,array<string,array<string,int>>> } on: {"key":{"element":{"atom":1,"orbits":9},"compound":{"num1":4,"num2":8}}}');
         $json = '{"key":{"element":{"atom":1,"orbits":9},"compound":{"num1":4,"num2":8}}}';
         $mapper->mapFor(
             json_decode($json),
@@ -1012,7 +1012,7 @@ class MultiTypeTest extends TestCase
     {
         $mapper = new JsonMapper();
         $this->expectException(JsonMapperException::class);
-        $this->expectExceptionMessage('Unable to map Array: (bool,(int,Atom)[],string)[] on: "alpha"');
+        $this->expectExceptionMessage('Unable to map Array: anyOf(bool,oneOf(int,Atom)[],string)[] on: "alpha"');
         $json = '{"key0":["beta",[12,{"numberOfElectrons":4}],[1,3]],"key1":"alpha"' .
             ',"key2":[false,true]}';
         $mapper->mapFor(
@@ -1027,7 +1027,7 @@ class MultiTypeTest extends TestCase
     {
         $mapper = new JsonMapper();
         $this->expectException(JsonMapperException::class);
-        $this->expectExceptionMessage('Unable to map Array: (bool,(int,Atom)[],string)[] on: {"item":"alpha"}');
+        $this->expectExceptionMessage('Unable to map Array: anyOf(bool,oneOf(int,Atom)[],string)[] on: {"item":"alpha"}');
         $json = '{"key0":["beta",[12,{"numberOfElectrons":4}],[1,3]],"key1":{"item":"alpha"}' .
             ',"key2":[false,true]}';
         $mapper->mapFor(
@@ -1042,7 +1042,7 @@ class MultiTypeTest extends TestCase
     {
         $mapper = new JsonMapper();
         $this->expectException(JsonMapperException::class);
-        $this->expectExceptionMessage('Unable to map Associative Array: array<string,(bool,(int,Atom)[],string)> on: "alpha"');
+        $this->expectExceptionMessage('Unable to map Associative Array: array<string,anyOf(bool,oneOf(int,Atom)[],string)> on: "alpha"');
         $json = '{"key0":{"item0":"beta","item1":[12,{"numberOfElectrons":4}],"item2":[1,3]},"key1":"alpha"' .
             ',"key2":{"item0":false,"item1":true}}';
         $mapper->mapFor(
@@ -1057,7 +1057,7 @@ class MultiTypeTest extends TestCase
     {
         $mapper = new JsonMapper();
         $this->expectException(JsonMapperException::class);
-        $this->expectExceptionMessage('Unable to map Associative Array: array<string,(bool,(int,Atom)[],string)> on: ["alpha"]');
+        $this->expectExceptionMessage('Unable to map Associative Array: array<string,anyOf(bool,oneOf(int,Atom)[],string)> on: ["alpha"]');
         $json = '{"key0":{"item0":"beta","item1":[12,{"numberOfElectrons":4}],"item2":[1,3]},"key1":["alpha"]' .
             ',"key2":{"item0":false,"item1":true}}';
         $mapper->mapFor(

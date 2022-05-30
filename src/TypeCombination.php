@@ -24,6 +24,13 @@ namespace apimatic\jsonmapper;
 class TypeCombination
 {
     /**
+     * String format of this typeCombinator group.
+     *
+     * @var string
+     */
+    private $_format;
+
+    /**
      * Name of this typeCombinator group i.e. oneOf/anyOf.
      *
      * @var string
@@ -48,15 +55,27 @@ class TypeCombination
     /**
      * Private constructor for TypeCombination class
      *
+     * @param string   $format        string format value
      * @param string   $groupName     group name value
      * @param array    $types         types value
      * @param string[] $deserializers deserializers value
      */
-    private function __construct($groupName, $types, $deserializers)
+    private function __construct($format, $groupName, $types, $deserializers)
     {
+        $this->_format = $format;
         $this->_groupName = $groupName;
         $this->_types = $types;
         $this->_deserializers = $deserializers;
+    }
+
+    /**
+     * String format of this typeCombinator group.
+     *
+     * @return string
+     */
+    public function getFormat()
+    {
+        return $this->_format;
     }
 
     /**
@@ -91,41 +110,24 @@ class TypeCombination
     }
 
     /**
-     * Converts the given typeCombination into its string format.
+     * Extract type info like: isMap, isArray, and inner type for maps/arrays.
      *
-     * @param TypeCombination|string $type  Combined type/Single type.
-     * @param string                 $start string to be appended in the start
-     * @param string                 $end   string to be appended in the end
+     * @param string $type Type to be checked and extracted for information.
      *
-     * @return string
+     * @return array An array with type info in the format:
+     *               (bool isMap, bool isArray, string $internalType).
      */
-    public static function generateTypeString($type, $start = '', $end = '')
+    public static function extractTypeInfo($type)
     {
-        if (is_string($type)) {
-            return $type;
-        }
-        if ($type->getGroupName() == 'array') {
-            return self::generateTypeString(
-                $type->getTypes()[0],
-                $start,
-                '[]' . $end
-            );
-        }
-        if ($type->getGroupName() == 'map') {
-            return self::generateTypeString(
-                $type->getTypes()[0],
-                $start . 'array<string,',
-                '>' . $end
-            );
-        }
-        $flatten = [];
-        array_map(
-            function ($a) use (&$flatten) {
-                $flatten[] = self::generateTypeString($a);
-            },
-            $type->getTypes()
-        );
-        return "$start(" . join(',', $flatten) . ")$end";
+        $mapStart = 'array<string,';
+        // Check if container is array or map?
+        $isMap = substr($type, -1) == '>' && strpos($type, $mapStart) === 0;
+        $isArray = substr($type, -2) == '[]';
+        // Extracting inner type for arrays/maps
+        // Inner type will be same as actual type for non-container type
+        $innerType = $isMap ? substr($type, strlen($mapStart), -1)
+            : ($isArray ? substr($type, 0, -2) : $type);
+        return [$isMap, $isArray, $innerType];
     }
 
     /**
@@ -134,48 +136,35 @@ class TypeCombination
      * while deserializing factory methods can be obtained by
      * getDeserializers() and group name can be obtained from getGroupName()
      *
-     * @param string    $typeGroup    Format of multiple types i.e. oneOf(int,bool)[]
+     * @param string   $typeGroup     Format of multiple types i.e. oneOf(int,bool)[]
      *                                onyOf(int[],bool,anyOf(string,float)[],...),
      *                                array<string,oneOf(int,float)[]>, here []
      *                                represents array types, and array<string,T>
      *                                represents map types, oneOf/anyOf are group
      *                                names, while default group name is anyOf.
-     * @param string[]  $deserializer Callable factory methods for the property
-     * @param int|false $start        Start index of types in group, default: false.
-     * @param int|false $end          Ending index of types in group, default: false.
+     * @param string[] $deserializers Callable factory methods for the property
      *
      * @return TypeCombination
      */
-    public static function generateTypeCombination(
-        $typeGroup,
-        $deserializer,
-        $start = false,
-        $end = false
-    ) {
+    public static function generateTypeCombination($typeGroup, $deserializers)
+    {
         $groupName = 'anyOf';
-        $start = $start == false ? strpos($typeGroup, '(') : $start;
-        $end = $end == false ? strrpos($typeGroup, ')') : $end;
+        $start = strpos($typeGroup, '(');
+        $end = strrpos($typeGroup, ')');
         if ($start !== false && $end !== false) {
-            if (substr($typeGroup, -2) == '[]') {
+            list($isMap, $isArray, $innerType) = self::extractTypeInfo($typeGroup);
+            if ($isMap || $isArray) {
                 return self::_createTypeGroup(
-                    'array',
-                    substr($typeGroup, 0, -2),
-                    $deserializer
-                );
-            }
-            if (substr($typeGroup, -1) == '>' 
-                && strpos($typeGroup, 'array<string,') === 0
-            ) {
-                return self::_createTypeGroup(
-                    'map',
-                    substr($typeGroup, strlen('array<string,'), -1),
-                    $deserializer
+                    $isMap ? 'map' : 'array',
+                    $innerType,
+                    $deserializers
                 );
             }
             $name = substr($typeGroup, 0, $start);
             $groupName = empty($name) ? $groupName : $name;
             $typeGroup = substr($typeGroup, $start + 1, -1);
         }
+        $format = "($typeGroup)";
         $types = [];
         $type = '';
         $groupCount = 0;
@@ -187,32 +176,34 @@ class TypeCombination
                 $groupCount--;
             }
             if ($c == ',' && $groupCount == 0) {
-                self::_insertType($types, $type, $deserializer);
+                self::_insertType($types, $type, $deserializers);
                 $type = '';
                 continue;
             }
             $type .= $c;
         }
-        self::_insertType($types, $type, $deserializer);
-        return new self($groupName, $types, $deserializer);
+        self::_insertType($types, $type, $deserializers);
+        return new self($format, $groupName, $types, $deserializers);
     }
 
     /**
      * Creates a TypeCombination object with the given name and inner
      * types group that must be another typeCombination object
      *
-     * @param string   $name           Group name for the outer typeCombination
-     *                                 object.
-     * @param string   $innerTypeGroup typeGroup to be created and inserted
-     * @param string[] $deserializers  deserializer for the type group
+     * @param string   $name          Group name for the outer typeCombination
+     *                                object.
+     * @param string   $innerGroup    typeGroup to be created and inserted
+     * @param string[] $deserializers deserializer for the type group
      *
      * @return TypeCombination
      */
-    private static function _createTypeGroup($name, $innerTypeGroup, $deserializers)
+    private static function _createTypeGroup($name, $innerGroup, $deserializers)
     {
+        $format = $name == 'map' ? "array<string,$innerGroup>" : $innerGroup . '[]';
         return new self(
+            $format,
             $name,
-            [self::generateTypeCombination($innerTypeGroup, $deserializers)],
+            [self::generateTypeCombination($innerGroup, $deserializers)],
             $deserializers
         );
     }
@@ -229,15 +220,9 @@ class TypeCombination
      */
     private static function _insertType(&$types, $type, $deserializers)
     {
-        $start = strpos($type, '(');
-        $end = strrpos($type, ')');
-        if ($start !== false && $end !== false) {
-            $type = self::generateTypeCombination(
-                $type,
-                $deserializers,
-                $start,
-                $end
-            );
+        if (strpos($type, '(') !== false && strrpos($type, ')') !== false) {
+            // If type is Grouped, creating TypeCombination instance for it
+            $type = self::generateTypeCombination($type, $deserializers);
         }
         if (!empty($type)) {
             array_push($types, $type);
