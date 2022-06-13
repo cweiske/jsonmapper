@@ -110,6 +110,59 @@ class TypeCombination
     }
 
     /**
+     * Extract innermost oneof/anyof group hidden inside array/map
+     * type group
+     *
+     * @return TypeCombination
+     */
+    public function extractOneOfAnyOfGroup()
+    {
+        $innerType = $this->getTypes()[0];
+        if (in_array($this->getGroupName(), ["array", "map"])
+            && $innerType instanceof TypeCombination
+        ) {
+            return $innerType->extractOneOfAnyOfGroup();
+        }
+        return $this;
+    }
+
+    /**
+     * Extract all internal groups similar to the given group as a list of
+     * TypeCombination objects, it will only return similar array/map groups
+     *
+     * @param TypeCombination $group All inner groups similar to this array/map
+     *                               type group will be extracted
+     *
+     * @return TypeCombination[] A list of similar TypeCombination objects
+     */
+    public function extractSimilar($group)
+    {
+        $result = [];
+        if (!in_array($this->getGroupName(), ["array", "map"])) {
+            // if group is neither array nor map then call extractSimilar for
+            // each of the internal groups
+            foreach ($this->getTypes() as $typ) {
+                if ($typ instanceof TypeCombination) {
+                    $result = array_merge($result, $typ->extractSimilar($group));
+                }
+            }
+        } elseif ($group->getGroupName() == $this->getGroupName()) {
+            // if groupName is same then check inner group type
+            $internal = $this->getTypes()[0];
+            $group = $group->getTypes()[0];
+            if (in_array($group->getGroupName(), ["array", "map"])) {
+                // if inner group is array/map then return result after
+                // extraction of groups similar to innerGroup
+                $result = $internal->extractSimilar($group);
+            } else {
+                // if inner group is oneof/anyof then only extract $internal
+                $result = [$internal];
+            }
+        }
+        return $result;
+    }
+
+    /**
      * Extract type info like: isMap, isArray, and inner type for maps/arrays.
      *
      * @param string $type Type to be checked and extracted for information.
@@ -131,6 +184,35 @@ class TypeCombination
     }
 
     /**
+     * Create an oneof/anyof TypeCombination instance, by specifying inner types
+     *
+     * @param array    $types         types array: (TypeCombination,string)[]
+     * @param string   $gName         group name value (anyof, oneof),
+     *                                Default: anyof
+     * @param string[] $deserializers deserializers array, Default: []
+     *
+     * @return TypeCombination
+     */
+    public static function with($types, $gName = 'anyof', array $deserializers = [])
+    {
+        $format = join(
+            ',',
+            array_map(
+                function ($t) {
+                    return is_string($t) ? $t : $t->getFormat();
+                },
+                $types
+            )
+        );
+        return new self(
+            "$gName($format)",
+            $gName,
+            $types,
+            $deserializers
+        );
+    }
+
+    /**
      * Wrap the given typeGroup string in the TypeCombination class,
      * i.e. getTypes() method will return all the grouped types,
      * while deserializing factory methods can be obtained by
@@ -142,11 +224,12 @@ class TypeCombination
      *                                represents array types, and array<string,T>
      *                                represents map types, oneOf/anyOf are group
      *                                names, while default group name is anyOf.
-     * @param string[] $deserializers Callable factory methods for the property
+     * @param string[] $deserializers Callable factory methods for the property,
+     *                                Default: []
      *
      * @return TypeCombination
      */
-    public static function generateTypeCombination($typeGroup, $deserializers)
+    public static function withFormat($typeGroup, $deserializers = [])
     {
         $groupName = 'anyOf';
         $start = strpos($typeGroup, '(');
@@ -203,7 +286,7 @@ class TypeCombination
         return new self(
             $format,
             $name,
-            [self::generateTypeCombination($innerGroup, $deserializers)],
+            [self::withFormat($innerGroup, $deserializers)],
             $deserializers
         );
     }
@@ -220,9 +303,10 @@ class TypeCombination
      */
     private static function _insertType(&$types, $type, $deserializers)
     {
+        $type = trim($type);
         if (strpos($type, '(') !== false && strrpos($type, ')') !== false) {
             // If type is Grouped, creating TypeCombination instance for it
-            $type = self::generateTypeCombination($type, $deserializers);
+            $type = self::withFormat($type, $deserializers);
         }
         if (!empty($type)) {
             array_push($types, $type);

@@ -79,17 +79,33 @@ class JsonMapperException extends Exception
 
     /**
      * Exception for an unCallable Factory Method.
-     * 
+     *
      * @param string $factoryMethod The concerned factory method.
      * @param string $strClassName  Related class name.
-     * 
+     *
      * @return JsonMapperException
      */
     static function unCallableFactoryMethodException($factoryMethod, $strClassName)
     {
         return new self(
-            "Factory method '$factoryMethod' referenced by ".
+            "Factory method '$factoryMethod' referenced by " .
             "'$strClassName' is not callable."
+        );
+    }
+
+    /**
+     * Exception for not able to call factory method with the given value.
+     *
+     * @param string $argType Type of the argument passed in method.
+     * @param string $reasons Exception message received from factory method.
+     *
+     * @return JsonMapperException
+     */
+    static function invalidArgumentFactoryMethodException($argType, $reasons)
+    {
+        return new self(
+            "Provided factory methods are not callable with " .
+             "the value of Type: $argType\n$reasons"
         );
     }
 
@@ -98,7 +114,8 @@ class JsonMapperException extends Exception
      * 
      * @param string $typeName  Name of type to map json object on.
      * @param string $typeGroup Group name of the type provided.
-     * @param string $value     JSON string.
+     * @param string $value     Value that should be mapped by typeGroup
+     *                          i.e. JSON string.
      * 
      * @return JsonMapperException
      */
