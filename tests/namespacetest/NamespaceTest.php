@@ -3,11 +3,15 @@ namespace namespacetest;
 require_once __DIR__ . '/Unit.php';
 require_once __DIR__ . '/UnitData.php';
 require_once __DIR__ . '/model/User.php';
+require_once __DIR__ . '/model/Group.php';
 require_once __DIR__ . '/model/UserList.php';
+require_once __DIR__ . '/../othernamespace/Programmers.php';
 require_once __DIR__ . '/../othernamespace/Foo.php';
 
 use apimatic\jsonmapper\JsonMapper;
 use apimatic\jsonmapper\JsonMapperException;
+use namespacetest\model\User;
+use othernamespace\Programmers;
 
 /**
  * @covers \apimatic\jsonmapper\JsonMapper
@@ -109,5 +113,24 @@ class NamespaceTest extends \PHPUnit\Framework\TestCase
             'Foo', $res->internalData['namespacedTypeHint']->name
         );
     }
+
+    /**
+     * Test a setter method with a namespaced type hint that
+     * is within another namespace than the object itself.
+     */
+    public function testParentInDifferentNamespace()
+    {
+        $mapper = new JsonMapper();
+        $json = '{"language":"PHP","languageUser":{"name":"phpUser"},"lead":{"name":"phpLead"},"users":[{"name":"member1"},{"name":"member2"}]}';
+        $res = $mapper->mapClass(json_decode($json), Programmers::class);
+        $this->assertInstanceOf(Programmers::class, $res);
+        $this->assertEquals('PHP', $res->language);
+        $this->assertInstanceOf(User::class, $res->languageUser);
+        $this->assertEquals('phpUser', $res->languageUser->name);
+        $this->assertInstanceOf(User::class, $res->lead);
+        $this->assertEquals('phpLead', $res->lead->name);
+        $this->assertTrue(is_array($res->getUsers()));
+        $this->assertEquals('member1', $res->getUsers()[0]->name);
+        $this->assertEquals('member2', $res->getUsers()[1]->name);
+    }
 }
-?>

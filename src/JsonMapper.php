@@ -208,7 +208,7 @@ class JsonMapper
                     = $this->inspectProperty($rc, $key);
             }
 
-            list($hasProperty, $accessor, $type, $factoryMethod, $mapsBy)
+            list($hasProperty, $accessor, $type, $factoryMethod, $mapsBy, $namespace)
                 = $this->arInspectedClasses[$strClassName][$key];
 
             if ($accessor !== null) {
@@ -266,7 +266,7 @@ class JsonMapper
                 $type,
                 $mapsBy,
                 $factoryMethod,
-                $rc->getNamespaceName(),
+                $namespace,
                 $rc->getName(),
                 $strict
             );
@@ -1385,6 +1385,7 @@ class JsonMapper
         $rmeth = null;
         $annotations = [];
         $mapsBy = null;
+        $namespace = $rc->getNamespaceName();
         foreach ($rc->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             $annotations = $this->parseAnnotations($method->getDocComment());
             if ($name === $this->getMapAnnotationFromParsed($annotations)) {
@@ -1407,6 +1408,7 @@ class JsonMapper
         if ($rmeth !== null && $rmeth->isPublic()) {
             $type = null;
             $factoryMethod = null;
+            $namespace = $rmeth->getDeclaringClass()->getNamespaceName();
             $rparams = $rmeth->getParameters();
             if (count($rparams) > 0) {
                 $type = $this->getParameterType($rparams[0]);
@@ -1423,7 +1425,7 @@ class JsonMapper
                 $factoryMethod = $annotations['factory'];
             }
 
-            return array(true, $rmeth, $type, $factoryMethod, $mapsBy);
+            return array(true, $rmeth, $type, $factoryMethod, $mapsBy, $namespace);
         }
 
         $rprop = null;
@@ -1460,6 +1462,7 @@ class JsonMapper
             if ($rprop->isPublic()) {
                 $docblock      = $rprop->getDocComment();
                 $annotations   = $this->parseAnnotations($docblock);
+                $namespace = $rprop->getDeclaringClass()->getNamespaceName();
                 $type          = null;
                 $factoryMethod = null;
 
@@ -1473,15 +1476,16 @@ class JsonMapper
                     $factoryMethod = $annotations['factory'];
                 }
 
-                return array(true, $rprop, $type, $factoryMethod, $mapsBy);
+                return array(true, $rprop, $type, $factoryMethod, $mapsBy,
+                    $namespace);
             } else {
                 //no setter, private property
-                return array(true, null, null, null, $mapsBy);
+                return array(true, null, null, null, $mapsBy, $namespace);
             }
         }
 
         //no setter, no property
-        return array(false, null, null, null, $mapsBy);
+        return array(false, null, null, null, $mapsBy, $namespace);
     }
 
     /**
@@ -1660,7 +1664,7 @@ class JsonMapper
                     = $this->inspectProperty($rc, $key);
             }
 
-            list($hasProperty, $accessor, $type, $factoryMethod, $mapsBy)
+            list($hasProperty, $accessor, $type, $factoryMethod, $mapsBy, $namespace)
                 = $this->arInspectedClasses[$class][$key];
 
             if (!$hasProperty) {
@@ -1705,7 +1709,7 @@ class JsonMapper
                 $jtype,
                 $mapsBy,
                 $factoryMethod,
-                $rc->getNamespaceName(),
+                $namespace,
                 $rc->getName(),
                 $strict
             );
