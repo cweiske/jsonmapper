@@ -1,3 +1,8 @@
+2022-12-08  Christian Weiske  <cweiske@cweiske.de>
+
+	* Throw exception when "union|types" are encountered (issue #192)
+	* Version 4.1.0
+
 2020-12-01  Christian Weiske  <cweiske@cweiske.de>
 
 	* Add support for PHP 8.0
