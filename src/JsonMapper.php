@@ -248,6 +248,11 @@ class JsonMapper
                     'Empty type at property "'
                     . $strClassName . '::$' . $key . '"'
                 );
+            } else if (strpos($type, '|')) {
+                throw new JsonMapper_Exception(
+                    'Cannot decide which of the union types shall be used: '
+                    . $type
+                );
             }
 
             $array = null;
@@ -480,14 +485,7 @@ class JsonMapper
                     $isNullable = $rparams[0]->allowsNull();
                     $ptype      = $rparams[0]->getType();
                     if ($ptype !== null) {
-                        if ($ptype instanceof ReflectionNamedType) {
-                            $typeName = $ptype->getName();
-                        }
-                        if ($ptype instanceof ReflectionUnionType
-                            || !$ptype->isBuiltin()
-                        ) {
-                            $typeName = '\\' . $typeName;
-                        }
+                        $typeName = $this->stringifyReflectionType($ptype);
                         //allow overriding an "array" type hint
                         // with a more specific class in the docblock
                         if ($typeName !== 'array') {
@@ -540,8 +538,7 @@ class JsonMapper
                     // if there's a scalar type being defined
                     if (PHP_VERSION_ID >= 70400 && $rprop->hasType()) {
                         $rPropType = $rprop->getType();
-                        $propTypeName = $rPropType->getName();
-
+                        $propTypeName = $this->stringifyReflectionType($rPropType);
                         if ($this->isSimpleType($propTypeName)) {
                             return array(
                               true,
@@ -554,7 +551,7 @@ class JsonMapper
                         return array(
                           true,
                           $rprop,
-                          '\\'.$propTypeName,
+                          '\\' . ltrim($propTypeName, '\\'),
                           $rPropType->allowsNull()
                         );
                     }
@@ -788,6 +785,31 @@ class JsonMapper
         return substr(
             str_ireplace('|null|', '|', '|' . $type . '|'),
             1, -1
+        );
+    }
+
+    /**
+     * Get a string representation of the reflection type.
+     * Required because named, union and intersection types need to be handled.
+     *
+     * @param ReflectionType $type Native PHP type
+     *
+     * @return string "foo|bar"
+     */
+    protected function stringifyReflectionType(ReflectionType $type)
+    {
+        if ($type instanceof ReflectionNamedType) {
+            return ($type->isBuiltin() ? '' : '\\') . $type->getName();
+        }
+
+        return implode(
+            '|',
+            array_map(
+                function (ReflectionNamedType $type) {
+                    return ($type->isBuiltin() ? '' : '\\') . $type->getName();
+                },
+                $type->getTypes()
+            )
         );
     }
 
