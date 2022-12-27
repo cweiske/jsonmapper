@@ -167,7 +167,7 @@ class JsonMapper
                     = $this->inspectProperty($rc, $key);
             }
 
-            list($hasProperty, $accessor, $type, $isNullable)
+            [$hasProperty, $accessor, $type, $isNullable]
                 = $this->arInspectedClasses[$strClassName][$key];
 
             if (!$hasProperty) {
@@ -229,7 +229,7 @@ class JsonMapper
             } else if ($this->isObjectOfSameType($type, $jvalue)) {
                 $this->setProperty($object, $accessor, $jvalue);
                 continue;
-            } else if ($this->isSimpleType($type)) {
+            } else if ($this->isSimpleType($type) && !is_array($jvalue)) {
                 if ($type === 'string' && is_object($jvalue)) {
                     throw new JsonMapper_Exception(
                         'JSON property "' . $key . '" in class "'
@@ -262,12 +262,15 @@ class JsonMapper
                 $array = array();
                 $subtype = substr($type, 0, -2);
             } else if (substr($type, -1) == ']') {
-                list($proptype, $subtype) = explode('[', substr($type, 0, -1));
+                [$proptype, $subtype] = explode('[', substr($type, 0, -1));
                 if ($proptype == 'array') {
                     $array = array();
                 } else {
                     $array = $this->createInstance($proptype, false, $jvalue);
                 }
+            } else if (is_array($jvalue) && $this->hasVariadicArrayType($accessor)) {
+                $array = array();
+                $subtype = $type;
             } else {
                 if (is_a($type, 'ArrayObject', true)) {
                     $array = $this->createInstance($type, false, $jvalue);
@@ -336,7 +339,7 @@ class JsonMapper
         if ($type === null || $type === '' || $type[0] === '\\' || $strNs === '') {
             return $type;
         }
-        list($first) = explode('[', $type, 2);
+        [$first] = explode('[', $type, 2);
         if ($first === 'mixed' || $this->isSimpleType($first)) {
             return $type;
         }
@@ -504,7 +507,7 @@ class JsonMapper
                 if (!isset($annotations['param'][0])) {
                     return array(true, $rmeth, null, $isNullable);
                 }
-                list($type) = explode(' ', trim($annotations['param'][0]));
+                [$type] = explode(' ', trim($annotations['param'][0]));
                 return array(true, $rmeth, $type, $this->isNullable($type));
             }
         }
@@ -560,7 +563,7 @@ class JsonMapper
                 }
 
                 //support "@var type description"
-                list($type) = explode(' ', $annotations['var'][0]);
+                [$type] = explode(' ', $annotations['var'][0]);
 
                 return array(true, $rprop, $type, $this->isNullable($type));
             } else {
@@ -625,6 +628,8 @@ class JsonMapper
         }
         if ($accessor instanceof ReflectionProperty) {
             $accessor->setValue($object, $value);
+        } else if (is_array($value) && $this->hasVariadicArrayType($accessor)) {
+            $accessor->invoke($object, ...$value);
         } else {
             //setter method
             $accessor->invoke($object, $value);
@@ -756,6 +761,32 @@ class JsonMapper
     protected function isArrayOfType($strType)
     {
         return substr($strType, -2) === '[]';
+    }
+
+    /**
+     * Returns true if accessor is a method and has only one parameter
+     * which is variadic.
+     *
+     * @param ReflectionMethod|ReflectionProperty|null $accessor accessor
+     *                                                           to set value
+     *
+     * @return bool
+     */
+    protected function hasVariadicArrayType($accessor)
+    {
+        if (!$accessor instanceof ReflectionMethod) {
+            return false;
+        }
+
+        $parameters = $accessor->getParameters();
+
+        if (count($parameters) > 1) {
+            return false;
+        }
+
+        $parameter = $parameters[0];
+
+        return $parameter->isVariadic();
     }
 
     /**
