@@ -229,7 +229,7 @@ class JsonMapper
             } else if ($this->isObjectOfSameType($type, $jvalue)) {
                 $this->setProperty($object, $accessor, $jvalue);
                 continue;
-            } else if ($this->isSimpleType($type)) {
+            } else if ($this->isSimpleType($type) && !is_array($jvalue)) {
                 if ($type === 'string' && is_object($jvalue)) {
                     throw new JsonMapper_Exception(
                         'JSON property "' . $key . '" in class "'
@@ -268,6 +268,9 @@ class JsonMapper
                 } else {
                     $array = $this->createInstance($proptype, false, $jvalue);
                 }
+            } else if (is_array($jvalue) && $this->hasVariadicArrayType($accessor)) {
+                $array = array();
+                $subtype = $type;
             } else {
                 if (is_a($type, 'ArrayObject', true)) {
                     $array = $this->createInstance($type, false, $jvalue);
@@ -625,6 +628,8 @@ class JsonMapper
         }
         if ($accessor instanceof ReflectionProperty) {
             $accessor->setValue($object, $value);
+        } else if (is_array($value) && $this->hasVariadicArrayType($accessor)) {
+            $accessor->invoke($object, ...$value);
         } else {
             //setter method
             $accessor->invoke($object, $value);
@@ -756,6 +761,32 @@ class JsonMapper
     protected function isArrayOfType($strType)
     {
         return substr($strType, -2) === '[]';
+    }
+
+    /**
+     * Returns true if accessor is a method and has only one parameter
+     * which is variadic.
+     *
+     * @param ReflectionMethod|ReflectionProperty|null $accessor accessor
+     *                                                           to set value
+     *
+     * @return bool
+     */
+    protected function hasVariadicArrayType($accessor)
+    {
+        if (!$accessor instanceof ReflectionMethod) {
+            return false;
+        }
+
+        $parameters = $accessor->getParameters();
+
+        if (count($parameters) > 1) {
+            return false;
+        }
+
+        $parameter = $parameters[0];
+
+        return $parameter->isVariadic();
     }
 
     /**
