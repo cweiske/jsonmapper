@@ -69,6 +69,8 @@ Map a normal object:
     require 'autoload.php';
     $mapper = new JsonMapper();
     $contactObject = $mapper->map($jsonContact, new Contact());
+    // or as classname
+    $contactObject = $mapper->map($jsonContact, Contact::class);
     ?>
 
 Map an array of objects:
