@@ -131,8 +131,8 @@ class JsonMapper
     /**
      * Map data all data in $json into the given $object instance.
      *
-     * @param object|array $json   JSON object structure from json_decode()
-     * @param object       $object Object to map $json data into
+     * @param object|array        $json   JSON object structure from json_decode()
+     * @param object|class-string $object Object to map $json data into
      *
      * @return mixed Mapped object is returned.
      * @see    mapArray()
@@ -145,11 +145,15 @@ class JsonMapper
                 . ', ' . gettype($json) . ' given.'
             );
         }
-        if (!is_object($object)) {
+        if (!is_object($object) && (!is_string($object) || !class_exists($object))) {
             throw new InvalidArgumentException(
-                'JsonMapper::map() requires second argument to be an object'
+                'JsonMapper::map() requires second argument to be an object or existing class name'
                 . ', ' . gettype($object) . ' given.'
             );
+        }
+
+        if (is_string($object)) {
+            $object = (new ReflectionClass($object))->newInstanceWithoutConstructor();
         }
 
         $strClassName = get_class($object);

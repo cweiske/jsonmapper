@@ -44,6 +44,18 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('stringvalue', $sn->simple->str);
     }
 
+    public function testMapObjectByClassName()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"simple":{"str":"stringvalue"}}'),
+            JsonMapperTest_Simple::class
+        );
+        $this->assertIsObject($sn->simple);
+        $this->assertInstanceOf('JsonMapperTest_Simple', $sn->simple);
+        $this->assertEquals('stringvalue', $sn->simple->str);
+    }
+
     public function testMapDateTime()
     {
         $jm = new JsonMapper();
