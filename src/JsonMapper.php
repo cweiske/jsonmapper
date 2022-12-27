@@ -147,7 +147,8 @@ class JsonMapper
         }
         if (!is_object($object) && (!is_string($object) || !class_exists($object))) {
             throw new InvalidArgumentException(
-                'JsonMapper::map() requires second argument to be an object or existing class name'
+                'JsonMapper::map() requires second argument to '
+                . 'be an object or existing class name'
                 . ', ' . gettype($object) . ' given.'
             );
         }
