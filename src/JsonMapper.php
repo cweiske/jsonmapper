@@ -154,7 +154,8 @@ class JsonMapper
         }
 
         if (is_string($object)) {
-            $object = (new ReflectionClass($object))->newInstanceWithoutConstructor();
+            $object = (new ReflectionClass($object))
+                ->newInstanceWithoutConstructor();
         }
 
         $strClassName = get_class($object);
