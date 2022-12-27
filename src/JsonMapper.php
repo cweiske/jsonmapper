@@ -167,7 +167,7 @@ class JsonMapper
                     = $this->inspectProperty($rc, $key);
             }
 
-            list($hasProperty, $accessor, $type, $isNullable)
+            [$hasProperty, $accessor, $type, $isNullable]
                 = $this->arInspectedClasses[$strClassName][$key];
 
             if (!$hasProperty) {
@@ -262,7 +262,7 @@ class JsonMapper
                 $array = array();
                 $subtype = substr($type, 0, -2);
             } else if (substr($type, -1) == ']') {
-                list($proptype, $subtype) = explode('[', substr($type, 0, -1));
+                [$proptype, $subtype] = explode('[', substr($type, 0, -1));
                 if ($proptype == 'array') {
                     $array = array();
                 } else {
@@ -339,7 +339,7 @@ class JsonMapper
         if ($type === null || $type === '' || $type[0] === '\\' || $strNs === '') {
             return $type;
         }
-        list($first) = explode('[', $type, 2);
+        [$first] = explode('[', $type, 2);
         if ($first === 'mixed' || $this->isSimpleType($first)) {
             return $type;
         }
@@ -507,7 +507,7 @@ class JsonMapper
                 if (!isset($annotations['param'][0])) {
                     return array(true, $rmeth, null, $isNullable);
                 }
-                list($type) = explode(' ', trim($annotations['param'][0]));
+                [$type] = explode(' ', trim($annotations['param'][0]));
                 return array(true, $rmeth, $type, $this->isNullable($type));
             }
         }
@@ -563,7 +563,7 @@ class JsonMapper
                 }
 
                 //support "@var type description"
-                list($type) = explode(' ', $annotations['var'][0]);
+                [$type] = explode(' ', $annotations['var'][0]);
 
                 return array(true, $rprop, $type, $this->isNullable($type));
             } else {
