@@ -780,7 +780,7 @@ class JsonMapper
 
         $parameters = $accessor->getParameters();
 
-        if (count($parameters) > 1) {
+        if (count($parameters) !== 1) {
             return false;
         }
 
