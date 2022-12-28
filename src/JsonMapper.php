@@ -269,7 +269,7 @@ class JsonMapper
                     $array = $this->createInstance($proptype, false, $jvalue);
                 }
             } else {
-                if (is_a($type, 'ArrayObject', true)) {
+                if (is_a($type, 'ArrayAccess', true)) {
                     $array = $this->createInstance($type, false, $jvalue);
                 }
             }

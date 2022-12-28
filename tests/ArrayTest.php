@@ -14,6 +14,7 @@
 use namespacetest\model\MyArrayObject;
 
 require_once 'JsonMapperTest/Array.php';
+require_once 'JsonMapperTest/ArrayAccessCollection.php';
 require_once 'JsonMapperTest/Broken.php';
 require_once 'JsonMapperTest/Simple.php';
 require_once 'JsonMapperTest/Zoo/Animal.php';
@@ -219,6 +220,22 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         $this->assertIsInt($sn->pSimpleArrayObject['zwei']);
         $this->assertEquals(1, $sn->pSimpleArrayObject['eins']);
         $this->assertEquals(1, $sn->pSimpleArrayObject['zwei']);
+    }
+
+    public function testMapSimpleArrayAccess()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode(
+                '{"pArrayAccessCollection":{"eins": 1,"zwei": "two"}}'
+            ),
+            new JsonMapperTest_Array()
+        );
+        $this->assertInstanceOf('ArrayAccess', $sn->pArrayAccessCollection);
+        $this->assertIsInt($sn->pArrayAccessCollection['eins']);
+        $this->assertIsString($sn->pArrayAccessCollection['zwei']);
+        $this->assertEquals(1, $sn->pArrayAccessCollection['eins']);
+        $this->assertEquals("two", $sn->pArrayAccessCollection['zwei']);
     }
 
     public function testInvalidArray()

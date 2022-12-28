@@ -82,6 +82,11 @@ class JsonMapperTest_Array
     public $pArrayObjectList;
 
     /**
+     * @var ArrayAccessCollection
+     */
+    public $pArrayAccessCollection;
+
+    /**
      * Array of ArrayObject instances
      * @var \namespacetest\model\MyArrayObject[]
      */
