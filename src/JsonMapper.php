@@ -648,15 +648,9 @@ class JsonMapper
     ) {
         if ($useParameter) {
             if (PHP_VERSION_ID >= 80100
-                && is_subclass_of($class, \UnitEnum::class)
+                && is_subclass_of($class, \BackedEnum::class)
             ) {
-                if (is_subclass_of($class, \BackedEnum::class)) {
-                    return $class::from($jvalue);
-                }
-
-                $reflectEnum = new ReflectionEnum($class);
-
-                return $reflectEnum->getCase($jvalue)->getValue();
+                return $class::from($jvalue);
             }
 
             return new $class($jvalue);

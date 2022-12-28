@@ -239,9 +239,6 @@ Supported type names
 
   - ``ContactList[Contact]``
   - ``NumberList[int]``
-- Simple enums, with and without namespaces
-
-   - ``Suit`` - exception will be thrown if the JSON value is not present in the enum
 
 - Backed enums, with and without namespaces
 

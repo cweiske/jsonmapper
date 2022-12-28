@@ -14,13 +14,12 @@ declare(strict_types=1);
  */
 class Enums_PHP81_Test extends \PHPUnit\Framework\TestCase
 {
-    const TEST_DATA = '{"stringBackedEnum": "foo", "intBackedEnum": 2, "simpleEnum": "foo"}';
+    const TEST_DATA = '{"stringBackedEnum": "foo", "intBackedEnum": 2}';
 
     protected function setUp(): void
     {
         require_once 'Enums/IntBackedEnum.php';
         require_once 'Enums/ObjectWithEnum.php';
-        require_once 'Enums/SimpleEnum.php';
         require_once 'Enums/StringBackedEnum.php';
     }
 
@@ -38,6 +37,5 @@ class Enums_PHP81_Test extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(\Enums\StringBackedEnum::FOO, $sn->stringBackedEnum);
         $this->assertEquals(\Enums\IntBackedEnum::BAR, $sn->intBackedEnum);
-        $this->assertEquals(\Enums\SimpleEnum::foo, $sn->simpleEnum);
     }
 }

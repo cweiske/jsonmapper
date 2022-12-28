@@ -8,5 +8,4 @@ class ObjectWithEnum
 {
     public StringBackedEnum $stringBackedEnum;
     public IntBackedEnum $intBackedEnum;
-    public SimpleEnum $simpleEnum;
 }
