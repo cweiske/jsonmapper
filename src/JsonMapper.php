@@ -75,7 +75,7 @@ class JsonMapper
     public $bStrictNullTypes = true;
 
     /**
-     * Allow mapping of private and proteted properties.
+     * Allow mapping of private and protected properties.
      *
      * @var boolean
      */
