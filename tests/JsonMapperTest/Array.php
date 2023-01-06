@@ -98,5 +98,15 @@ class JsonMapperTest_Array
      * @var JsonMapperTest_Simple[][][]
      */
     public $pMultiverse;
+
+    /**
+     * @var array<string, JsonMapperTest_Simple>
+     */
+    public $pStringKeyedArray;
+
+    /**
+     * @var array<int, JsonMapperTest_Simple>|null
+     */
+    public $pIntKeyedArrayAndNull;
 }
 ?>

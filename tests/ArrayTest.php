@@ -465,6 +465,35 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Map a JSON object to an array with an associative key.
+     */
+    public function testMapArrayWithAssociativeKey()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"pStringKeyedArray": {"foo": {"pbool": true}}}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertIsArray($sn->pStringKeyedArray);
+        $this->assertEquals(1, count($sn->pStringKeyedArray));
+        $this->assertArrayHasKey('foo', $sn->pStringKeyedArray);
+        $this->assertInstanceOf(JsonMapperTest_Simple::class, $sn->pStringKeyedArray['foo']);
+        $this->assertTrue(
+            $sn->pStringKeyedArray['foo']->pbool
+        );
+    }
+
+    public function testMapArrayWithAssociativeKeyAndNull()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"pIntKeyedArrayAndNull": null}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertNull($sn->pIntKeyedArrayAndNull);
+    }
+
+    /**
      * Test for "@var string[]" with object value
      */
     public function testObjectInsteadOfString()

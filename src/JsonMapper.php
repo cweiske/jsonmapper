@@ -559,6 +559,13 @@ class JsonMapper
                     return array(true, $rprop, null, false);
                 }
 
+                //support key-based arrays, i.e. "array<string, string>"
+                if (preg_match('/array<(?<keyType>[^,]+),(?<type>[^>]+)>/', $annotations['var'][0], $matches)) {
+                    $type = trim($matches['type']) . '[]';
+
+                    return array(true, $rprop, $type, $this->isNullable($annotations['var'][0]));
+                }
+
                 //support "@var type description"
                 list($type) = explode(' ', $annotations['var'][0]);
 
