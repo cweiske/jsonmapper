@@ -90,14 +90,6 @@ class JsonMapper
     public $bRemoveUndefinedAttributes = false;
 
     /**
-     * If property is not found by its json key name, try to find the property
-     * by converting the key name to camel case.
-     *
-     * @var boolean
-     */
-    public $bMatchPropertyByCamelCase = false;
-
-    /**
      * Override class names that JsonMapper uses to create objects.
      * Useful when your setter methods accept abstract classes or interfaces.
      *
@@ -533,14 +525,6 @@ class JsonMapper
                 if ((strcasecmp($p->name, $name) === 0)) {
                     $rprop = $p;
                     break;
-                }
-
-                if ($this->bMatchPropertyByCamelCase) {
-                    $camelCaseName = $this->getCamelCaseName($name);
-                    if ((strcasecmp($p->name, $camelCaseName) === 0)) {
-                        $rprop = $p;
-                        break;
-                    }
                 }
             }
         }
