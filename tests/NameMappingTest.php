@@ -8,10 +8,20 @@ require_once 'JsonMapperTest/Simple.php';
 
 class NameMappingTest extends TestCase
 {
-    public function testItMapsKeyByCamelCaseName(): void
+    public function testItSetKeysIfReturnedByUndefinedPropertyHandler(): void
     {
         $jm = new JsonMapper();
-        $jm->bMatchPropertyByCamelCase = true;
+        $jm->undefinedPropertyHandler = function (
+            JsonMapperTest_Simple $object,
+            string $key,
+            $value
+        ): string {
+            return lcfirst(
+                str_replace(
+                    ' ', '', ucwords(str_replace(array('_', '-'), ' ', $key))
+                )
+            );
+        };
 
         /** @var JsonMapperTest_Simple $sn */
         $sn = $jm->map(
@@ -22,9 +32,14 @@ class NameMappingTest extends TestCase
         self::assertSame('abc', $sn->hyphenValue);
     }
 
-    public function testItDoesNotMapKeyByCamelCaseNameIfFlagIsNotSet(): void
+    public function testItDoesNotMapKeyIfUndefinedPropertyHandlerDoesNotReturnValue(): void
     {
         $jm = new JsonMapper();
+        $jm->undefinedPropertyHandler = function (
+            JsonMapperTest_Simple $object,
+            string $key,
+            $value
+        ): void {};
 
         /** @var JsonMapperTest_Simple $sn */
         $sn = $jm->map(
