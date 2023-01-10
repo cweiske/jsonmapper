@@ -275,11 +275,20 @@ class JsonMapper
             }
 
             if ($array !== null) {
-                if (!is_array($jvalue) && $this->isFlatType(gettype($jvalue))) {
-                    throw new JsonMapper_Exception(
-                        'JSON property "' . $key . '" must be an array, '
-                        . gettype($jvalue) . ' given'
-                    );
+                if (!is_array($jvalue)) {
+                    if ($this->isFlatType(gettype($jvalue))) {
+                        throw new JsonMapper_Exception(
+                            'JSON property "' . $key . '" must be an array, '
+                            . gettype($jvalue) . ' given'
+                        );
+                    }
+
+                    if ($this->bStrictObjectTypeChecking) {
+                        throw new JsonMapper_Exception(
+                            'JSON property "' . $key . '" must be an array, '
+                            . gettype($jvalue) . ' given'
+                        );
+                    }
                 }
 
                 $cleanSubtype = $this->removeNullable($subtype);

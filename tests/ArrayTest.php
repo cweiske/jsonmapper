@@ -511,6 +511,28 @@ JSON;
         $this->assertInstanceOf(Fish::class, $zoo->animals[1]);
         $this->assertEquals('Clown Fish', $zoo->animals[1]->name);
     }
+
+    /**
+     * A typed array should be an array of items, but if provided an object it should error
+     * In the example given the JSON shows an object but PHP will see this still as an
+     * array (given it does not have a separate list type) so the mapper should error
+     * if strict type checking is enabled
+     */
+    public function testTypedArrayFailsWithObject(): void
+    {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage(
+            'JSON property "typedArray" must be an array, object given'
+        );
+
+        $jm = new JsonMapper();
+        $jm->bStrictObjectTypeChecking = true;
+
+        $jm->map(
+            json_decode('{"typedArray":{"str":"stringvalue"}}'),
+            new JsonMapperTest_Array()
+        );
+    }
 }
 
 ?>
