@@ -83,7 +83,8 @@ Map an array of objects:
     );
     ?>
 
-Instead of ``array()`` you may also use ``ArrayObject`` and descending classes.
+Instead of ``array()`` you may also use ``ArrayObject`` and descending classes
+as well as classes implementing ``ArrayAccess``.
 
 __ http://www.php-fig.org/psr/psr-0/
 
