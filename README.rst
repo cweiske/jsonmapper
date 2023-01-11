@@ -240,6 +240,10 @@ Supported type names
 
   - ``ContactList[Contact]``
   - ``NumberList[int]``
+
+- Backed enums, with and without namespaces
+
+   - ``Suit:string|Suit:int`` - exception will be thrown if the JSON value is not present in the enum
 - Nullable types:
 
   - ``int|null`` - will be ``null`` if the value in JSON is
