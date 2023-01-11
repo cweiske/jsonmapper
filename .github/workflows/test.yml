@@ -37,7 +37,7 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist --dev
+        run: composer install --no-interaction --prefer-dist
 
       - name: Run unit tests
         run: XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-text
