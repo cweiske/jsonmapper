@@ -67,6 +67,15 @@ class JsonMapper
     public $bStrictObjectTypeChecking = false;
 
     /**
+     * Throw an exception when JSON contains ill-typed primitive value
+     *
+     * @note Useful only with PHP 7.4+
+     *
+     * @var boolean
+     */
+    public $bStrictPrimitiveTypeChecking = false;
+
+    /**
      * Throw an exception, if null value is found
      * but the type of attribute does not allow nulls.
      *
@@ -237,7 +246,9 @@ class JsonMapper
                         . ' cannot be converted to a string'
                     );
                 }
-                settype($jvalue, $type);
+                if (!$this->bStrictPrimitiveTypeChecking) {
+                    settype($jvalue, $type);
+                }
                 $this->setProperty($object, $accessor, $jvalue);
                 continue;
             }

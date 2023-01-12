@@ -13,6 +13,7 @@
 class StrictTypes_PHP74_Test extends \PHPUnit\Framework\TestCase
 {
     const TEST_DATA = '{"id": 123, "importedNs": {"name": "Name"}, "otherNs": {"name": "Foo"}, "withoutType": "anything", "docDefinedType": {"name": "Name"}, "nullable": "value", "fooArray": [{"name": "Foo 1"}, {"name": "Foo 2"}]}';
+    const BROKEN_TEST_DATA = '{"id": "asdf", "importedNs": {"name": "Name"}, "otherNs": {"name": "Foo"}, "withoutType": "anything", "docDefinedType": {"name": "Name"}, "nullable": "value", "fooArray": [{"name": "Foo 1"}, {"name": "Foo 2"}]}';
 
     /**
      * Sets up test cases loading required classes.
@@ -48,5 +49,18 @@ class StrictTypes_PHP74_Test extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $sn->fooArray);
         $this->assertInstanceOf(\othernamespace\Foo::class, $sn->fooArray[0]);
         $this->assertInstanceOf(\othernamespace\Foo::class, $sn->fooArray[1]);
+    }
+
+    public function testStrictTypesMappingFail()
+    {
+        $this->expectException(TypeError::class);
+
+        $jm = new JsonMapper();
+        $jm->bStrictPrimitiveTypeChecking = true;
+        /** @var \namespacetest\PhpStrictTypes $sn */
+        $sn = $jm->map(
+            json_decode(self::BROKEN_TEST_DATA),
+            new \namespacetest\PhpStrictTypes()
+        );
     }
 }
