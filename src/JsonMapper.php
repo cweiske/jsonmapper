@@ -177,10 +177,15 @@ class JsonMapper
                         . ' in object of type ' . $strClassName
                     );
                 } else if ($this->undefinedPropertyHandler !== null) {
-                    call_user_func(
+                    $undefinedPropertyKey = call_user_func(
                         $this->undefinedPropertyHandler,
                         $object, $key, $jvalue
                     );
+
+                    if (is_string($undefinedPropertyKey)) {
+                        list($hasProperty, $accessor, $type, $isNullable)
+                            = $this->inspectProperty($rc, $undefinedPropertyKey);
+                    }
                 } else {
                     $this->log(
                         'info',
@@ -188,7 +193,10 @@ class JsonMapper
                         array('property' => $key, 'class' => $strClassName)
                     );
                 }
-                continue;
+
+                if (!$hasProperty) {
+                    continue;
+                }
             }
 
             if ($accessor === null) {
