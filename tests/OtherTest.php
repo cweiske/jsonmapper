@@ -38,7 +38,7 @@ class OtherTest extends \PHPUnit\Framework\TestCase
     public function testMapNullObject()
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('JsonMapper::map() requires second argument to be an object, NULL given.');
+        $this->expectExceptionMessage('JsonMapper::map() requires second argument to be an object or existing class name, NULL given.');
         $jm = new JsonMapper();
         $sn = $jm->map(new stdClass(), null);
     }
