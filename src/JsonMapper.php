@@ -567,9 +567,9 @@ class JsonMapper
                 )
                 ) {
                     $type = trim($matches['type']) . '[]';
-                    $isNullable1 = $this->isNullable($annotations['var'][0]);
+                    $isNullable = $this->isNullable($annotations['var'][0]);
 
-                    return array(true, $rprop, $type, $isNullable1 );
+                    return array(true, $rprop, $type, $isNullable);
                 }
 
                 //support "@var type description"
