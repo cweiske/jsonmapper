@@ -22,6 +22,8 @@ class properties, as well as type hints in setter methods.
 You do not have to modify your model classes by adding JSON specific code;
 it works automatically by parsing already-existing docblocks.
 
+This library has no dependencies.
+
 Keywords: deserialization, hydration
 
 __ http://json.org/
@@ -69,6 +71,8 @@ Map a normal object:
     require 'autoload.php';
     $mapper = new JsonMapper();
     $contactObject = $mapper->map($jsonContact, new Contact());
+    // or as classname
+    $contactObject = $mapper->map($jsonContact, Contact::class);
     ?>
 
 Map an array of objects:
@@ -83,7 +87,8 @@ Map an array of objects:
     );
     ?>
 
-Instead of ``array()`` you may also use ``ArrayObject`` and descending classes.
+Instead of ``array()`` you may also use ``ArrayObject`` and descending classes
+as well as classes implementing ``ArrayAccess``.
 
 __ http://www.php-fig.org/psr/psr-0/
 
@@ -239,6 +244,10 @@ Supported type names
 
   - ``ContactList[Contact]``
   - ``NumberList[int]``
+
+- Backed enums, with and without namespaces
+
+   - ``Suit:string|Suit:int`` - exception will be thrown if the JSON value is not present in the enum
 - Nullable types:
 
   - ``int|null`` - will be ``null`` if the value in JSON is
@@ -386,6 +395,28 @@ __ http://php.net/manual/en/language.types.callable.php
     $jm->undefinedPropertyHandler = 'setUndefinedProperty';
     $jm->map(...);
 
+Or if you would let JsonMapper handle the setter for you, you can return a string
+from the ``$undefinedPropertyHandler`` which will be used as property name.
+
+.. code:: php
+
+    /**
+     * Handle undefined properties during JsonMapper::map()
+     *
+     * @param object $object    Object that is being filled
+     * @param string $propName  Name of the unknown JSON property
+     * @param mixed  $jsonValue JSON value of the property
+     *
+     * @return void
+     */
+    function fixPropName($object, $propName, $jsonValue)
+    {
+        return ucfirst($propName);
+    }
+
+    $jm = new JsonMapper();
+    $jm->undefinedPropertyHandler = 'fixPropName';
+    $jm->map(...);
 
 Missing properties
 ------------------
@@ -503,12 +534,14 @@ Alternatives
 - `metassione`__ for PHP
 - `Cartographer`__ for PHP
 - `Data Transfer Object`__ for PHP
+- An equally named `JsonMapper`__ library that has dependencies.
 
 __ https://fasterxml.github.io/jackson-databind/
 __ http://jmsyst.com/libs/serializer
 __ https://github.com/drbonzo/metassione
 __ https://github.com/jonjomckay/cartographer
 __ https://github.com/spatie/data-transfer-object
+__ https://jsonmapper.net/
 
 
 ================

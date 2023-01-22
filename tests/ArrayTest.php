@@ -14,8 +14,10 @@
 use namespacetest\model\MyArrayObject;
 
 require_once 'JsonMapperTest/Array.php';
+require_once 'JsonMapperTest/ArrayAccessCollection.php';
 require_once 'JsonMapperTest/Broken.php';
 require_once 'JsonMapperTest/Simple.php';
+require_once 'JsonMapperTest/VariadicArray.php';
 require_once 'JsonMapperTest/Zoo/Animal.php';
 require_once 'JsonMapperTest/Zoo/Zoo.php';
 require_once 'JsonMapperTest/Zoo/Cat.php';
@@ -219,6 +221,22 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         $this->assertIsInt($sn->pSimpleArrayObject['zwei']);
         $this->assertEquals(1, $sn->pSimpleArrayObject['eins']);
         $this->assertEquals(1, $sn->pSimpleArrayObject['zwei']);
+    }
+
+    public function testMapSimpleArrayAccess()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode(
+                '{"pArrayAccessCollection":{"eins": 1,"zwei": "two"}}'
+            ),
+            new JsonMapperTest_Array()
+        );
+        $this->assertInstanceOf('ArrayAccess', $sn->pArrayAccessCollection);
+        $this->assertIsInt($sn->pArrayAccessCollection['eins']);
+        $this->assertIsString($sn->pArrayAccessCollection['zwei']);
+        $this->assertEquals(1, $sn->pArrayAccessCollection['eins']);
+        $this->assertEquals("two", $sn->pArrayAccessCollection['zwei']);
     }
 
     public function testInvalidArray()
@@ -510,6 +528,54 @@ JSON;
 
         $this->assertInstanceOf(Fish::class, $zoo->animals[1]);
         $this->assertEquals('Clown Fish', $zoo->animals[1]->name);
+    }
+
+    public function testMapArrayFromVariadicFunctionWithSimpleType()
+    {
+        $jm = new JsonMapper();
+        /** @var JsonMapperTest_VariadicArray $sn */
+        $sn = $jm->map(
+            json_decode('{"variadicInt":[1, 2, 3]}'),
+            new JsonMapperTest_VariadicArray()
+        );
+        $variadicArray = $sn->getVariadicInt();
+
+        $this->assertIsArray($variadicArray);
+        $this->assertEquals(3, count($variadicArray));
+        $this->assertIsInt($variadicArray[0]);
+        $this->assertIsInt($variadicArray[1]);
+        $this->assertIsInt($variadicArray[2]);
+        $this->assertEquals(
+            1, $variadicArray[0]
+        );
+        $this->assertEquals(
+            2, $variadicArray[1]
+        );
+        $this->assertEquals(
+            3, $variadicArray[2]
+        );
+    }
+
+    public function testMapArrayFromVariadicFunctionWithObjectType()
+    {
+        $jm = new JsonMapper();
+        /** @var JsonMapperTest_VariadicArray $sn */
+        $sn = $jm->map(
+            json_decode('{"variadicDateTime":["2014-01-02","2014-05-07"]}'),
+            new JsonMapperTest_VariadicArray()
+        );
+        $variadicArray = $sn->getVariadicDateTime();
+
+        $this->assertIsArray($variadicArray);
+        $this->assertEquals(2, count($variadicArray));
+        $this->assertInstanceOf('DateTime', $variadicArray[0]);
+        $this->assertInstanceOf('DateTime', $variadicArray[1]);
+        $this->assertEquals(
+            '2014-01-02', $variadicArray[0]->format('Y-m-d')
+        );
+        $this->assertEquals(
+            '2014-05-07', $variadicArray[1]->format('Y-m-d')
+        );
     }
 
     /**
