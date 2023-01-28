@@ -242,7 +242,9 @@ class JsonMapper
             } else if ($this->isObjectOfSameType($type, $jvalue)) {
                 $this->setProperty($object, $accessor, $jvalue);
                 continue;
-            } else if ($this->isSimpleType($type) && !is_array($jvalue)) {
+            } else if ($this->isSimpleType($type)
+                && !(is_array($jvalue) &&$this->hasVariadicArrayType($accessor))
+            ) {
                 if ($type === 'string' && is_object($jvalue)) {
                     throw new JsonMapper_Exception(
                         'JSON property "' . $key . '" in class "'
