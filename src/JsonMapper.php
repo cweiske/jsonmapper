@@ -243,7 +243,7 @@ class JsonMapper
                 $this->setProperty($object, $accessor, $jvalue);
                 continue;
             } else if ($this->isSimpleType($type)
-                && !(is_array($jvalue) &&$this->hasVariadicArrayType($accessor))
+                && !(is_array($jvalue) && $this->hasVariadicArrayType($accessor))
             ) {
                 if ($type === 'string' && is_object($jvalue)) {
                     throw new JsonMapper_Exception(
