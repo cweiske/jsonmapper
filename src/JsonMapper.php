@@ -233,7 +233,7 @@ class JsonMapper
             }
 
             $type = $this->getFullNamespace($type, $strNs);
-            $type = $this->getMappedType($type, $jvalue, $pvalue);
+            $type = $this->getMappedType($type, $jvalue, $json);
 
             if ($type === null || $type === 'mixed') {
                 //no given type - simply set the json data
@@ -429,7 +429,7 @@ class JsonMapper
     {
         $originalClass = $class;
         foreach ($json as $key => $jvalue) {
-            $class = $this->getMappedType($originalClass, $jvalue, $pvalue);
+            $class = $this->getMappedType($originalClass, $jvalue, $json);
             if ($class === null) {
                 $array[$key] = $jvalue;
             } else if ($this->isArrayOfType($class)) {
@@ -693,7 +693,7 @@ class JsonMapper
      *
      * @return string The mapped type/class name
      */
-    protected function getMappedType($type, $jvalue = null, $pvalue = null)
+    protected function getMappedType($type, $jvalue = null, $pjson = null)
     {
         if (isset($this->classMap[$type])) {
             $target = $this->classMap[$type];
@@ -707,7 +707,7 @@ class JsonMapper
 
         if ($target) {
             if (is_callable($target)) {
-                $type = $target($type, $jvalue, $pvalue);
+                $type = $target($type, $jvalue, $pjson);
             } else {
                 $type = $target;
             }
