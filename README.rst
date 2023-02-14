@@ -514,6 +514,22 @@ Now ``afterMapping()`` is called on each mapped object
 (if the class has that method).
 
 
+Custom array key
+================
+JsonMapper can call a custom method that returns the array key for each object:
+
+.. code:: php
+
+    $jm = new JsonMapper();
+    $jm->arrayKeyMethod = 'getId';
+    $jm->map(...);
+
+Now ``arrayKeyMethod()`` is called on each mapped object
+(if the class has that method) to use it as the key for the array.
+
+In case a key is not unique, an exception is thrown.
+
+
 ============
 Installation
 ============

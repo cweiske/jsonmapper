@@ -127,6 +127,15 @@ class JsonMapper
      * @var string|null
      */
     public $postMappingMethod = null;
+    
+    /**
+     * Method to call on each object in an array to use as the array key.
+     *
+     * Is only called if it exists on the object.
+     *
+     * @var string|null
+     */
+    public $arrayKeyMethod = null;
 
     /**
      * Map data all data in $json into the given $object instance.
@@ -433,9 +442,9 @@ class JsonMapper
         foreach ($json as $key => $jvalue) {
             $class = $this->getMappedType($originalClass, $jvalue);
             if ($class === null) {
-                $array[$key] = $jvalue;
+                $mappedValue = $jvalue;
             } else if ($this->isArrayOfType($class)) {
-                $array[$key] = $this->mapArray(
+                $mappedValue = $this->mapArray(
                     $jvalue,
                     array(),
                     substr($class, 0, -2)
@@ -444,13 +453,13 @@ class JsonMapper
                 //use constructor parameter if we have a class
                 // but only a flat type (i.e. string, int)
                 if ($jvalue === null) {
-                    $array[$key] = null;
+                    $mappedValue = null;
                 } else {
                     if ($this->isSimpleType($class)) {
                         settype($jvalue, $class);
-                        $array[$key] = $jvalue;
+                        $mappedValue = $jvalue;
                     } else {
-                        $array[$key] = $this->createInstance(
+                        $mappedValue = $this->createInstance(
                             $class, true, $jvalue
                         );
                     }
@@ -463,15 +472,27 @@ class JsonMapper
                     . ' "' . gettype($jvalue) . '"'
                 );
             } else if (is_a($class, 'ArrayObject', true)) {
-                $array[$key] = $this->mapArray(
+                $mappedValue = $this->mapArray(
                     $jvalue,
                     $this->createInstance($class)
                 );
             } else {
-                $array[$key] = $this->map(
+                $mappedValue = $this->map(
                     $jvalue, $this->createInstance($class, false, $jvalue)
                 );
             }
+            // If the "arrayKeyMethod" is set, use it to determine the key
+            if (is_object($mappedValue) && method_exists($mappedValue, $this->arrayKeyMethod)) {
+                $key = $mappedValue->{$this->arrayKeyMethod}();
+                // If the key is already set, throw an exception
+                if (isset($array[$key])) {
+                    throw new JsonMapper_Exception(
+                        'Duplicate key "' . $key . '"'
+                        . ' for array of class "' . $class . '"'
+                    );
+                }
+            }
+            $array[$key] = $mappedValue;
         }
         return $array;
     }
