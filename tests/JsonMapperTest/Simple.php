@@ -157,5 +157,11 @@ class JsonMapperTest_Simple
     {
         $this->valueObject = $valueObject;
     }
+
+    public function getPint()
+    {
+        return $this->pint;
+    }
+
 }
 ?>

@@ -577,6 +577,37 @@ JSON;
             '2014-05-07', $variadicArray[1]->format('Y-m-d')
         );
     }
+
+    public function testCustomArrayKeyMethod()
+    {
+        $jm = new JsonMapper();
+        $jm->arrayKeyMethod = 'getPint';
+        $sn = $jm->map(
+            json_decode('{"typedArray": [{"pint": 2, "str":"X"},{"pint": 4, "str":"Y"}]}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertNotNull($sn->typedArray);
+        $this->assertIsArray($sn->typedArray);
+        $this->assertCount(2, $sn->typedArray);
+        $this->assertContainsOnlyInstancesOf(JsonMapperTest_Simple::class, $sn->typedArray);
+        // Check that the correct array keys have been used
+        $this->assertEquals([2, 4], array_keys($sn->typedArray));
+        // Check that the correct value has been assigned
+        $this->assertEquals('X', $sn->typedArray[2]->str);
+    }
+
+    public function testCustomArrayKeyMethodException()
+    {
+        // The key "2" is used twice, so this will throw an exception
+        $this->expectException(JsonMapper_Exception::class);
+
+        $jm = new JsonMapper();
+        $jm->arrayKeyMethod = 'getPint';
+        $sn = $jm->map(
+            json_decode('{"typedArray": [{"pint": 2, "str":"X"},{"pint": 2, "str":"Y"}]}'),
+            new JsonMapperTest_Array()
+        );
+    }
 }
 
 ?>
