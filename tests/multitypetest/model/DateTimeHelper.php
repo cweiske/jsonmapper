@@ -60,7 +60,7 @@ class DateTimeHelper
         if (is_null($dates)) {
             return null;
         }
-        return array_map('static::toSimpleDate', $dates);
+        return array_map([self::class, 'toSimpleDate'], $dates);
     }
 
     /**
@@ -95,7 +95,7 @@ class DateTimeHelper
         if (is_null($dates)) {
             return null;
         }
-        return array_map('static::fromSimpleDate', $dates);
+        return array_map([self::class, 'fromSimpleDate'], $dates);
     }
 
     /**
@@ -111,7 +111,7 @@ class DateTimeHelper
             return null;
         }
         $array = json_decode(json_encode($datetimes), true);
-        return array_map('static::fromSimpleDate', $array);
+        return array_map([self::class, 'fromSimpleDate'], $array);
     }
 
     /**
@@ -144,7 +144,7 @@ class DateTimeHelper
         if (is_null($datetimes)) {
             return null;
         }
-        return array_map('static::toRfc1123DateTime', $datetimes);
+        return array_map([self::class, 'toRfc1123DateTime'], $datetimes);
     }
 
     /**
@@ -179,7 +179,7 @@ class DateTimeHelper
         if (is_null($datetimes)) {
             return null;
         }
-        return array_map('static::fromRfc1123DateTime', $datetimes);
+        return array_map([self::class, 'fromRfc1123DateTime'], $datetimes);
     }
 
     /**
@@ -195,7 +195,7 @@ class DateTimeHelper
             return null;
         }
         $array = json_decode(json_encode($datetimes), true);
-        return array_map('static::fromRfc1123DateTime', $array);
+        return array_map([self::class, 'fromRfc1123DateTime'], $array);
     }
 
     /**
@@ -228,7 +228,7 @@ class DateTimeHelper
         if (is_null($datetimes)) {
             return null;
         }
-        return array_map('static::toRfc3339DateTime', $datetimes);
+        return array_map([self::class, 'toRfc3339DateTime'], $datetimes);
     }
 
     /**
@@ -276,7 +276,7 @@ class DateTimeHelper
         if (is_null($datetimes)) {
             return null;
         }
-        return array_map('static::fromRfc3339DateTime', $datetimes);
+        return array_map([self::class, 'fromRfc3339DateTime'], $datetimes);
     }
 
     /**
@@ -292,7 +292,7 @@ class DateTimeHelper
             return null;
         }
         $array = json_decode(json_encode($datetimes), true);
-        return array_map('static::fromRfc3339DateTime', $array);
+        return array_map([self::class, 'fromRfc3339DateTime'], $array);
     }
 
     /**
@@ -325,7 +325,7 @@ class DateTimeHelper
         if (is_null($datetimes)) {
             return null;
         }
-        return array_map('static::toUnixTimestamp', $datetimes);
+        return array_map([self::class, 'toUnixTimestamp'], $datetimes);
     }
 
     /**
@@ -360,7 +360,7 @@ class DateTimeHelper
         if (is_null($datetimes)) {
             return null;
         }
-        return array_map('static::fromUnixTimestamp', array_map('strval', $datetimes));
+        return array_map([self::class, 'fromUnixTimestamp'], array_map('strval', $datetimes));
     }
 
     /**
@@ -376,6 +376,6 @@ class DateTimeHelper
             return null;
         }
         $array = json_decode(json_encode($datetimes), true);
-        return array_map('static::fromUnixTimestamp', array_map('strval', $array));
+        return array_map([self::class, 'fromUnixTimestamp'], array_map('strval', $array));
     }
 }
