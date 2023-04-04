@@ -467,23 +467,25 @@ type of objects by examining the ``discriminatorType`` value.
 Installation
 ============
 
-via PEAR
-========
-From our `PEAR channel`__::
+Supported PHP Versions
+======================
+- PHP 5.6
+- PHP 7.0
+- PHP 7.1
+- PHP 7.2
+- PHP 7.4
+- PHP 8.0
+- PHP 8.1
+- PHP 8.2
 
-    $ pear channel-discover pear.nrdev.de
-    $ pear install nr/jsonmapper-alpha
 
-__ http://pear.nrdev.de/
-
-
-via Composer
+Install the Package
 ============
 From Packagist__::
 
-    $ composer require netresearch/jsonmapper
+    $ composer require apimatic/jsonmapper
 
-__ https://packagist.org/packages/netresearch/jsonmapper
+__ https://packagist.org/packages/apimatic/jsonmapper
 
 
 ================
