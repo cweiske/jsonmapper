@@ -1,3 +1,17 @@
+2023-04-09  Christian Weiske  <cweiske@cweiske.de>
+
+	* Add support for backed enums
+	  by @Reinfi
+	* Undefined property handler may return string to override variable name
+	  by @Reinfi
+	* Support ArrayAccess instead of only ArrayObject
+	  by @Reinfi
+	* map() supports class names as 2nd parameter now
+	  by @Reinfi
+	* Add support for variadic method arguments in setters
+	  by @Reinfi
+	* Version 4.2.0
+
 2022-12-08  Christian Weiske  <cweiske@cweiske.de>
 
 	* Throw exception when "union|types" are encountered (issue #192)
