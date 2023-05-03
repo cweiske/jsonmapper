@@ -125,36 +125,6 @@ class JsonMapperException extends Exception
     }
 
     /**
-     * Exception raised when a json object maps to more 
-     * than one type within the types specified within OneOf.
-     * 
-     * @param string $matchedType First type.
-     * @param string $mappedWith  Second type.
-     * @param string $json        JSON string.
-     * 
-     * @return JsonMapperException
-     */
-    static function moreThanOneOfException($matchedType, $mappedWith, $json)
-    {
-        return new self(
-            "Cannot map more than OneOf { $matchedType and $mappedWith } on: $json"
-        );
-    }
-
-    /**
-     * JSON does not match any of the types provided.
-     * 
-     * @param string $type The type JSON could not be mapped to.
-     * @param string $json JSON string.
-     * 
-     * @return JsonMapperException
-     */
-    static function cannotMapAnyOfException($type, $json)
-    {
-        return new self("Unable to map AnyOf $type on: $json");
-    }
-
-    /**
      * A property marked as required was missing in the object provided.
      * 
      * @param string $propertyName Concerned property's name.
