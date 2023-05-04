@@ -534,6 +534,7 @@ Alternatives
 - `metassione`__ for PHP
 - `Cartographer`__ for PHP
 - `Data Transfer Object`__ for PHP
+- `Valinor`__ for PHP
 - An equally named `JsonMapper`__ library that has dependencies.
 
 __ https://fasterxml.github.io/jackson-databind/
@@ -541,6 +542,7 @@ __ http://jmsyst.com/libs/serializer
 __ https://github.com/drbonzo/metassione
 __ https://github.com/jonjomckay/cartographer
 __ https://github.com/spatie/data-transfer-object
+__ https://github.com/cuyz/valinor
 __ https://jsonmapper.net/
 
 
