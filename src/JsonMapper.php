@@ -818,7 +818,7 @@ class JsonMapper
      *                                               holding this property (if any)
      *
      * @return array|mixed|object
-     * @throws JsonMapperException|ReflectionException
+     * @throws JsonMapperException
      */
     public function mapFor(
         $value,
@@ -908,7 +908,7 @@ class JsonMapper
      *
      * @return false|mixed|null     Returns the final mapped object after checking
      *                              for oneOf and anyOf cases
-     * @throws JsonMapperException|ReflectionException
+     * @throws JsonMapperException
      */
     protected function checkMappingsFor(
         $typeGroup,

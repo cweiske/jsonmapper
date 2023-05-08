@@ -14,7 +14,7 @@
 
 namespace apimatic\jsonmapper;
 
-use Exception;
+use RuntimeException;
 
 /**
  * Simple exception
@@ -25,7 +25,7 @@ use Exception;
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     http://www.netresearch.de/
  */
-class JsonMapperException extends Exception
+class JsonMapperException extends RuntimeException
 {
     /**
      * Exception for discarded comments setting in configuration.
