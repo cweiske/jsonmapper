@@ -194,7 +194,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
     public function testObjectInsteadOfString()
     {
         $this->expectException(JsonMapper_Exception::class);
-        $this->expectExceptionMessage('JSON property "pString" in class "JsonMapperTest_Object" is an object and cannot be converted to a string');
+        $this->expectExceptionMessage('JSON property "pString" in class "JsonMapperTest_Object" is of type object and cannot be converted to string');
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"pString":{"key":"val"}}'),
