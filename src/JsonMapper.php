@@ -245,11 +245,11 @@ class JsonMapper
             } else if ($this->isSimpleType($type)
                 && !(is_array($jvalue) && $this->hasVariadicArrayType($accessor))
             ) {
-                if ($type === 'string' && is_object($jvalue)) {
+                if ($this->isFlatType($type) && !$this->isFlatType(gettype($jvalue))) {
                     throw new JsonMapper_Exception(
                         'JSON property "' . $key . '" in class "'
-                        . $strClassName . '" is an object and'
-                        . ' cannot be converted to a string'
+                        . $strClassName . '" is of type ' . gettype($jvalue) . ' and'
+                        . ' cannot be converted to ' . $type
                     );
                 }
                 settype($jvalue, $type);

@@ -254,6 +254,7 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('JSON property "value" in class "JsonMapperTest_ArrayValueForStringProperty" is of type array and cannot be converted to string');
         $jm->map(
             json_decode('{"value":[]}'),
             new JsonMapperTest_ArrayValueForStringProperty()
