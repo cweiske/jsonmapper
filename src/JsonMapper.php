@@ -125,7 +125,8 @@ class JsonMapper
 
         if (!isset($this->config)) {
             $iniPath = php_ini_loaded_file();
-            if ($iniPath) {
+            $accessAllowed = $this->isPathAllowed($iniPath, ini_get('open_basedir'));
+            if ($accessAllowed && is_readable($iniPath)) {
                 $this->config = parse_ini_file($iniPath);
             }
         }
@@ -146,6 +147,31 @@ class JsonMapper
                 array($zendOptimizerPlusSaveCommentKey, $opCacheSaveCommentKey)
             );
         }
+    }
+
+    /**
+     * Returns true if the provided file path is accessible and
+     * not restricted by open_basedir restriction.
+     *
+     * @param string|false $filePath     Real file path to be checked.
+     * @param string|false $allowedPaths Allowed paths separated by os
+     *                                   path separator.
+     *
+     * @return bool Whether the provided path is allowed to access.
+     */
+    protected function isPathAllowed($filePath, $allowedPaths)
+    {
+        if (empty($filePath)) {
+            return false;
+        }
+        if (empty($allowedPaths)) {
+            return true;
+        }
+        $allowedPathArray = explode(PATH_SEPARATOR, $allowedPaths);
+        if (!in_array(dirname($filePath), $allowedPathArray)) {
+            return false;
+        }
+        return true;
     }
 
     /**

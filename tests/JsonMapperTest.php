@@ -28,6 +28,7 @@ require_once 'JsonMapperTest/MapsWithSetters.php';
 require_once 'JsonMapperTest/ClassWithCtor.php';
 require_once 'JsonMapperTest/ComplexClassWithCtor.php';
 require_once 'JsonMapperTest/JsonMapperCommentsDiscardedException.php';
+require_once 'JsonMapperTest/JsonMapperForCheckingAllowedPaths.php';
 
 if (PHP_VERSION_ID >= 70000) {
     require_once 'JsonMapperTest/Php7TypedClass.php';
@@ -436,6 +437,27 @@ class JsonMapperTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionMessage("Comments cannot be discarded in the configuration file i.e. the php.ini file; doc comments are a requirement for JsonMapper. Following configuration keys must have a value set to \"1\": zend_optimizerplus.save_comments, opcache.save_comments.");
 
         new JsonMapperCommentsDiscardedException(["zend_optimizerplus.save_comments" => "0"]);
+    }
+
+    public function testPathsNotAllowed()
+    {
+        $jm = new JsonMapperForCheckingAllowedPaths();
+
+        $this->assertFalse($jm->isPathAllowed(false, __DIR__));
+        $this->assertFalse($jm->isPathAllowed("", __DIR__));
+        $this->assertFalse($jm->isPathAllowed(php_ini_loaded_file(), __DIR__));
+    }
+
+    public function testPathsAllowed()
+    {
+        $jm = new JsonMapperForCheckingAllowedPaths();
+
+        $this->assertTrue($jm->isPathAllowed("random/path/myJson.json", false));
+        $this->assertTrue($jm->isPathAllowed("random/path/myJson.json", ""));
+
+        $allowedPaths = __DIR__ . PATH_SEPARATOR . dirname(php_ini_loaded_file());
+        $this->assertTrue($jm->isPathAllowed(php_ini_loaded_file(), $allowedPaths));
+        $this->assertTrue($jm->isPathAllowed(__FILE__, $allowedPaths));
     }
 
     public function testMapNullJson()
