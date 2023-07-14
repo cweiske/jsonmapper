@@ -60,19 +60,18 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"typedSimpleArray":["2014-01-02",null,"2014-05-07"]}'),
+            json_decode('{"typedSimpleArray":["2014-01-02","2014-05-07"]}'),
             new JsonMapperTest_Array()
         );
         $this->assertIsArray($sn->typedSimpleArray);
-        $this->assertEquals(3, count($sn->typedSimpleArray));
+        $this->assertEquals(2, count($sn->typedSimpleArray));
         $this->assertInstanceOf('DateTime', $sn->typedSimpleArray[0]);
-        $this->assertNull($sn->typedSimpleArray[1]);
-        $this->assertInstanceOf('DateTime', $sn->typedSimpleArray[2]);
+        $this->assertInstanceOf('DateTime', $sn->typedSimpleArray[1]);
         $this->assertEquals(
             '2014-01-02', $sn->typedSimpleArray[0]->format('Y-m-d')
         );
         $this->assertEquals(
-            '2014-05-07', $sn->typedSimpleArray[2]->format('Y-m-d')
+            '2014-05-07', $sn->typedSimpleArray[1]->format('Y-m-d')
         );
     }
 
@@ -138,14 +137,15 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"strArray":["str",false,2.048]}'),
+            json_decode('{"strArray":["str",false,2.048,null]}'),
             new JsonMapperTest_Array()
         );
         $this->assertIsArray($sn->strArray);
-        $this->assertEquals(3, count($sn->strArray));
+        $this->assertEquals(4, count($sn->strArray));
         $this->assertIsString($sn->strArray[0]);
         $this->assertIsString($sn->strArray[1]);
         $this->assertIsString($sn->strArray[2]);
+        $this->assertIsString($sn->strArray[3]);
     }
 
     /**

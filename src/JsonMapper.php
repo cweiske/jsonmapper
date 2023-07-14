@@ -443,17 +443,13 @@ class JsonMapper
             } else if ($this->isFlatType(gettype($jvalue))) {
                 //use constructor parameter if we have a class
                 // but only a flat type (i.e. string, int)
-                if ($jvalue === null) {
-                    $array[$key] = null;
+                if ($this->isSimpleType($class)) {
+                    settype($jvalue, $class);
+                    $array[$key] = $jvalue;
                 } else {
-                    if ($this->isSimpleType($class)) {
-                        settype($jvalue, $class);
-                        $array[$key] = $jvalue;
-                    } else {
-                        $array[$key] = $this->createInstance(
-                            $class, true, $jvalue
-                        );
-                    }
+                    $array[$key] = $this->createInstance(
+                        $class, true, $jvalue
+                    );
                 }
             } else if ($this->isFlatType($class)) {
                 throw new JsonMapper_Exception(
@@ -732,7 +728,8 @@ class JsonMapper
             || $type == 'boolean' || $type == 'bool'
             || $type == 'integer' || $type == 'int'
             || $type == 'double' || $type == 'float'
-            || $type == 'array' || $type == 'object';
+            || $type == 'array' || $type == 'object'
+            || $type == 'NULL';
     }
 
     /**
