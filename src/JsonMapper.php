@@ -550,10 +550,22 @@ class JsonMapper
         }
         if ($rprop !== null) {
             if ($rprop->isPublic() || $this->bIgnoreVisibility) {
-                $docblock    = $rprop->getDocComment();
+                $docblock = $rprop->getDocComment();
+                if (PHP_VERSION_ID >= 80000 && $docblock === false && $class->hasMethod('__construct')) {
+                    $docblock = $class->getMethod('__construct')->getDocComment();
+                }
                 $annotations = static::parseAnnotations($docblock);
 
                 if (!isset($annotations['var'][0])) {
+                    if (PHP_VERSION_ID >= 80000 && $rprop->hasType() && isset($annotations['param'])) {
+                        foreach ($annotations['param'] as $param) {
+                            if (strpos($param, '$' . $rprop->getName()) !== false) {
+                                list($type) = explode(' ', $param);
+                                return array(true, $rprop, $type, $this->isNullable($type));
+                            }
+                        }
+                    }
+
                     // If there is no annotations (higher priority) inspect
                     // if there's a scalar type being defined
                     if (PHP_VERSION_ID >= 70400 && $rprop->hasType()) {
@@ -561,18 +573,18 @@ class JsonMapper
                         $propTypeName = $this->stringifyReflectionType($rPropType);
                         if ($this->isSimpleType($propTypeName)) {
                             return array(
-                              true,
-                              $rprop,
-                              $propTypeName,
-                              $rPropType->allowsNull()
+                                true,
+                                $rprop,
+                                $propTypeName,
+                                $rPropType->allowsNull()
                             );
                         }
 
                         return array(
-                          true,
-                          $rprop,
-                          '\\' . ltrim($propTypeName, '\\'),
-                          $rPropType->allowsNull()
+                            true,
+                            $rprop,
+                            '\\' . ltrim($propTypeName, '\\'),
+                            $rPropType->allowsNull()
                         );
                     }
 
