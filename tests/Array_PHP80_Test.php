@@ -28,7 +28,7 @@ class Array_PHP80_Test extends TestCase
         $jsonMapper = new \JsonMapper();
         $jsonMapper->bIgnoreVisibility = true;
         $array = $jsonMapper->map($json, PHP80_Array::class);
-        self::assertCount(1, $array->files);
-        self::assertInstanceOf(JsonMapperTest_ArrayValueForStringProperty::class, $array->files[0]);
+        self::assertCount(1, $array->getFiles());
+        self::assertInstanceOf(JsonMapperTest_ArrayValueForStringProperty::class, $array->getFiles()[0]);
     }
 }

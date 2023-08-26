@@ -8,7 +8,15 @@ class PHP80_Array
      * @param JsonMapperTest_ArrayValueForStringProperty[] $files
      */
     public function __construct(
-        public array $files,
+        private array $files,
     ) {
+    }
+
+    /**
+     * @return JsonMapperTest_ArrayValueForStringProperty[]
+     */
+    public function getFiles(): array
+    {
+        return $this->files;
     }
 }
