@@ -43,5 +43,19 @@ class EventTest extends TestCase
         $this->assertIsString($sn->pStr);
         $this->assertEquals('two', $sn->pStr);
     }
+
+    public function testDeserializePostEventArguments()
+    {
+        $jm = new JsonMapper();
+        $jm->postMappingMethod = '_deserializePostEventWithArguments';
+        $jm->postMappingMethodArguments = array(3, 'bar');
+        /** @var JsonMapperTest_EventObject $sn */
+        $sn = $jm->map(
+            json_decode('{"pStr":"one"}', false),
+            new JsonMapperTest_EventObject()
+        );
+        $this->assertIsString($sn->pStr);
+        $this->assertEquals('barbarbar', $sn->pStr);
+    }
 }
 ?>

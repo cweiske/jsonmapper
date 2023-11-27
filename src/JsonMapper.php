@@ -129,6 +129,13 @@ class JsonMapper
     public $postMappingMethod = null;
 
     /**
+     * Optional arguments that are passed to the post mapping method
+     *
+     * @var array
+     */
+    public $postMappingMethodArguments = array();
+
+    /**
      * Map data all data in $json into the given $object instance.
      *
      * @param object|array        $json   JSON object structure from json_decode()
@@ -337,7 +344,7 @@ class JsonMapper
                 $this->postMappingMethod
             );
             $refDeserializePostMethod->setAccessible(true);
-            $refDeserializePostMethod->invoke($object);
+            $refDeserializePostMethod->invoke($object, ...$this->postMappingMethodArguments);
         }
 
         return $object;
