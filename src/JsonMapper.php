@@ -357,7 +357,7 @@ class JsonMapper
             return $type;
         }
         list($first) = explode('[', $type, 2);
-        if ($first === 'mixed' || $this->isSimpleType($first)) {
+        if ($this->isSimpleType($first)) {
             return $type;
         }
 
@@ -734,7 +734,8 @@ class JsonMapper
             || $type == 'boolean' || $type == 'bool'
             || $type == 'integer' || $type == 'int'
             || $type == 'double' || $type == 'float'
-            || $type == 'array' || $type == 'object';
+            || $type == 'array' || $type == 'object'
+            || $type === 'mixed';
     }
 
     /**
@@ -756,7 +757,7 @@ class JsonMapper
 
     /**
      * Checks if the given type is a type that is not nested
-     * (simple type except array and object)
+     * (simple type except array, object and mixed)
      *
      * @param string $type type name from gettype()
      *
