@@ -182,6 +182,10 @@ a property:
 
      public Contact $person;
 
+#. Constructor property promotion types (since PHP 8.0)::
+
+     public function __construct(protected Contact $person) {}
+
 #. ``@var $type`` docblock annotation of class properties::
 
     /**
@@ -225,6 +229,7 @@ Supported type names
   - ``double``, ``float``
   - ``array``
   - ``object``
+  - ``mixed``
 - Class names, with and without namespaces
 
   - ``Contact`` - exception will be thrown if the JSON value is ``null``
