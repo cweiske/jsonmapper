@@ -561,18 +561,18 @@ class JsonMapper
                         $propTypeName = $this->stringifyReflectionType($rPropType);
                         if ($this->isSimpleType($propTypeName)) {
                             return array(
-                              true,
-                              $rprop,
-                              $propTypeName,
-                              $rPropType->allowsNull()
+                                true,
+                                $rprop,
+                                $propTypeName,
+                                $rPropType->allowsNull()
                             );
                         }
 
                         return array(
-                          true,
-                          $rprop,
-                          '\\' . ltrim($propTypeName, '\\'),
-                          $rPropType->allowsNull()
+                            true,
+                            $rprop,
+                            '\\' . ltrim($propTypeName, '\\'),
+                            $rPropType->allowsNull()
                         );
                     }
 
