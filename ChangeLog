@@ -1,3 +1,14 @@
+2024-01-27  Christian Weiske  <cweiske@cweiske.de>
+
+	* Add support for "mixed" class property types
+	  by @jorrit
+	* Add support for PHP 8.0 constructor property promotion
+	  by @wundii
+	* Fix notice when mapping non-flat values in flat typed properties
+	  and throw an exception instead
+	  by @dktapps
+	* Version 4.3.0
+
 2023-04-09  Christian Weiske  <cweiske@cweiske.de>
 
 	* Add support for backed enums
