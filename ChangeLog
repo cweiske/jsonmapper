@@ -1,3 +1,9 @@
+2024-01-28  Christian Weiske  <cweiske@cweiske.de>
+
+	* Add optional arguments for post mapping event
+	  by @maikschneider
+	* Version 4.4.0
+
 2024-01-27  Christian Weiske  <cweiske@cweiske.de>
 
 	* Add support for "mixed" class property types
