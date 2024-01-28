@@ -514,6 +514,15 @@ mapping it is finished:
 Now ``afterMapping()`` is called on each mapped object
 (if the class has that method).
 
+You may pass additional arguments to the post-mapping callback:
+
+.. code:: php
+
+    $jm = new JsonMapper();
+    $jm->postMappingMethod = 'afterMapping';
+    $jm->postMappingMethodArguments = [23, 'foo'];
+    $jm->map(...);
+
 
 ============
 Installation
