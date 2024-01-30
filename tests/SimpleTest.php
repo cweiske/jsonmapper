@@ -247,5 +247,20 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
         );
 
     }
+
+    /**
+     * Variable with hyphen and a setter method
+     */
+    public function testMapCaseMismatch()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"nodocblock":"blubb"}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertIsString($sn->nodocblock);
+        $this->assertEquals('blubb', $sn->nodocblock);
+
+    }
 }
 ?>
