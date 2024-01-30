@@ -14,6 +14,7 @@
 use namespacetest\model\MyArrayObject;
 
 require_once 'JsonMapperTest/Array.php';
+require_once 'JsonMapperTest/ArrayAccessObject.php';
 require_once 'JsonMapperTest/ArrayAccessCollection.php';
 require_once 'JsonMapperTest/Broken.php';
 require_once 'JsonMapperTest/Simple.php';
@@ -223,7 +224,25 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(1, $sn->pSimpleArrayObject['zwei']);
     }
 
-    public function testMapSimpleArrayAccess()
+    public function testMapArrayAccessObject()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode(
+                '{"pArrayAccessObject":{"eins": 1,"zwei": "two","valueObject":{"value": 1, "publicValue": 2}}}'
+            ),
+            new JsonMapperTest_Array()
+        );
+        $this->assertInstanceOf('ArrayAccess', $sn->pArrayAccessObject);
+        $this->assertIsInt($sn->pArrayAccessObject['eins']);
+        $this->assertIsString($sn->pArrayAccessObject['zwei']);
+        $this->assertEquals(1, $sn->pArrayAccessObject['eins']);
+        $this->assertEquals("two", $sn->pArrayAccessObject['zwei']);
+        $this->assertInstanceOf('JsonMapperTest_ValueObject', $sn->pArrayAccessObject['valueObject']);
+        $this->assertEquals(2, $sn->pArrayAccessObject['valueObject']->publicValue);
+    }
+
+    public function testMapArrayAccessCollection()
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
@@ -233,6 +252,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Array()
         );
         $this->assertInstanceOf('ArrayAccess', $sn->pArrayAccessCollection);
+        $this->assertInstanceOf('Traversable', $sn->pArrayAccessCollection);
         $this->assertIsInt($sn->pArrayAccessCollection['eins']);
         $this->assertIsString($sn->pArrayAccessCollection['zwei']);
         $this->assertEquals(1, $sn->pArrayAccessCollection['eins']);

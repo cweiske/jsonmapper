@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class ArrayAccessCollection implements \ArrayAccess
+class ArrayAccessCollection implements \ArrayAccess, \IteratorAggregate
 {
     /**
      * @var array
@@ -31,5 +31,11 @@ class ArrayAccessCollection implements \ArrayAccess
     public function offsetUnset($offset)
     {
         unset($this->data[$offset]);
+    }
+
+    #[\ReturnTypeWillChange]
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->data);
     }
 }

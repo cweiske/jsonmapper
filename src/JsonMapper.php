@@ -296,7 +296,7 @@ class JsonMapper
                 $array = array();
                 $subtype = $type;
             } else {
-                if (is_a($type, 'ArrayAccess', true)) {
+                if (is_a($type, 'ArrayAccess', true) && is_a($type, 'Traversable', true)) {
                     $array = $this->createInstance($type, false, $jvalue);
                 }
             }
