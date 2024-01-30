@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class JsonMapperTest_ArrayAccessCollection implements \ArrayAccess
+class JsonMapperTest_ArrayAccessCollection implements \ArrayAccess, \IteratorAggregate
 {
     /**
      * @var array
@@ -31,5 +31,11 @@ class JsonMapperTest_ArrayAccessCollection implements \ArrayAccess
     public function offsetUnset($offset)
     {
         unset($this->data[$offset]);
+    }
+
+    #[\ReturnTypeWillChange]
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->data);
     }
 }
