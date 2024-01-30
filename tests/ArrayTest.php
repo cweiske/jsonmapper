@@ -204,7 +204,24 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $sn->pSimpleArrayObject['zwei']);
     }
 
-    public function testMapSimpleArrayAccess()
+    public function testMapArrayAccessObject()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode(
+                '{"pArrayAccessObject":{"eins": 1,"zwei": "two","valueObject":{"value": 1, "publicValue": 2}}}'
+            ),
+            new JsonMapperTest_Array()
+        );
+        $this->assertInstanceOf(ArrayAccess::class, $sn->pArrayAccessObject);
+        $this->assertSame(1, $sn->pArrayAccessObject['eins']);
+        $this->assertSame('two', $sn->pArrayAccessObject['zwei']);
+        $this->assertInstanceOf(JsonMapperTest_ValueObject::class, $sn->pArrayAccessObject['valueObject']);
+        $this->assertSame(2, $sn->pArrayAccessObject['valueObject']->publicValue);
+    }
+
+    public function testMapArrayAccessCollection()
+
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
@@ -214,6 +231,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Array()
         );
         $this->assertInstanceOf(ArrayAccess::class, $sn->pArrayAccessCollection);
+        $this->assertInstanceOf(Traversable::class, $sn->pArrayAccessCollection);
         $this->assertSame(1, $sn->pArrayAccessCollection['eins']);
         $this->assertSame('two', $sn->pArrayAccessCollection['zwei']);
     }
