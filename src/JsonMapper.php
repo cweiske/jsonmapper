@@ -553,6 +553,7 @@ class JsonMapper
             foreach ($rc->getProperties() as $p) {
                 if ((strcasecmp($p->name, $name) === 0)) {
                     $rprop = $p;
+                    $class = $rc;
                     break;
                 }
             }

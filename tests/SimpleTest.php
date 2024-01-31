@@ -247,5 +247,19 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
         );
 
     }
+
+    /**
+     * Variable has no docblock, and has different caSiNg than object property
+     */
+    public function testMapCaseMismatchNoDocblock()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"noDocBlock":"blubb"}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertIsString($sn->nodocblock);
+        $this->assertEquals('blubb', $sn->nodocblock);
+    }
 }
 ?>

@@ -65,6 +65,9 @@ class JsonMapperTest_Simple
      */
     public $notype;
 
+    // Intentionally no docblock
+    public $nodocblock;
+
     /**
      * @var string A protected property without a setter method
      */
