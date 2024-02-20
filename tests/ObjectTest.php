@@ -127,6 +127,35 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    public function testStrictTypeCheckingObjectInArray()
+    {
+        $jm = new JsonMapper();
+        $jm->bStrictObjectTypeChecking = true;
+        $sn = $jm->mapArray(
+            json_decode('[{"pStr":"abc"}]'),
+            [],
+            JsonMapperTest_PlainObject::class
+        );
+
+        $this->assertContainsOnlyInstancesOf(JsonMapperTest_PlainObject::class, $sn);
+        $this->assertSame('abc', $sn[0]->pStr);
+    }
+
+    public function testStrictTypeCheckingObjectInArrayError()
+    {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage(
+            'JSON property "?" (array key "0") must be an object, string given'
+        );
+        $jm = new JsonMapper();
+        $jm->bStrictObjectTypeChecking = true;
+        $jm->mapArray(
+            json_decode('["abc"]'),
+            [],
+            JsonMapperTest_Object::class
+        );
+    }
+
     /**
      * Test for "@var object|null" with null value
      */
