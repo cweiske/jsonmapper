@@ -1,5 +1,17 @@
 name: JsonMapper tests
-on: [push, workflow_dispatch]
+on:
+  push:
+    branches:
+      - '*'
+  workflow_dispatch:
+    branches:
+      - '*'
+  pull_request:
+    types:
+      - opened
+      - edited
+      - reopened
+
 jobs:
 
   phpunit:
