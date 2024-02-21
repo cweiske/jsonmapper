@@ -2,7 +2,7 @@ name: JsonMapper tests
 on: [push, workflow_dispatch]
 jobs:
 
-  test:
+  phpunit:
     runs-on: ubuntu-latest
     strategy:
       matrix:
