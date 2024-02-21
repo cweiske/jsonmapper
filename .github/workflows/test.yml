@@ -19,7 +19,7 @@ jobs:
     name: PHP ${{ matrix.php-versions }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install PHP
         uses: shivammathur/setup-php@v2
@@ -33,7 +33,7 @@ jobs:
         run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ matrix.php-versions }}-${{ hashFiles('**/composer.lock') }}
@@ -55,7 +55,7 @@ jobs:
     name: Codestyle Check with ${{ matrix.php-versions }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install PHP
         uses: shivammathur/setup-php@v2
@@ -71,11 +71,14 @@ jobs:
         run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ matrix.php-versions }}-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-${{ matrix.php-versions }}-
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
 
       - name: Check codestyle
         run: ./vendor/bin/phpcs --standard=PEAR src/
