@@ -13,8 +13,6 @@
 
 use PHPUnit\Framework\TestCase;
 
-require_once 'JsonMapperTest/EventObject.php';
-
 /**
  * Unit tests for JsonMapper's object handling (events)
  *

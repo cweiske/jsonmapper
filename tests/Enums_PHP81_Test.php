@@ -16,13 +16,6 @@ class Enums_PHP81_Test extends \PHPUnit\Framework\TestCase
 {
     const TEST_DATA = '{"stringBackedEnum": "foo", "intBackedEnum": 2}';
 
-    protected function setUp(): void
-    {
-        require_once 'Enums/IntBackedEnum.php';
-        require_once 'Enums/ObjectWithEnum.php';
-        require_once 'Enums/StringBackedEnum.php';
-    }
-
     /**
      * Test for PHP8.1 enums.
      */

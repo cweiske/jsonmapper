@@ -5,7 +5,6 @@
  * Date: 11/08/2017
  * Time: 16:39
  */
-require_once __DIR__ . '/ValueObject.php';
 
 class JsonMapperTest_ComplexObject
 {

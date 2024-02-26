@@ -15,19 +15,6 @@ class StrictTypes_PHP74_Test extends \PHPUnit\Framework\TestCase
     const TEST_DATA = '{"id": 123, "importedNs": {"name": "Name"}, "otherNs": {"name": "Foo"}, "withoutType": "anything", "docDefinedType": {"name": "Name"}, "nullable": "value", "fooArray": [{"name": "Foo 1"}, {"name": "Foo 2"}]}';
 
     /**
-     * Sets up test cases loading required classes.
-     *
-     * This is in setUp and not at the top of this file to ensure this is only
-     * executed with PHP 7.4 (due to the `@requires` tag).
-     */
-    protected function setUp(): void
-    {
-        require_once 'namespacetest/PhpStrictTypes.php';
-        require_once 'namespacetest/model/User.php';
-        require_once 'othernamespace/Foo.php';
-    }
-
-    /**
      * Test for PHP7.4 strict types.
      */
     public function testStrictTypesMapping()

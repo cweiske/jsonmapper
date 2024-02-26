@@ -16,18 +16,12 @@ use PHPUnit\Framework\TestCase;
  */
 class Array_PHP80_Test extends TestCase
 {
-    protected function setUp(): void
-    {
-        require_once 'JsonMapperTest/PHP80_Array.php';
-        require_once 'JsonMapperTest/ArrayValueForStringProperty.php';
-    }
-
     public function testJsonMapper()
     {
         $json = json_decode('{"files": [{"value":"test.txt"}]}');
         $jsonMapper = new \JsonMapper();
         $jsonMapper->bIgnoreVisibility = true;
-        $array = $jsonMapper->map($json, PHP80_Array::class);
+        $array = $jsonMapper->map($json, JsonMapperTest_PHP80Array::class);
         self::assertCount(1, $array->getFiles());
         self::assertInstanceOf(JsonMapperTest_ArrayValueForStringProperty::class, $array->getFiles()[0]);
     }
