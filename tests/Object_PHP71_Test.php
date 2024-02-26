@@ -24,17 +24,6 @@
 class Object_PHP71_Test extends \PHPUnit\Framework\TestCase
 {
     /**
-     * Sets up test cases loading required classes.
-     *
-     * This is in setUp and not at the top of this file to ensure this is only
-     * executed with PHP 7.1 (due to the `@requires` tag).
-     */
-    protected function setUp(): void
-    {
-       require_once 'JsonMapperTest/PlainObject.php';
-       require_once 'JsonMapperTest/PHP7_Object.php';
-    }
-    /**
      * Test for PHP7 nullable types like "?Object"
      */
     public function testObjectSetterTypeNullable()
@@ -42,7 +31,7 @@ class Object_PHP71_Test extends \PHPUnit\Framework\TestCase
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"typeNullableObject":null}'),
-            new JsonMapperTest_PHP7_Object()
+            new JsonMapperTest_PHP7Object()
         );
         $this->assertNull($sn->typeNullableObject);
     }
@@ -53,11 +42,11 @@ class Object_PHP71_Test extends \PHPUnit\Framework\TestCase
     public function testObjectSetterDocblockInvalidNull()
     {
         $this->expectException(JsonMapper_Exception::class);
-        $this->expectExceptionMessage('JSON property "nonNullableObject" in class "JsonMapperTest_PHP7_Object" must not be NULL');
+        $this->expectExceptionMessage('JSON property "nonNullableObject" in class "JsonMapperTest_PHP7Object" must not be NULL');
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"nonNullableObject":null}'),
-            new JsonMapperTest_PHP7_Object()
+            new JsonMapperTest_PHP7Object()
         );
     }
 }

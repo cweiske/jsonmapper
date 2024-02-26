@@ -13,16 +13,6 @@
 
 use namespacetest\model\MyArrayObject;
 
-require_once 'JsonMapperTest/Array.php';
-require_once 'JsonMapperTest/ArrayAccessCollection.php';
-require_once 'JsonMapperTest/Broken.php';
-require_once 'JsonMapperTest/Simple.php';
-require_once 'JsonMapperTest/VariadicArray.php';
-require_once 'JsonMapperTest/Zoo/Animal.php';
-require_once 'JsonMapperTest/Zoo/Zoo.php';
-require_once 'JsonMapperTest/Zoo/Cat.php';
-require_once 'JsonMapperTest/Zoo/Fish.php';
-
 /**
  * Unit tests for JsonMapper's array handling
  *

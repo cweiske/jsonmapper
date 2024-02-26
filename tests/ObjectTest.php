@@ -10,13 +10,6 @@
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
  */
-require_once 'JsonMapperTest/Simple.php';
-require_once 'JsonMapperTest/Object.php';
-require_once 'JsonMapperTest/PlainObject.php';
-require_once 'JsonMapperTest/ValueObject.php';
-require_once 'JsonMapperTest/ComplexObject.php';
-require_once 'JsonMapperTest/ObjectConstructor.php';
-require_once 'JsonMapperTest/ObjectConstructorOptional.php';
 
 /**
  * Unit tests for JsonMapper's object handling
