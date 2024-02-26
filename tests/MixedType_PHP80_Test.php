@@ -16,17 +16,6 @@ class MixedType_PHP80_Test extends \PHPUnit\Framework\TestCase
     const TEST_DATA_SIMPLE = '{"data": 123}';
 
     /**
-     * Sets up test cases loading required classes.
-     *
-     * This is in setUp and not at the top of this file to ensure this is only
-     * executed with PHP 8.0 (due to the `@requires` tag).
-     */
-    protected function setUp(): void
-    {
-        require_once 'namespacetest/PhpMixedType.php';
-    }
-
-    /**
      * Test for PHP 8.0 mixed type containing an object.
      */
     public function testStrictTypesMapping_ComplexValue()

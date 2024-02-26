@@ -1,11 +1,6 @@
 <?php
-namespace namespacetest;
-require_once __DIR__ . '/Unit.php';
-require_once __DIR__ . '/UnitData.php';
-require_once __DIR__ . '/model/MyArrayObject.php';
-require_once __DIR__ . '/model/User.php';
-require_once __DIR__ . '/model/UserList.php';
-require_once __DIR__ . '/../othernamespace/Foo.php';
+
+use namespacetest\UnitData;
 
 class NamespaceTest extends \PHPUnit\Framework\TestCase
 {
