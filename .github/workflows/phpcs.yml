@@ -1,4 +1,4 @@
-name: JsonMapper Code Style test
+name: Code Style test
 on:
   push:
   workflow_dispatch:
@@ -13,12 +13,12 @@ jobs:
         php-versions:
           - '8.3'
 
-    name: Codestyle Check with PHP ${{ matrix.php-versions }}
+    name: with PHP ${{ matrix.php-versions }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install PHP
+      - name: Install PHP ${{ matrix.php-versions }}
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
