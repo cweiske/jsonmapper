@@ -125,8 +125,12 @@ class JsonMapper
 
         if (!isset($this->config)) {
             $iniPath = php_ini_loaded_file();
+            $functionEnabled = !in_array(
+                'parse_ini_file',
+                explode(',', ini_get('disable_functions'))
+            );
             $accessAllowed = $this->isPathAllowed($iniPath, ini_get('open_basedir'));
-            if ($accessAllowed && is_readable($iniPath)) {
+            if ($accessAllowed && $functionEnabled && is_readable($iniPath)) {
                 $this->config = parse_ini_file($iniPath);
             }
         }
