@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
-require_once 'JsonMapperTest/Simple.php';
-
 class NameMappingTest extends TestCase
 {
     public function testItSetKeysIfReturnedByUndefinedPropertyHandler(): void

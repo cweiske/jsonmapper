@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class PHP74_Array
+class JsonMapperTest_PHP74Array
 {
     public array $files;
 }

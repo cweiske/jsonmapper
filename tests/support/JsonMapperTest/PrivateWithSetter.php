@@ -1,6 +1,6 @@
 <?php
 
-class PrivateWithSetter
+class JsonMapperTest_PrivateWithSetter
 {
     /**
      * @var int

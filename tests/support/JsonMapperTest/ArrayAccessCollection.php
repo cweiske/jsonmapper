@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class ArrayAccessCollection implements \ArrayAccess, \IteratorAggregate
+class JsonMapperTest_ArrayAccessCollection implements \ArrayAccess, \IteratorAggregate
 {
     /**
      * @var array

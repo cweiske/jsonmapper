@@ -5,6 +5,17 @@
     "autoload": {
         "psr-0": {"JsonMapper": "src/"}
     },
+    "autoload-dev": {
+        "psr-4": {
+            "namespacetest\\": "tests/support/namespacetest",
+            "othernamespace\\": "tests/support/othernamespace",
+            "Enums\\": "tests/support/Enums"
+        },
+        "psr-0": {
+            "JsonMapperTest_": "tests/support",
+            "": ["tests/support/Zoo"]
+        }
+    },
     "authors": [
         {
             "name": "Christian Weiske",

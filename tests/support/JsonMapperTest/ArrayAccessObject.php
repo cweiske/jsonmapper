@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/ValueObject.php';
-
-class ArrayAccessObject implements \ArrayAccess
+class JsonMapperTest_ArrayAccessObject implements \ArrayAccess
 {
     /**
      * @var int

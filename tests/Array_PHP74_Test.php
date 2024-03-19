@@ -16,17 +16,11 @@ use PHPUnit\Framework\TestCase;
  */
 class Array_PHP74_Test extends TestCase
 {
-    protected function setUp(): void
-    {
-        require_once 'JsonMapperTest/PHP74_Array.php';
-        require_once 'JsonMapperTest/ArrayValueForStringProperty.php';
-    }
-
     public function testJsonMapper()
     {
         $json = json_decode('{"files": ["test.txt"]}');
         $jsonMapper = new \JsonMapper();
-        $array = $jsonMapper->map($json, new PHP74_Array());
+        $array = $jsonMapper->map($json, new JsonMapperTest_PHP74Array());
         self::assertCount(1, $array->files);
     }
 

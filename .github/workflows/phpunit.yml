@@ -1,7 +1,12 @@
-name: JsonMapper tests
-on: [push, workflow_dispatch]
+name: PHPUnit tests
+on:
+  push:
+  workflow_dispatch:
+  pull_request:
+
 jobs:
-  test:
+
+  phpunit:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -13,12 +18,14 @@ jobs:
           - '8.0'
           - '8.1'
           - '8.2'
-    name: PHP ${{ matrix.php-versions }}
+          - '8.3'
+
+    name: using PHP ${{ matrix.php-versions }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Install PHP
+      - name: Install PHP ${{ matrix.php-versions }}
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
@@ -30,7 +37,7 @@ jobs:
         run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ matrix.php-versions }}-${{ hashFiles('**/composer.lock') }}
@@ -41,6 +48,3 @@ jobs:
 
       - name: Run unit tests
         run: XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-text
-
-      - name: Check codestyle
-        run: ./vendor/bin/phpcs --standard=PEAR src/

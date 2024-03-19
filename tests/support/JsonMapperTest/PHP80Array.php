@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class PHP80_Array
+class JsonMapperTest_PHP80Array
 {
     /**
      * @param JsonMapperTest_ArrayValueForStringProperty[] $files
