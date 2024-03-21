@@ -96,8 +96,7 @@ class NamespaceTest extends \PHPUnit\Framework\TestCase
         $res = $mapper->map(json_decode($json), new UnitData());
         $this->assertInstanceOf('\namespacetest\UnitData', $res);
         $this->assertInstanceOf('\namespacetest\model\MyArrayObject', $res->aodata);
-        $this->assertIsString($res->aodata[0]);
-        $this->assertEquals('foo', $res->aodata[0]);
+        $this->assertSame('foo', $res->aodata[0]);
     }
 
     /**
@@ -113,7 +112,7 @@ class NamespaceTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(
             '\othernamespace\Foo', $res->internalData['namespacedTypeHint']
         );
-        $this->assertEquals(
+        $this->assertSame(
             'Foo', $res->internalData['namespacedTypeHint']->name
         );
     }

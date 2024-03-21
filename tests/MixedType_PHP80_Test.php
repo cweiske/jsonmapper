@@ -28,8 +28,8 @@ class MixedType_PHP80_Test extends \PHPUnit\Framework\TestCase
         );
 
         $this->assertInstanceOf(stdClass::class, $sn->data);
-        $this->assertEquals(123, $sn->data->id);
-        $this->assertEquals('Test User', $sn->data->name);
+        $this->assertSame(123, $sn->data->id);
+        $this->assertSame('Test User', $sn->data->name);
     }
 
     /**
@@ -44,6 +44,6 @@ class MixedType_PHP80_Test extends \PHPUnit\Framework\TestCase
             new \namespacetest\PhpMixedType()
         );
 
-        $this->assertEquals(123, $sn->data);
+        $this->assertSame(123, $sn->data);
     }
 }

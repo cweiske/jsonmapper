@@ -17,10 +17,9 @@ class UnionTypesTest extends \PHPUnit\Framework\TestCase
      */
     public function testMapUnionNative()
     {
-        $this->expectException(
-            JsonMapper_Exception::class,
-            'Cannot decide which of the union types shall be used: \DateTime|string'
-        );
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('Cannot decide which of the union types shall be used: \DateTime|string');
+
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"dateOrStringNative":"stringvalue"}'),
@@ -33,10 +32,9 @@ class UnionTypesTest extends \PHPUnit\Framework\TestCase
      */
     public function testMapUnionDocblock()
     {
-        $this->expectException(
-            JsonMapper_Exception::class,
-            'Cannot decide which of the union types shall be used: \DateTime|string'
-        );
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('Cannot decide which of the union types shall be used: DateTime|string');
+
         $jm = new JsonMapper();
         $sn = $jm->map(
             json_decode('{"dateOrStringDocblock":"stringvalue"}'),
