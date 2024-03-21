@@ -33,7 +33,7 @@ class UnionTypesTest extends \PHPUnit\Framework\TestCase
     public function testMapUnionDocblock()
     {
         $this->expectException(JsonMapper_Exception::class);
-        $this->expectExceptionMessage('Cannot decide which of the union types shall be used: \DateTime|string');
+        $this->expectExceptionMessage('Cannot decide which of the union types shall be used: DateTime|string');
 
         $jm = new JsonMapper();
         $sn = $jm->map(
