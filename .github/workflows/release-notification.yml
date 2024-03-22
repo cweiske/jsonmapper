@@ -1,0 +1,19 @@
+name: Release Notification
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  send-slack-notification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Send slack notification
+        id: slack
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+            channel-id: 'C012YFE3D6D'
+            slack-message: "jsonmapper release has been triggered!"
+        env:
+            SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
