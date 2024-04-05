@@ -49,6 +49,7 @@
           "@rector-dry-run",
           "@phpstan",
           "@ecs-dry-run",
+          "@phpcs-dry-run",
           "@unittest"
         ],
         "ecs-dry-run": [
@@ -56,6 +57,9 @@
         ],
         "ecs-apply": [
           "php vendor/bin/ecs check --fix"
+        ],
+        "phpcs-dry-run": [
+          "php vendor/bin/phpcs --standard=PEAR src"
         ],
         "phpstan": [
           "php vendor/bin/phpstan analyse"

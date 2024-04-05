@@ -10,6 +10,8 @@ use PhpCsFixer\Fixer\Import\OrderedImportsFixer;
 use PhpCsFixer\Fixer\LanguageConstruct\DeclareEqualNormalizeFixer;
 use PhpCsFixer\Fixer\Operator\ConcatSpaceFixer;
 use PhpCsFixer\Fixer\Operator\NotOperatorWithSuccessorSpaceFixer;
+use PhpCsFixer\Fixer\Phpdoc\NoSuperfluousPhpdocTagsFixer;
+use PhpCsFixer\Fixer\Phpdoc\PhpdocNoEmptyReturnFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
 
@@ -44,7 +46,9 @@ return static function (ECSConfig $ecsConfig): void {
 
     // skip paths/files/rules
     $ecsConfig->skip([
+        NoSuperfluousPhpdocTagsFixer::class,
         NotOperatorWithSuccessorSpaceFixer::class,
+        PhpdocNoEmptyReturnFixer::class,
         'tests/support/JsonMapperTest/Simple.php',
         'tests/support/namespacetest/UnitData.php',
     ]);
