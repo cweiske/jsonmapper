@@ -45,13 +45,19 @@
         "symplify/easy-coding-standard": "~11.5"
     },
     "scripts": {
+        "complete-check": [
+          "@rector-dry-run",
+          "@phpstan",
+          "@ecs-dry-run",
+          "@unittest"
+        ],
         "ecs-dry-run": [
           "php vendor/bin/ecs check"
         ],
         "ecs-apply": [
           "php vendor/bin/ecs check --fix"
         ],
-        "phpstan-analyse": [
+        "phpstan": [
           "php vendor/bin/phpstan analyse"
         ],
         "rector-dry-run": [

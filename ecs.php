@@ -42,10 +42,11 @@ return static function (ECSConfig $ecsConfig): void {
         SetList::STRICT,
     ]);
 
+    // skip paths/files/rules
     $ecsConfig->skip([
-        __DIR__.'/tests/support/JsonMapperTest/Simple.php',
-        __DIR__.'/tests/support/namespacetest/UnitData.php',
         NotOperatorWithSuccessorSpaceFixer::class,
+        'tests/support/JsonMapperTest/Simple.php',
+        'tests/support/namespacetest/UnitData.php',
     ]);
 
     // psr12

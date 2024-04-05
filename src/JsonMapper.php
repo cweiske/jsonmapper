@@ -123,7 +123,7 @@ class JsonMapper
     /**
      * Map data all data in $json into the given $object instance.
      *
-     * @param object|array<mixed>|null $json JSON object structure from json_decode()
+     * @param stdClass|array<mixed>|null $json JSON object structure from json_decode()
      * @param object|string|null $object Object to map $json data into
      *
      * @return object Mapped object is returned.
@@ -131,22 +131,10 @@ class JsonMapper
      * @see mapArray()
      * @throws ReflectionException|JsonMapperException
      */
-    public function map(object|array|null $json, object|string|null $object): object
+    public function map(stdClass|array|null $json, object|string|null $object): object
     {
         // ToDo: refactor $json
-        // if ($json === null) {
-        //     throw new InvalidArgumentException(
-        //         'JsonMapper::map() requires first argument to be an object, null given.'
-        //     );
-        // }
-
-        // if (!is_iterable($json)) {
-        //     throw new InvalidArgumentException(
-        //         'JsonMapper::map() requires first argument to be an iterable object or array, ' . gettype($json) . ' given.'
-        //     );
-        // }
-
-        if ($this->bEnforceMapType && !is_object($json)) {
+        if ($json === null || $this->bEnforceMapType && !$json instanceof stdClass) {
             throw new InvalidArgumentException(
                 'JsonMapper::map() requires first argument to be an object, ' . gettype($json) . ' given.'
             );
@@ -158,6 +146,10 @@ class JsonMapper
             );
         }
 
+        if ($json instanceof stdClass) {
+            $json = (array) $json;
+        }
+
         if (is_string($object)) {
             $object = $this->createInstance($object);
         }
@@ -167,7 +159,7 @@ class JsonMapper
         $strNs = $rc->getNamespaceName();
         $providedProperties = [];
         foreach ($json as $key => $jvalue) {
-            $key = $this->getSafeName($key);
+            $key = $this->getSafeName((string) $key);
             $providedProperties[$key] = true;
 
             // Store the property inspection results, so we don't have to do it
@@ -301,6 +293,8 @@ class JsonMapper
                 $subtype = substr($type, 0, -2);
             } elseif (str_ends_with($type, ']')) {
                 [$proptype, $subtype] = explode('[', substr($type, 0, -1));
+
+                /** @var class-string $proptype */
                 $array = $proptype === 'array' ? [] : $this->createInstance($proptype, false, $jvalue);
             } elseif (is_array($jvalue) && $this->hasVariadicArrayType($accessor)) {
                 $array = [];
@@ -320,6 +314,7 @@ class JsonMapper
                 $cleanSubtype = $this->removeNullable($subtype);
                 $subtype = $this->getFullNamespace($cleanSubtype, $strNs);
                 // var_dump($jvalue);
+                /** @var class-string $subtype */
                 $child = $this->mapArray($jvalue, $array, $subtype, $key);
             } elseif ($this->isFlatType(gettype($jvalue))) {
                 //use constructor parameter if we have a class
@@ -331,8 +326,10 @@ class JsonMapper
                     );
                 }
 
+                /** @var class-string $type */
                 $child = $this->createInstance($type, true, $jvalue);
             } else {
+                /** @var class-string $type */
                 $child = $this->createInstance($type, false, $jvalue);
                 $this->map($jvalue, $child);
             }
@@ -366,11 +363,11 @@ class JsonMapper
 
     /**
      * Map an array
-     *
-     * @param array<mixed> $json JSON array structure from json_decode()
+     * @template T
+     * @param stdClass|array<mixed> $json JSON array structure from json_decode()
      * @param mixed $array Array or ArrayObject that gets filled with
      *                           data from $json
-     * @param string|null $class Class name for children objects.
+     * @param class-string<T>|null $class Class name for children objects.
      *                           All children will get mapped onto this type.
      *                           Supports class names and simple types
      *                           like "string" and nullability "string|null".
@@ -382,18 +379,25 @@ class JsonMapper
      * @throws ReflectionException
      * @throws JsonMapperException
      */
-    public function mapArray(object|array $json, mixed $array, ?string $class = null, string $parent_key = ''): mixed
+    public function mapArray(stdClass|array $json, mixed $array, ?string $class = null, string $parent_key = ''): mixed
     {
+        if ($json instanceof stdClass) {
+            $json = (array) $json;
+        }
+
         $originalClass = $class;
         foreach ($json as $key => $jvalue) {
             $class = $this->getMappedType($originalClass, $jvalue);
             if ($class === null) {
                 $array[$key] = $jvalue;
             } elseif ($this->isArrayOfType($class)) {
+                /** @var class-string $classname */
+                $classname = substr($class, 0, -2);
+
                 $array[$key] = $this->mapArray(
                     $jvalue,
                     [],
-                    substr($class, 0, -2)
+                    $classname
                 );
             } elseif ($this->isFlatType(gettype($jvalue))) {
                 //use constructor parameter if we have a class
@@ -404,6 +408,7 @@ class JsonMapper
                     settype($jvalue, $class);
                     $array[$key] = $jvalue;
                 } else {
+                    /** @var class-string $class */
                     $array[$key] = $this->createInstance(
                         $class,
                         true,
@@ -418,11 +423,13 @@ class JsonMapper
                     . ' "' . gettype($jvalue) . '"'
                 );
             } elseif (is_a($class, 'ArrayObject', true)) {
+                /** @var class-string $class */
                 $array[$key] = $this->mapArray(
                     $jvalue,
                     $this->createInstance($class)
                 );
             } else {
+                /** @var class-string $class */
                 $array[$key] = $this->map(
                     $jvalue,
                     $this->createInstance($class, false, $jvalue)

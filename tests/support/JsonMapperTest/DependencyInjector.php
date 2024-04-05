@@ -18,8 +18,8 @@ class JsonMapperTest_DependencyInjector extends JsonMapper
     public function createInstance(
         string $class,
         bool $useParameter = false,
-        $jvalue = null
-    ) {
+        mixed $jvalue = null
+    ): object {
         $object = parent::createInstance($class, $useParameter, $jvalue);
 
         //dummy dependency injection
