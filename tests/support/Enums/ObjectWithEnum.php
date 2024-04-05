@@ -7,5 +7,6 @@ namespace Enums;
 class ObjectWithEnum
 {
     public StringBackedEnum $stringBackedEnum;
+
     public IntBackedEnum $intBackedEnum;
 }

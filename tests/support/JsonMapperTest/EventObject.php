@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 class JsonMapperTest_EventObject
 {
     /**
@@ -20,4 +22,3 @@ class JsonMapperTest_EventObject
         $this->pStr = str_repeat($arg2, $arg1);
     }
 }
-?>

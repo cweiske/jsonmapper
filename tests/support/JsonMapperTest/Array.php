@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Part of JsonMapper
  *
@@ -104,4 +106,3 @@ class JsonMapperTest_Array
      */
     public $pMultiverse;
 }
-?>

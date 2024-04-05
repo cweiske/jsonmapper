@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 class JsonMapperTest_PrivateWithSetter
 {
     /**
@@ -27,13 +29,12 @@ class JsonMapperTest_PrivateWithSetter
      */
     private $privatePropertyNullableSetterWithoutDoc = 0;
 
-
     /**
      * @var JsonMapperTest_Simple[]
      */
     private $privateArrayOfSimple;
 
-    private $_internal = array();
+    private $_internal = [];
 
     /**
      * @param int $privateProperty
@@ -73,30 +74,6 @@ class JsonMapperTest_PrivateWithSetter
     public function getPrivateArrayOfSimple()
     {
         return $this->privateArrayOfSimple;
-    }
-
-    /**
-     * @param int $ppps
-     *
-     * @return $this
-     */
-    private function setPrivatePropertyPrivateSetter($ppps)
-    {
-        $this->privatePropertyPrivateSetter = $ppps;
-        return $this;
-    }
-
-    /**
-     * There is no property with this name, only a setter method
-     *
-     * @param int $ps
-     *
-     * @return $this
-     */
-    private function setPrivateSetter($ps)
-    {
-        $this->_internal['ps'] = $ps;
-        return $this;
     }
 
     /**
@@ -143,5 +120,28 @@ class JsonMapperTest_PrivateWithSetter
     {
         return $this->_internal['ps'];
     }
+
+    /**
+     * @param int $ppps
+     *
+     * @return $this
+     */
+    private function setPrivatePropertyPrivateSetter($ppps)
+    {
+        $this->privatePropertyPrivateSetter = $ppps;
+        return $this;
+    }
+
+    /**
+     * There is no property with this name, only a setter method
+     *
+     * @param int $ps
+     *
+     * @return $this
+     */
+    private function setPrivateSetter($ps)
+    {
+        $this->_internal['ps'] = $ps;
+        return $this;
+    }
 }
-?>

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Part of JsonMapper
  *
@@ -26,6 +28,10 @@ use namespacetest\UnitData;
  */
 class ClassMapTest extends \PHPUnit\Framework\TestCase
 {
+    public const CLASS_MAP_CLASS = 'JsonMapperTest_PlainObject';
+
+    public const CLASS_MAP_DATA = '2016-04-14T23:15:42+02:00';
+
     /**
      * Abuse self
      */
@@ -40,36 +46,33 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
         return 'DateTime';
     }
 
-    const CLASS_MAP_CLASS = 'JsonMapperTest_PlainObject';
-    const CLASS_MAP_DATA = '2016-04-14T23:15:42+02:00';
-
     public static function classMapTestData(): array
     {
-        $testCase = new ClassMapTest('ClassMapTest');
+        $testCase = new self('ClassMapTest');
 
         // classMap value
         return [
-            'name' =>     ['DateTime'],
+            'name' => ['DateTime'],
             'function' => [function ($class, $jvalue) use ($testCase) {
                 // the class/interface to be mapped
                 $testCase->assertEquals($testCase::CLASS_MAP_CLASS, $class);
                 $testCase->assertEquals($testCase::CLASS_MAP_DATA, $jvalue);
                 return 'DateTime';
             }],
-            'invoke' =>   [$testCase],  // __invoke
+            'invoke' => [$testCase],  // __invoke
         ];
     }
 
     /**
      * @dataProvider classMapTestData
-     * @throws JsonMapper_Exception
+     * @throws JsonMapperException
      */
     public function testClassMap($classMapValue)
     {
         $jm = new JsonMapper();
         $jm->classMap[self::CLASS_MAP_CLASS] = $classMapValue;
         $sn = $jm->map(
-            json_decode('{"pPlainObject":"'.self::CLASS_MAP_DATA.'"}'),
+            json_decode('{"pPlainObject":"' . self::CLASS_MAP_DATA . '"}'),
             new JsonMapperTest_Object()
         );
 
@@ -84,7 +87,7 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @throws JsonMapper_Exception
+     * @throws JsonMapperException
      */
     public function testNamespaceKeyWithLeadingBackslash()
     {
@@ -100,7 +103,7 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @throws JsonMapper_Exception
+     * @throws JsonMapperException
      */
     public function testNamespaceKeyNoLeadingBackslash()
     {
@@ -116,7 +119,7 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @throws JsonMapper_Exception
+     * @throws JsonMapperException
      */
     public function testMapObjectToSimpleType()
     {
@@ -131,7 +134,7 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @throws JsonMapper_Exception
+     * @throws JsonMapperException
      */
     public function testMapArraySubtype()
     {

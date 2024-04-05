@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 class JsonMapperTest_PHP7Object
 {
     public function setTypeNullableObject(?JsonMapperTest_PlainObject $obj)
@@ -15,4 +17,3 @@ class JsonMapperTest_PHP7Object
         $this->nonNullableObject = $obj;
     }
 }
-?>

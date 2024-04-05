@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Part of JsonMapper
  *
@@ -32,8 +34,6 @@ class JsonMapperTest_VariadicArray
 
     /**
      * @param DateTime[] $items
-     *
-     * @return self
      */
     public function setVariadicDateTime(DateTime ...$items): self
     {
@@ -60,8 +60,6 @@ class JsonMapperTest_VariadicArray
 
     /**
      * @param int[] $items
-     *
-     * @return self
      */
     public function setVariadicInt(int ...$items): self
     {
@@ -70,4 +68,3 @@ class JsonMapperTest_VariadicArray
         return $this;
     }
 }
-?>

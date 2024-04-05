@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Part of JsonMapper
  *
@@ -33,4 +35,3 @@ class RemoveUndefinedAttributesTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(isset($obj->pint));
     }
 }
-?>

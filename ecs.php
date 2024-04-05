@@ -43,6 +43,8 @@ return static function (ECSConfig $ecsConfig): void {
     ]);
 
     $ecsConfig->skip([
+        __DIR__.'/tests/support/JsonMapperTest/Simple.php',
+        __DIR__.'/tests/support/namespacetest/UnitData.php',
         NotOperatorWithSuccessorSpaceFixer::class,
     ]);
 

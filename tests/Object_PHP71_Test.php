@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Part of JsonMapper
  *
@@ -41,7 +43,7 @@ class Object_PHP71_Test extends \PHPUnit\Framework\TestCase
      */
     public function testObjectSetterDocblockInvalidNull()
     {
-        $this->expectException(JsonMapper_Exception::class);
+        $this->expectException(JsonMapperException::class);
         $this->expectExceptionMessage('JSON property "nonNullableObject" in class "JsonMapperTest_PHP7Object" must not be NULL');
         $jm = new JsonMapper();
         $sn = $jm->map(
@@ -50,4 +52,3 @@ class Object_PHP71_Test extends \PHPUnit\Framework\TestCase
         );
     }
 }
-?>

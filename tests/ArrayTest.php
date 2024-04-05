@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Part of JsonMapper
  *
@@ -59,10 +61,12 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($sn->typedSimpleArray[1]);
         $this->assertInstanceOf('DateTime', $sn->typedSimpleArray[2]);
         $this->assertEquals(
-            '2014-01-02', $sn->typedSimpleArray[0]->format('Y-m-d')
+            '2014-01-02',
+            $sn->typedSimpleArray[0]->format('Y-m-d')
         );
         $this->assertEquals(
-            '2014-05-07', $sn->typedSimpleArray[2]->format('Y-m-d')
+            '2014-05-07',
+            $sn->typedSimpleArray[2]->format('Y-m-d')
         );
     }
 
@@ -83,7 +87,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $jm->bEnforceMapType = false;
-        $sn = $jm->map(array(), new JsonMapperTest_Simple());
+        $sn = $jm->map([], new JsonMapperTest_Simple());
         $this->assertInstanceOf('JsonMapperTest_Simple', $sn);
     }
 
@@ -226,12 +230,12 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         $this->assertIsInt($sn->pArrayAccessCollection['eins']);
         $this->assertIsString($sn->pArrayAccessCollection['zwei']);
         $this->assertEquals(1, $sn->pArrayAccessCollection['eins']);
-        $this->assertEquals("two", $sn->pArrayAccessCollection['zwei']);
+        $this->assertEquals('two', $sn->pArrayAccessCollection['zwei']);
     }
 
     public function testInvalidArray()
     {
-        $this->expectException(JsonMapper_Exception::class);
+        $this->expectException(JsonMapperException::class);
         $this->expectExceptionMessage('JSON property "flArray" must be an array, integer given');
         $jm = new JsonMapper();
         $sn = $jm->map(
@@ -242,7 +246,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
 
     public function testInvalidArrayObject()
     {
-        $this->expectException(JsonMapper_Exception::class);
+        $this->expectException(JsonMapperException::class);
         $this->expectExceptionMessage('JSON property "pArrayObject" must be an array, double given');
         $jm = new JsonMapper();
         $sn = $jm->map(
@@ -269,7 +273,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
      */
     public function testArrayObjectInvalidNull()
     {
-        $this->expectException(JsonMapper_Exception::class);
+        $this->expectException(JsonMapperException::class);
         $this->expectExceptionMessage('JSON property "pArrayObject" in class "JsonMapperTest_Array" must not be NULL');
         $jm = new JsonMapper();
         $sn = $jm->map(
@@ -303,7 +307,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertTrue(
             spl_autoload_register(
-                array($this, 'mapTypedArrayObjectDoesNotExistAutoloader')
+                [$this, 'mapTypedArrayObjectDoesNotExistAutoloader']
             )
         );
         $jm = new JsonMapper();
@@ -316,7 +320,8 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf('ArrayObject', $sn->pTypedArrayObjectNoClass);
         $this->assertEquals(1, count($sn->pTypedArrayObjectNoClass));
         $this->assertInstanceOf(
-            'ThisClassDoesNotExist', $sn->pTypedArrayObjectNoClass[0]
+            'ThisClassDoesNotExist',
+            $sn->pTypedArrayObjectNoClass[0]
         );
     }
 
@@ -354,7 +359,9 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         $this->assertContainsOnlyInstancesOf(\ArrayObject::class, $sn->pArrayObjectList);
         // test first element data
         $ao = $sn->pArrayObjectList[0];
-        $this->assertEquals(['x' => 'X'], $ao->getArrayCopy());
+        $this->assertEquals([
+            'x' => 'X',
+        ], $ao->getArrayCopy());
     }
 
     /**
@@ -374,7 +381,9 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         $this->assertContainsOnlyInstancesOf(MyArrayObject::class, $sn->pArrayObjectSubclassList);
         // test first element data
         $ao = $sn->pArrayObjectSubclassList[0];
-        $this->assertEquals(['x' => 'X'], $ao->getArrayCopy());
+        $this->assertEquals([
+            'x' => 'X',
+        ], $ao->getArrayCopy());
     }
 
     /**
@@ -422,7 +431,8 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(1, count($sn->pMultiverse[0][0]));
 
         $this->assertInstanceOf(
-            'JsonMapperTest_Simple', $sn->pMultiverse[0][0][0]
+            'JsonMapperTest_Simple',
+            $sn->pMultiverse[0][0][0]
         );
     }
 
@@ -447,10 +457,16 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $mapped = $jm->mapArray(
-            ['en-US' => 'foo', 'de-DE' => 'bar'],
+            [
+                'en-US' => 'foo',
+                'de-DE' => 'bar',
+            ],
             []
         );
-        $this->assertEquals(['en-US' => 'foo', 'de-DE' => 'bar'], $mapped);
+        $this->assertEquals([
+            'en-US' => 'foo',
+            'de-DE' => 'bar',
+        ], $mapped);
     }
 
     /**
@@ -468,7 +484,8 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         $this->assertArrayHasKey('en-US', $sn->typedSimpleArray);
         $this->assertInstanceOf('DateTime', $sn->typedSimpleArray['en-US']);
         $this->assertEquals(
-            '2014-01-02', $sn->typedSimpleArray['en-US']->format('Y-m-d')
+            '2014-01-02',
+            $sn->typedSimpleArray['en-US']->format('Y-m-d')
         );
     }
 
@@ -477,7 +494,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
      */
     public function testObjectInsteadOfString()
     {
-        $this->expectException(JsonMapper_Exception::class);
+        $this->expectException(JsonMapperException::class);
         $this->expectExceptionMessage('JSON property "strArray" is an array of type "string" but contained a value of type "object"');
         $jm = new JsonMapper();
         $sn = $jm->map(
@@ -536,13 +553,16 @@ JSON;
         $this->assertIsInt($variadicArray[1]);
         $this->assertIsInt($variadicArray[2]);
         $this->assertEquals(
-            1, $variadicArray[0]
+            1,
+            $variadicArray[0]
         );
         $this->assertEquals(
-            2, $variadicArray[1]
+            2,
+            $variadicArray[1]
         );
         $this->assertEquals(
-            3, $variadicArray[2]
+            3,
+            $variadicArray[2]
         );
     }
 
@@ -561,12 +581,12 @@ JSON;
         $this->assertInstanceOf('DateTime', $variadicArray[0]);
         $this->assertInstanceOf('DateTime', $variadicArray[1]);
         $this->assertEquals(
-            '2014-01-02', $variadicArray[0]->format('Y-m-d')
+            '2014-01-02',
+            $variadicArray[0]->format('Y-m-d')
         );
         $this->assertEquals(
-            '2014-05-07', $variadicArray[1]->format('Y-m-d')
+            '2014-05-07',
+            $variadicArray[1]->format('Y-m-d')
         );
     }
 }
-
-?>

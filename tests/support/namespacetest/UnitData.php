@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace namespacetest;
 
 class UnitData
@@ -43,12 +46,10 @@ class UnitData
      */
     public $aodata;
 
-    public $internalData = array();
-
+    public $internalData = [];
 
     public function setNamespacedTypeHint(\othernamespace\Foo $foo)
     {
         $this->internalData['namespacedTypeHint'] = $foo;
     }
 }
-?>

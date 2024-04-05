@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Unit tests for JsonMapper's support for PHP 8.0 mixed type
  *
@@ -12,13 +14,14 @@
  */
 class MixedType_PHP80_Test extends \PHPUnit\Framework\TestCase
 {
-    const TEST_DATA_COMPLEX = '{"data": { "id": 123, "name": "Test User" }}';
-    const TEST_DATA_SIMPLE = '{"data": 123}';
+    public const TEST_DATA_COMPLEX = '{"data": { "id": 123, "name": "Test User" }}';
+
+    public const TEST_DATA_SIMPLE = '{"data": 123}';
 
     /**
      * Test for PHP 8.0 mixed type containing an object.
      */
-    public function testStrictTypesMapping_ComplexValue()
+    public function testStrictTypesMappingComplexValue()
     {
         $jm = new JsonMapper();
         /** @var \namespacetest\PhpMixedType $sn */
@@ -35,7 +38,7 @@ class MixedType_PHP80_Test extends \PHPUnit\Framework\TestCase
     /**
      * Test for PHP 8.0 mixed type containing an int.
      */
-    public function testStrictTypesMapping_SimpleValue()
+    public function testStrictTypesMappingSimpleValue()
     {
         $jm = new JsonMapper();
         /** @var \namespacetest\PhpMixedType $sn */

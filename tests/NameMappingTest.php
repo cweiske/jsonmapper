@@ -16,7 +16,9 @@ class NameMappingTest extends TestCase
         ): string {
             return lcfirst(
                 str_replace(
-                    ' ', '', ucwords(str_replace(array('_', '-'), ' ', $key))
+                    ' ',
+                    '',
+                    ucwords(str_replace(['_', '-'], ' ', $key))
                 )
             );
         };
@@ -37,7 +39,8 @@ class NameMappingTest extends TestCase
             JsonMapperTest_Simple $object,
             string $key,
             $value
-        ): void {};
+        ): void {
+        };
 
         /** @var JsonMapperTest_Simple $sn */
         $sn = $jm->map(

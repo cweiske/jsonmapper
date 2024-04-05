@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Part of JsonMapper
  *
@@ -27,7 +29,7 @@ class EventTest extends TestCase
     /**
      * Test for deserialize post event
      *
-     * @throws \JsonMapper_Exception
+     * @throws \JsonMapperException
      */
     public function testDeserializePostEvent()
     {
@@ -46,7 +48,7 @@ class EventTest extends TestCase
     {
         $jm = new JsonMapper();
         $jm->postMappingMethod = '_deserializePostEventWithArguments';
-        $jm->postMappingMethodArguments = array(3, 'bar');
+        $jm->postMappingMethodArguments = [3, 'bar'];
         /** @var JsonMapperTest_EventObject $sn */
         $sn = $jm->map(
             json_decode('{"pStr":"one"}', false),
@@ -56,4 +58,3 @@ class EventTest extends TestCase
         $this->assertEquals('barbarbar', $sn->pStr);
     }
 }
-?>

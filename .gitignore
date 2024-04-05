@@ -1,6 +1,7 @@
 /README.html
 /*.tgz
 /dist/
+/var/
 /vendor/
 /composer.lock
 .phpunit.result.cache

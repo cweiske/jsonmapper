@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Created by PhpStorm.
  * User: jaredchu
@@ -13,10 +15,6 @@ class JsonMapperTest_ComplexObject
      */
     public $valueObject;
 
-    /**
-     * JsonMapperTest_ComplexObject constructor.
-     * @param JsonMapperTest_ValueObject $valueObject
-     */
     public function __construct(JsonMapperTest_ValueObject $valueObject)
     {
         $this->valueObject = $valueObject;

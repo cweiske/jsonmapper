@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Part of JsonMapper
  *
@@ -12,5 +14,5 @@
 
 class JsonMapperTest_ArrayValueForStringProperty
 {
-	public string $value;
+    public string $value;
 }

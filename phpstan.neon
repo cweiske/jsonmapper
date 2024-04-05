@@ -5,6 +5,3 @@ parameters:
     treatPhpDocTypesAsCertain: false
     paths:
         - src
-    excludePaths:
-        - src/Controller/Testseite
-        - src/View

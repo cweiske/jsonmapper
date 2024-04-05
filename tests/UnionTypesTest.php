@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Unit tests for JsonMapper's union type handling
  *
@@ -18,7 +20,7 @@ class UnionTypesTest extends \PHPUnit\Framework\TestCase
     public function testMapUnionNative()
     {
         $this->expectException(
-            JsonMapper_Exception::class,
+            JsonMapperException::class,
             'Cannot decide which of the union types shall be used: \DateTime|string'
         );
         $jm = new JsonMapper();
@@ -34,7 +36,7 @@ class UnionTypesTest extends \PHPUnit\Framework\TestCase
     public function testMapUnionDocblock()
     {
         $this->expectException(
-            JsonMapper_Exception::class,
+            JsonMapperException::class,
             'Cannot decide which of the union types shall be used: \DateTime|string'
         );
         $jm = new JsonMapper();

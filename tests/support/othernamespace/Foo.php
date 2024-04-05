@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace othernamespace;
 
 class Foo
@@ -10,4 +13,3 @@ class Foo
         $this->name = $name;
     }
 }
-?>

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Part of JsonMapper
  *
@@ -78,7 +80,9 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
         $valueObject = new JsonMapperTest_ValueObject('test');
         $jm = new JsonMapper();
         $sn = $jm->map(
-            (object) array('value_object' => $valueObject),
+            (object) [
+                'value_object' => $valueObject,
+            ],
             new JsonMapperTest_Simple()
         );
 
@@ -117,7 +121,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
 
     public function testStrictTypeCheckingObjectError()
     {
-        $this->expectException(JsonMapper_Exception::class);
+        $this->expectException(JsonMapperException::class);
         $this->expectExceptionMessage('JSON property "pValueObject" must be an object, string given');
         $jm = new JsonMapper();
         $jm->bStrictObjectTypeChecking = true;
@@ -171,7 +175,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
      */
     public function testObjectInvalidNull()
     {
-        $this->expectException(JsonMapper_Exception::class);
+        $this->expectException(JsonMapperException::class);
         $this->expectExceptionMessage('JSON property "pValueObject" in class "JsonMapperTest_Object" must not be NULL');
         $jm = new JsonMapper();
         $sn = $jm->map(
@@ -186,7 +190,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
      */
     public function testObjectInsteadOfString()
     {
-        $this->expectException(JsonMapper_Exception::class);
+        $this->expectException(JsonMapperException::class);
         $this->expectExceptionMessage('JSON property "pString" in class "JsonMapperTest_Object" is of type object and cannot be converted to string');
         $jm = new JsonMapper();
         $sn = $jm->map(
@@ -222,4 +226,3 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('optional', $objs[0]->foo);
     }
 }
-?>

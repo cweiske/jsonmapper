@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 abstract class Animal
 {
     public $name;
@@ -7,8 +9,7 @@ abstract class Animal
     {
         if ($json->kind === 'cat') {
             return Cat::class;
-        } else {
-            return Fish::class;
         }
+        return Fish::class;
     }
 }

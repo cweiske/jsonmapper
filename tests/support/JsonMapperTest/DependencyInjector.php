@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 class JsonMapperTest_DependencyInjector extends JsonMapper
 {
     /**
@@ -7,16 +9,18 @@ class JsonMapperTest_DependencyInjector extends JsonMapper
      * This method exists to be overwritten in child classes,
      * so you can do dependency injection or so.
      *
-     * @param string  $class        Class name to instantiate
+     * @param string $class        Class name to instantiate
      * @param boolean $useParameter Pass $parameter to the constructor or not
-     * @param mixed   $parameter    Constructor parameter
+     * @param mixed   $jvalue    Constructor parameter
      *
      * @return object Freshly created object
      */
     public function createInstance(
-        $class, $useParameter = false, $parameter = null
+        string $class,
+        bool $useParameter = false,
+        $jvalue = null
     ) {
-        $object = parent::createInstance($class, $useParameter, $parameter);
+        $object = parent::createInstance($class, $useParameter, $jvalue);
 
         //dummy dependency injection
         $object->db = 'database';
@@ -24,4 +28,3 @@ class JsonMapperTest_DependencyInjector extends JsonMapper
         return $object;
     }
 }
-?>

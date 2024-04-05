@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Part of JsonMapper
  *
@@ -26,10 +28,8 @@ class JsonMapperTest_Broken
     public $pTypedArrayObjectNoClass;
 
     /**
-     *
      * @var string
      * @required
      */
     public $pMissingData;
 }
-?>

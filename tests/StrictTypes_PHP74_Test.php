@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Unit tests for JsonMapper's support for PHP 7.4 strict types
  *
@@ -12,7 +14,7 @@
  */
 class StrictTypes_PHP74_Test extends \PHPUnit\Framework\TestCase
 {
-    const TEST_DATA = '{"id": 123, "importedNs": {"name": "Name"}, "otherNs": {"name": "Foo"}, "withoutType": "anything", "docDefinedType": {"name": "Name"}, "nullable": "value", "fooArray": [{"name": "Foo 1"}, {"name": "Foo 2"}]}';
+    public const TEST_DATA = '{"id": 123, "importedNs": {"name": "Name"}, "otherNs": {"name": "Foo"}, "withoutType": "anything", "docDefinedType": {"name": "Name"}, "nullable": "value", "fooArray": [{"name": "Foo 1"}, {"name": "Foo 2"}]}';
 
     /**
      * Test for PHP7.4 strict types.

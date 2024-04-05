@@ -14,7 +14,7 @@ declare(strict_types=1);
  */
 class Enums_PHP81_Test extends \PHPUnit\Framework\TestCase
 {
-    const TEST_DATA = '{"stringBackedEnum": "foo", "intBackedEnum": 2}';
+    public const TEST_DATA = '{"stringBackedEnum": "foo", "intBackedEnum": 2}';
 
     /**
      * Test for PHP8.1 enums.

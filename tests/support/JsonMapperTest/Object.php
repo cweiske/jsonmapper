@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 class JsonMapperTest_Object
 {
     /**
@@ -40,4 +42,3 @@ class JsonMapperTest_Object
         $this->docblockNullableObject = $obj;
     }
 }
-?>

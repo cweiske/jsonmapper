@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Part of JsonMapper
  *
@@ -180,7 +182,9 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Simple()
         );
         $this->assertIsObject($sn->notype);
-        $this->assertEquals((object) array('k' => 'v'), $sn->notype);
+        $this->assertEquals((object) [
+            'k' => 'v',
+        ], $sn->notype);
     }
 
     /**
@@ -197,7 +201,6 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('f', $sn->under_score);
     }
 
-
     /**
      * Variable with an underscore and a setter method
      */
@@ -210,7 +213,8 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertIsString($sn->internalData['under_score_setter']);
         $this->assertEquals(
-            'blubb', $sn->internalData['under_score_setter']
+            'blubb',
+            $sn->internalData['under_score_setter']
         );
     }
 
@@ -227,7 +231,6 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
 
         $this->assertIsString($sn->hyphenValue);
         $this->assertEquals('test', $sn->hyphenValue);
-
     }
 
     /**
@@ -242,9 +245,9 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertIsString($sn->internalData['hyphen-value-setter']);
         $this->assertEquals(
-            'blubb', $sn->internalData['hyphen-value-setter']
+            'blubb',
+            $sn->internalData['hyphen-value-setter']
         );
-
     }
 
     /**
@@ -261,4 +264,3 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('blubb', $sn->nodocblock);
     }
 }
-?>

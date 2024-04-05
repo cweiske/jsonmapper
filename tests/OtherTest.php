@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Part of JsonMapper
  *
@@ -28,6 +30,10 @@ class OtherTest extends \PHPUnit\Framework\TestCase
         $sn = $jm->map(null, new JsonMapperTest_Simple());
     }
 
+    /**
+     * @throws ReflectionException
+     * @throws JsonMapperException
+     */
     public function testMapNullObject()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -38,10 +44,12 @@ class OtherTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test for "@var "
+     *
+     * @throws ReflectionException
      */
     public function testMapEmpty()
     {
-        $this->expectException(JsonMapper_Exception::class);
+        $this->expectException(JsonMapperException::class);
         $this->expectExceptionMessage('Empty type at property "JsonMapperTest_Simple::$empty"');
         $jm = new JsonMapper();
         $sn = $jm->map(
@@ -66,10 +74,12 @@ class OtherTest extends \PHPUnit\Framework\TestCase
 
         $this->assertIsObject($sn->internalData['typehint']);
         $this->assertInstanceOf(
-            'JsonMapperTest_Simple', $sn->internalData['typehint']
+            'JsonMapperTest_Simple',
+            $sn->internalData['typehint']
         );
         $this->assertEquals(
-            'stringvalue', $sn->internalData['typehint']->str
+            'stringvalue',
+            $sn->internalData['typehint']->str
         );
     }
 
@@ -86,10 +96,12 @@ class OtherTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertIsObject($sn->internalData['docblock']);
         $this->assertInstanceOf(
-            'JsonMapperTest_Simple', $sn->internalData['docblock']
+            'JsonMapperTest_Simple',
+            $sn->internalData['docblock']
         );
         $this->assertEquals(
-            'stringvalue', $sn->internalData['docblock']->str
+            'stringvalue',
+            $sn->internalData['docblock']->str
         );
     }
 
@@ -105,10 +117,12 @@ class OtherTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertIsObject($sn->internalData['notype']);
         $this->assertInstanceOf(
-            'stdClass', $sn->internalData['notype']
+            'stdClass',
+            $sn->internalData['notype']
         );
         $this->assertEquals(
-            'stringvalue', $sn->internalData['notype']->str
+            'stringvalue',
+            $sn->internalData['notype']->str
         );
     }
 
@@ -126,23 +140,23 @@ class OtherTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertNull($sn->getProtectedStrNoSetter());
         $this->assertEquals(
-            array(
-                array(
+            [
+                [
                     'info',
                     'Property {property} has no public setter method in {class}',
-                    array(
+                    [
                         'class' => 'JsonMapperTest_Simple',
-                        'property' => 'protectedStrNoSetter'
-                    )
-                )
-            ),
+                        'property' => 'protectedStrNoSetter',
+                    ],
+                ],
+            ],
             $logger->log
         );
     }
 
     public function testMissingDataException()
     {
-        $this->expectException(JsonMapper_Exception::class);
+        $this->expectException(JsonMapperException::class);
         $this->expectExceptionMessage('Required property "pMissingData" of class JsonMapperTest_Broken is missing in JSON data');
         $jm = new JsonMapper();
         $jm->bExceptionOnMissingData = true;
@@ -168,7 +182,7 @@ class OtherTest extends \PHPUnit\Framework\TestCase
 
     public function testUndefinedPropertyException()
     {
-        $this->expectException(JsonMapper_Exception::class);
+        $this->expectException(JsonMapperException::class);
         $this->expectExceptionMessage('JSON property "undefinedProperty" does not exist in object of type JsonMapperTest_Broken');
         $jm = new JsonMapper();
         $jm->bExceptionOnUndefinedProperty = true;
@@ -181,7 +195,7 @@ class OtherTest extends \PHPUnit\Framework\TestCase
     public function testUndefinedPropertyHandler()
     {
         $jm = new JsonMapper();
-        $jm->undefinedPropertyHandler = array($this, 'setUnknownProperty');
+        $jm->undefinedPropertyHandler = [$this, 'setUnknownProperty'];
         $sn = $jm->map(
             json_decode('{"undefinedProperty":123}'),
             new JsonMapperTest_Broken()
@@ -202,7 +216,7 @@ class OtherTest extends \PHPUnit\Framework\TestCase
         $logger = new JsonMapperTest_Logger();
         $jm->setLogger($logger);
 
-        $json   = '{"privateProperty" : 1}';
+        $json = '{"privateProperty" : 1}';
         $result = $jm->map(json_decode($json), new JsonMapperTest_PrivateWithSetter());
 
         $this->assertEquals(1, $result->getPrivateProperty());
@@ -211,14 +225,14 @@ class OtherTest extends \PHPUnit\Framework\TestCase
 
     public function testPrivatePropertyWithNoSetter()
     {
-        $this->expectException(JsonMapper_Exception::class);
+        $this->expectException(JsonMapperException::class);
         $this->expectExceptionMessage('JSON property "privateNoSetter" has no public setter method in object of type JsonMapperTest_PrivateWithSetter');
         $jm = new JsonMapper();
         $jm->bExceptionOnUndefinedProperty = true;
         $logger = new JsonMapperTest_Logger();
         $jm->setLogger($logger);
 
-        $json   = '{"privateNoSetter" : 1}';
+        $json = '{"privateNoSetter" : 1}';
         $result = $jm->map(json_decode($json), new JsonMapperTest_PrivateWithSetter());
 
         $this->assertEquals(1, $result->getPrivateProperty());
@@ -230,7 +244,7 @@ class OtherTest extends \PHPUnit\Framework\TestCase
         $jm = new JsonMapper();
         $jm->bIgnoreVisibility = true;
 
-        $json   = '{"privateNoSetter" : 1}';
+        $json = '{"privateNoSetter" : 1}';
         $result = $jm->map(json_decode($json), new JsonMapperTest_PrivateWithSetter());
 
         $this->assertEquals(1, $result->getPrivateNoSetter());
@@ -241,7 +255,7 @@ class OtherTest extends \PHPUnit\Framework\TestCase
         $jm = new JsonMapper();
         $jm->bIgnoreVisibility = true;
 
-        $json   = '{"privateNoSetter" : 1}';
+        $json = '{"privateNoSetter" : 1}';
         $result = $jm->map(json_decode($json), new JsonMapperTest_PrivateWithSetterSub());
 
         $this->assertEquals(1, $result->getPrivateNoSetter());
@@ -249,21 +263,21 @@ class OtherTest extends \PHPUnit\Framework\TestCase
 
     public function testPrivatePropertyWithPrivateSetter()
     {
-        $this->expectException(JsonMapper_Exception::class);
+        $this->expectException(JsonMapperException::class);
         $this->expectExceptionMessage('JSON property "privatePropertyPrivateSetter" has no public setter method in object of type JsonMapperTest_PrivateWithSetter');
         $jm = new JsonMapper();
         $jm->bExceptionOnUndefinedProperty = true;
         $logger = new JsonMapperTest_Logger();
         $jm->setLogger($logger);
 
-        $json   = '{"privatePropertyPrivateSetter" : 1}';
+        $json = '{"privatePropertyPrivateSetter" : 1}';
         $result = $jm->map(json_decode($json), new JsonMapperTest_PrivateWithSetter());
     }
 
     public function testPrivatePropertySetterWithoutDoc()
     {
         if (PHP_MAJOR_VERSION < 7) {
-            $this->markTestSkipped("This test is for PHP >= 7");
+            $this->markTestSkipped('This test is for PHP >= 7');
         }
 
         $jm = new JsonMapper();
@@ -277,7 +291,7 @@ class OtherTest extends \PHPUnit\Framework\TestCase
     public function testPrivatePropertyNullableNotNullSetterWithoutDoc()
     {
         if (PHP_MAJOR_VERSION < 7) {
-            $this->markTestSkipped("This test is for PHP >= 7");
+            $this->markTestSkipped('This test is for PHP >= 7');
         }
 
         $jm = new JsonMapper();
@@ -291,7 +305,7 @@ class OtherTest extends \PHPUnit\Framework\TestCase
     public function testPrivatePropertyNullableNullSetterWithoutDoc()
     {
         if (PHP_MAJOR_VERSION < 7) {
-            $this->markTestSkipped("This test is for PHP >= 7");
+            $this->markTestSkipped('This test is for PHP >= 7');
         }
 
         $jm = new JsonMapper();
@@ -315,11 +329,11 @@ class OtherTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_PrivateWithSetter()
         );
 
-        $a = new JsonMapperTest_Simple;
+        $a = new JsonMapperTest_Simple();
         $a->pbool = true;
         $a->pint = 42;
 
-        $b = new JsonMapperTest_Simple;
+        $b = new JsonMapperTest_Simple();
         $b->pbool = false;
         $b->pint = 24;
 
@@ -335,7 +349,7 @@ class OtherTest extends \PHPUnit\Framework\TestCase
         $jm->bIgnoreVisibility = true;
         $jm->bExceptionOnUndefinedProperty = true;
 
-        $json   = '{"privateSetter" : 1}';
+        $json = '{"privateSetter" : 1}';
         $result = $jm->map(json_decode($json), new JsonMapperTest_PrivateWithSetter());
 
         $this->assertEquals(1, $result->getPrivateSetter());
@@ -350,7 +364,8 @@ class OtherTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertIsString($sn->setterPreferredOverProperty);
         $this->assertEquals(
-            'set via setter: foo', $sn->setterPreferredOverProperty
+            'set via setter: foo',
+            $sn->setterPreferredOverProperty
         );
     }
 
@@ -358,7 +373,9 @@ class OtherTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            (object) array('PINT' => 2),
+            (object) [
+                'PINT' => 2,
+            ],
             new JsonMapperTest_Simple()
         );
 
@@ -370,12 +387,12 @@ class OtherTest extends \PHPUnit\Framework\TestCase
         $jm = new JsonMapperTest_DependencyInjector();
 
         $sn = $jm->map(
-            (object) array(
+            (object) [
                 'str' => 'first level',
-                'simple' => (object) array(
-                    'str' => 'second level'
-                )
-            ),
+                'simple' => (object) [
+                    'str' => 'second level',
+                ],
+            ],
             $jm->createInstance('JsonMapperTest_Simple')
         );
 
@@ -386,4 +403,3 @@ class OtherTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('database', $sn->simple->db);
     }
 }
-?>

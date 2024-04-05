@@ -1,15 +1,18 @@
 <?php
+
+declare(strict_types=1);
+
 namespace namespacetest\model;
 
 class User
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     public $name;
 
-    function __construct($name = null)
+    public function __construct($name = null)
     {
         $this->name = $name;
     }
 }
-
-?>

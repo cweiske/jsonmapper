@@ -12,4 +12,3 @@ $coords = $contact->address->getGeoCoords();
 
 echo $contact->name . ' lives at coordinates '
     . $coords['lat'] . ',' . $coords['lon'] . "\n";
-?>

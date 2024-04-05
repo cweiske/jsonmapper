@@ -26,9 +26,8 @@ class Array_PHP74_Test extends TestCase
 
     public function testMapArrayValueToStringProperty()
     {
-
         $jm = new JsonMapper();
-        $this->expectException(JsonMapper_Exception::class);
+        $this->expectException(JsonMapperException::class);
         $this->expectExceptionMessage('JSON property "value" in class "JsonMapperTest_ArrayValueForStringProperty" is of type array and cannot be converted to string');
         $jm->map(
             json_decode('{"value":[]}'),

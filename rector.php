@@ -9,13 +9,11 @@ use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
-use Rector\Symfony\Set\SymfonySetList;
-use Rector\Symfony\Symfony64\Rector\Class_\ChangeRouteAttributeFromAnnotationSubnamespaceRector;
 use Rector\ValueObject\PhpVersion;
 
 return static function (RectorConfig $rectorConfig): void
 {
-    $rectorConfig->PHPVersion(PhpVersion::PHP_83);
+    $rectorConfig->PHPVersion(PhpVersion::PHP_81);
     $rectorConfig->phpstanConfig(__DIR__ . '/phpstan.neon');
     $rectorConfig->cacheDirectory('./var/cache/rector');
     $rectorConfig->paths(
@@ -26,6 +24,10 @@ return static function (RectorConfig $rectorConfig): void
 
     $rectorConfig->symfonyContainerXml(__DIR__ . '/var/cache/dev/App_KernelDevDebugContainer.xml');
     $rectorConfig->sets([
+        LevelSetList::UP_TO_PHP_71,
+        LevelSetList::UP_TO_PHP_72,
+        LevelSetList::UP_TO_PHP_73,
+        LevelSetList::UP_TO_PHP_74,
         LevelSetList::UP_TO_PHP_80,
         LevelSetList::UP_TO_PHP_81,
         LevelSetList::UP_TO_PHP_82,
@@ -39,17 +41,9 @@ return static function (RectorConfig $rectorConfig): void
         SetList::INSTANCEOF,
         SetList::PRIVATIZATION,
         SetList::TYPE_DECLARATION,
-        SymfonySetList::SYMFONY_62,
-        SymfonySetList::SYMFONY_63,
-        SymfonySetList::SYMFONY_64,
-        SymfonySetList::SYMFONY_CODE_QUALITY,
-        SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION,
     ]);
 
     $rectorConfig->skip([
-        __DIR__.'/src/Controller/Testseite',
-        __DIR__.'/src/Extension/AgGrid',
-        __DIR__.'/src/View',
         AddOverrideAttributeToOverriddenMethodsRector::class,
         ExplicitBoolCompareRector::class,
         FinalizeClassesWithoutChildrenRector::class => [
@@ -57,6 +51,5 @@ return static function (RectorConfig $rectorConfig): void
         ],
         RemoveUselessParamTagRector::class,
         RemoveUselessReturnTagRector::class,
-        ChangeRouteAttributeFromAnnotationSubnamespaceRector::class,
-        ]);
+    ]);
 };
