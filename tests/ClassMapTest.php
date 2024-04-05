@@ -11,6 +11,10 @@
  * @link     https://github.com/cweiske/jsonmapper
  */
 
+use namespacetest\model\User;
+use namespacetest\Unit;
+use namespacetest\UnitData;
+
 /**
  * Unit tests for JsonMapper's classMap
  *
@@ -25,7 +29,7 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
     /**
      * Abuse self
      */
-    public function __invoke($class, $jvalue)
+    public function __invoke($class, $jvalue): string
     {
         $testCase = $this;
 
@@ -39,9 +43,9 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
     const CLASS_MAP_CLASS = 'JsonMapperTest_PlainObject';
     const CLASS_MAP_DATA = '2016-04-14T23:15:42+02:00';
 
-    public function classMapTestData()
+    public static function classMapTestData(): array
     {
-        $testCase = $this;
+        $testCase = new ClassMapTest('ClassMapTest');
 
         // classMap value
         return [
@@ -52,12 +56,13 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
                 $testCase->assertEquals($testCase::CLASS_MAP_DATA, $jvalue);
                 return 'DateTime';
             }],
-            'invoke' =>   [$this],  // __invoke
+            'invoke' =>   [$testCase],  // __invoke
         ];
     }
 
     /**
      * @dataProvider classMapTestData
+     * @throws JsonMapper_Exception
      */
     public function testClassMap($classMapValue)
     {
@@ -68,52 +73,66 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Object()
         );
 
-        $this->assertIsObject($sn->pPlainObject);
-        $this->assertInstanceOf('DateTime', $sn->pPlainObject);
+        /** @var DateTimeInterface $pPlainObject */
+        $pPlainObject = $sn->pPlainObject;
+        $this->assertIsObject($pPlainObject);
+        $this->assertInstanceOf(DateTimeInterface::class, $pPlainObject);
         $this->assertEquals(
             self::CLASS_MAP_DATA,
-            $sn->pPlainObject->format('c')
+            $pPlainObject->format('c')
         );
     }
 
+    /**
+     * @throws JsonMapper_Exception
+     */
     public function testNamespaceKeyWithLeadingBackslash()
     {
         $jm = new JsonMapper();
         $jm->classMap['\\namespacetest\\model\\User']
-            = \namespacetest\Unit::class;
+            = Unit::class;
         $data = $jm->map(
             json_decode('{"user":"foo"}'),
-            new \namespacetest\UnitData()
+            new UnitData()
         );
 
-        $this->assertInstanceOf(\namespacetest\Unit::class, $data->user);
+        $this->assertInstanceOf(Unit::class, $data->user);
     }
 
+    /**
+     * @throws JsonMapper_Exception
+     */
     public function testNamespaceKeyNoLeadingBackslash()
     {
         $jm = new JsonMapper();
-        $jm->classMap[\namespacetest\model\User::class]
-            = \namespacetest\Unit::class;
+        $jm->classMap[User::class]
+            = Unit::class;
         $data = $jm->map(
             json_decode('{"user":"foo"}'),
-            new \namespacetest\UnitData()
+            new UnitData()
         );
 
-        $this->assertInstanceOf(\namespacetest\Unit::class, $data->user);
+        $this->assertInstanceOf(Unit::class, $data->user);
     }
 
+    /**
+     * @throws JsonMapper_Exception
+     */
     public function testMapObjectToSimpleType()
     {
         $jm = new JsonMapper();
-        $jm->classMap[\namespacetest\model\User::class] = 'string';
+        $jm->classMap[User::class] = 'string';
         $data = $jm->map(
             json_decode('{"user":"foo"}'),
-            new \namespacetest\UnitData()
+            new UnitData()
         );
 
         $this->assertIsString($data->user);
     }
 
+    /**
+     * @throws JsonMapper_Exception
+     */
     public function testMapArraySubtype()
     {
         $jm = new JsonMapper();
@@ -127,4 +146,3 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
         $this->assertIsString($data->typedSimpleArray[0]);
     }
 }
-?>

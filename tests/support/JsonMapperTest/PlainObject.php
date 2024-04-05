@@ -6,4 +6,3 @@ class JsonMapperTest_PlainObject
      */
     public $pStr;
 }
-?>

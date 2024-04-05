@@ -29,14 +29,41 @@
         "issues": "https://github.com/cweiske/jsonmapper/issues"
     },
     "require":{
-        "php": ">=7.1",
+        "php": ">=8.1",
         "ext-spl": "*",
         "ext-json": "*",
         "ext-pcre": "*",
         "ext-reflection": "*"
     },
     "require-dev": {
+        "phpstan/phpstan": "^1.10",
+        "phpstan/phpstan-strict-rules": "^1.5",
         "phpunit/phpunit": "~7.5 || ~8.0 || ~9.0 || ~10.0",
-        "squizlabs/php_codesniffer": "~3.5"
+        "rector/rector": "^1.0",
+        "squizlabs/php_codesniffer": "~3.5",
+        "symplify/easy-coding-standard": "^11.5"
+    },
+    "scripts": {
+        "ecs-dry-run": [
+          "php vendor/bin/ecs check"
+        ],
+        "ecs-apply": [
+          "php vendor/bin/ecs check --fix"
+        ],
+        "phpstan-analyse": [
+          "php vendor/bin/phpstan analyse"
+        ],
+        "rector-dry-run": [
+          "php vendor/bin/rector process --dry-run --ansi"
+        ],
+        "rector-apply": [
+          "php vendor/bin/rector process --ansi"
+        ],
+        "rector-cache": [
+          "rm -R var/cache/rector"
+        ],
+        "unittest": [
+          "php vendor/bin/phpunit --configuration phpunit.xml"
+        ]
     }
 }

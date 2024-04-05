@@ -1,0 +1,10 @@
+parameters:
+    level: 8
+    checkBenevolentUnionTypes: true
+    checkGenericClassInNonGenericObjectType: false
+    treatPhpDocTypesAsCertain: false
+    paths:
+        - src
+    excludePaths:
+        - src/Controller/Testseite
+        - src/View
