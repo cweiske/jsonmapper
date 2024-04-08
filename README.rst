@@ -251,9 +251,9 @@ Supported type names
    - ``Suit:string|Suit:int`` - exception will be thrown if the JSON value is not present in the enum
 - Nullable types:
 
-  - ``int|null`` - will be ``null`` if the value in JSON is
+  - ``int|null`` or ``?int`` - will be ``null`` if the value in JSON is
     ``null``, otherwise it will be an integer
-  - ``Contact|null`` - will be ``null`` if the value in JSON is
+  - ``Contact|null`` or ``?Contact`` - will be ``null`` if the value in JSON is
     ``null``, otherwise it will be an object of type ``Contact``
 
 ArrayObjects and extending classes are treated as arrays.
@@ -327,7 +327,7 @@ parameters into the call.
 Nullables
 ---------
 JsonMapper throws an exception when a JSON property is ``null``,
-unless the PHP class property has a nullable type - e.g. ``Contact|null``.
+unless the PHP class property has a nullable type - e.g. ``Contact|null`` or ``?Contact``.
 
 If your API contains many fields that may be ``null`` and you do not want
 to make all your type definitions nullable, set:
