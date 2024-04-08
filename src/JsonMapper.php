@@ -855,7 +855,8 @@ class JsonMapper
      */
     protected function isNullable($type)
     {
-        return stripos('|' . $type . '|', '|null|') !== false;
+        return stripos('|' . $type . '|', '|null|') !== false
+            || strpos('|' . $type, '|?') !== false;
     }
 
     /**
@@ -871,7 +872,7 @@ class JsonMapper
             return null;
         }
         return substr(
-            str_ireplace('|null|', '|', '|' . $type . '|'),
+            str_ireplace(['|null|', '|?'], '|', '|' . $type . '|'),
             1, -1
         );
     }
