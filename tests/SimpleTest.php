@@ -134,39 +134,81 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"pnullable":0}'),
+            json_decode('{"pnullableint":0}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertIsInt($sn->pnullable);
-        $this->assertEquals(0, $sn->pnullable);
+        $this->assertIsInt($sn->pnullableint);
+        $this->assertEquals(0, $sn->pnullableint);
     }
 
     /**
      * Test for "@var int|null" with null value
      */
-    public function testMapSimpleNullableNull()
+    public function testMapSimpleNullableIntNull()
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"pnullable":null}'),
+            json_decode('{"pnullableint":null}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertNull($sn->pnullable);
-        $this->assertEquals(null, $sn->pnullable);
+        $this->assertNull($sn->pnullableint);
+        $this->assertEquals(null, $sn->pnullableint);
     }
 
     /**
      * Test for "@var int|null" with string value
      */
-    public function testMapSimpleNullableWrong()
+    public function testMapSimpleNullableIntWrong()
     {
         $jm = new JsonMapper();
         $sn = $jm->map(
-            json_decode('{"pnullable":"12345"}'),
+            json_decode('{"pnullableint":"12345"}'),
             new JsonMapperTest_Simple()
         );
-        $this->assertIsInt($sn->pnullable);
-        $this->assertEquals(12345, $sn->pnullable);
+        $this->assertIsInt($sn->pnullableint);
+        $this->assertEquals(12345, $sn->pnullableint);
+    }
+
+    /**
+     * Test for "@var ?string" with string value
+     */
+    public function testMapSimpleNullableString()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"pnullablestring":0}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertIsString($sn->pnullablestring);
+        $this->assertEquals("0", $sn->pnullablestring);
+    }
+
+    /**
+     * Test for "@var ?string" with null value
+     */
+    public function testMapSimpleNullableStringNull()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"pnullablestring":null}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertNull($sn->pnullablestring);
+        $this->assertEquals(null, $sn->pnullablestring);
+    }
+
+    /**
+     * Test for "@var ?string" with string value
+     */
+    public function testMapSimpleNullableStringWrong()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"pnullablestring":"test"}'),
+            new JsonMapperTest_Simple()
+        );
+        $this->assertIsString($sn->pnullablestring);
+        $this->assertEquals("test", $sn->pnullablestring);
     }
 
     /**
