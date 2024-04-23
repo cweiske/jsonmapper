@@ -54,9 +54,9 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertIsArray($sn->typedSimpleArray);
         $this->assertCount(3, $sn->typedSimpleArray);
-        $this->assertInstanceOf('DateTime', $sn->typedSimpleArray[0]);
+        $this->assertInstanceOf(DateTime::class, $sn->typedSimpleArray[0]);
         $this->assertNull($sn->typedSimpleArray[1]);
-        $this->assertInstanceOf('DateTime', $sn->typedSimpleArray[2]);
+        $this->assertInstanceOf(DateTime::class, $sn->typedSimpleArray[2]);
         $this->assertSame(
             '2014-01-02', $sn->typedSimpleArray[0]->format('Y-m-d')
         );
@@ -83,7 +83,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         $jm = new JsonMapper();
         $jm->bEnforceMapType = false;
         $sn = $jm->map(array(), new JsonMapperTest_Simple());
-        $this->assertInstanceOf('JsonMapperTest_Simple', $sn);
+        $this->assertInstanceOf(JsonMapperTest_Simple::class, $sn);
     }
 
     /**
@@ -148,7 +148,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             json_decode('{"pArrayObject":[{"str":"stringvalue"},{"fl":"1.2"}]}'),
             new JsonMapperTest_Array()
         );
-        $this->assertInstanceOf('ArrayObject', $sn->pArrayObject);
+        $this->assertInstanceOf(ArrayObject::class, $sn->pArrayObject);
         $this->assertCount(2, $sn->pArrayObject);
         $this->assertContainsOnlyInstancesOf(stdClass::class, $sn->pArrayObject);
         $this->assertSame('stringvalue', $sn->pArrayObject[0]->str);
@@ -167,7 +167,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             ),
             new JsonMapperTest_Array()
         );
-        $this->assertInstanceOf('ArrayObject', $sn->pTypedArrayObject);
+        $this->assertInstanceOf(ArrayObject::class, $sn->pTypedArrayObject);
         $this->assertCount(2, $sn->pTypedArrayObject);
         $this->assertContainsOnlyInstancesOf(JsonMapperTest_Simple::class, $sn->pTypedArrayObject);
         $this->assertSame('stringvalue', $sn->pTypedArrayObject[0]->str);
@@ -186,7 +186,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             ),
             new JsonMapperTest_Array()
         );
-        $this->assertInstanceOf('ArrayObject', $sn->pSimpleArrayObject);
+        $this->assertInstanceOf(ArrayObject::class, $sn->pSimpleArrayObject);
         $this->assertCount(2, $sn->pSimpleArrayObject);
         $this->assertContainsOnly('int', $sn->pSimpleArrayObject, true);
         $this->assertSame(1, $sn->pSimpleArrayObject['eins']);
@@ -202,7 +202,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             ),
             new JsonMapperTest_Array()
         );
-        $this->assertInstanceOf('ArrayAccess', $sn->pArrayAccessCollection);
+        $this->assertInstanceOf(ArrayAccess::class, $sn->pArrayAccessCollection);
         $this->assertSame(1, $sn->pArrayAccessCollection['eins']);
         $this->assertSame('two', $sn->pArrayAccessCollection['zwei']);
     }
@@ -291,7 +291,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             ),
             new JsonMapperTest_Broken()
         );
-        $this->assertInstanceOf('ArrayObject', $sn->pTypedArrayObjectNoClass);
+        $this->assertInstanceOf(ArrayObject::class, $sn->pTypedArrayObjectNoClass);
         $this->assertCount(1, $sn->pTypedArrayObjectNoClass);
         $this->assertInstanceOf(
             'ThisClassDoesNotExist', $sn->pTypedArrayObjectNoClass[0]
@@ -389,7 +389,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(1, $sn->pMultiverse[0][0]);
 
         $this->assertInstanceOf(
-            'JsonMapperTest_Simple', $sn->pMultiverse[0][0][0]
+            JsonMapperTest_Simple::class, $sn->pMultiverse[0][0][0]
         );
         $this->assertSame(23, $sn->pMultiverse[0][0][0]->pint);
     }
@@ -434,7 +434,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         $this->assertIsArray($sn->typedSimpleArray);
         $this->assertCount(1, $sn->typedSimpleArray);
         $this->assertArrayHasKey('en-US', $sn->typedSimpleArray);
-        $this->assertInstanceOf('DateTime', $sn->typedSimpleArray['en-US']);
+        $this->assertInstanceOf(DateTime::class, $sn->typedSimpleArray['en-US']);
         $this->assertSame(
             '2014-01-02', $sn->typedSimpleArray['en-US']->format('Y-m-d')
         );
