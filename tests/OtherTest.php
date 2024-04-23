@@ -66,7 +66,7 @@ class OtherTest extends \PHPUnit\Framework\TestCase
 
         $this->assertIsObject($sn->internalData['typehint']);
         $this->assertInstanceOf(
-            'JsonMapperTest_Simple', $sn->internalData['typehint']
+            JsonMapperTest_Simple::class, $sn->internalData['typehint']
         );
         $this->assertSame(
             'stringvalue', $sn->internalData['typehint']->str
@@ -86,7 +86,7 @@ class OtherTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertIsObject($sn->internalData['docblock']);
         $this->assertInstanceOf(
-            'JsonMapperTest_Simple', $sn->internalData['docblock']
+            JsonMapperTest_Simple::class, $sn->internalData['docblock']
         );
         $this->assertSame(
             'stringvalue', $sn->internalData['docblock']->str
@@ -105,7 +105,7 @@ class OtherTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertIsObject($sn->internalData['notype']);
         $this->assertInstanceOf(
-            'stdClass', $sn->internalData['notype']
+            stdClass::class, $sn->internalData['notype']
         );
         $this->assertSame(
             'stringvalue', $sn->internalData['notype']->str
