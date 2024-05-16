@@ -28,7 +28,7 @@ class Enums_PHP81_Test extends \PHPUnit\Framework\TestCase
             new \Enums\ObjectWithEnum()
         );
 
-        $this->assertEquals(\Enums\StringBackedEnum::FOO, $sn->stringBackedEnum);
-        $this->assertEquals(\Enums\IntBackedEnum::BAR, $sn->intBackedEnum);
+        $this->assertSame(\Enums\StringBackedEnum::FOO, $sn->stringBackedEnum);
+        $this->assertSame(\Enums\IntBackedEnum::BAR, $sn->intBackedEnum);
     }
 }

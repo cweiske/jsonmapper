@@ -33,8 +33,8 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Simple()
         );
         $this->assertIsObject($sn->simple);
-        $this->assertInstanceOf('JsonMapperTest_Simple', $sn->simple);
-        $this->assertEquals('stringvalue', $sn->simple->str);
+        $this->assertInstanceOf(JsonMapperTest_Simple::class, $sn->simple);
+        $this->assertSame('stringvalue', $sn->simple->str);
     }
 
     public function testMapObjectByClassName()
@@ -45,8 +45,8 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
             JsonMapperTest_Simple::class
         );
         $this->assertIsObject($sn->simple);
-        $this->assertInstanceOf('JsonMapperTest_Simple', $sn->simple);
-        $this->assertEquals('stringvalue', $sn->simple->str);
+        $this->assertInstanceOf(JsonMapperTest_Simple::class, $sn->simple);
+        $this->assertSame('stringvalue', $sn->simple->str);
     }
 
     public function testMapDateTime()
@@ -56,8 +56,8 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
             json_decode('{"datetime":"2014-04-01T00:00:00+02:00"}'),
             new JsonMapperTest_Object()
         );
-        $this->assertInstanceOf('DateTime', $sn->datetime);
-        $this->assertEquals(
+        $this->assertInstanceOf(DateTime::class, $sn->datetime);
+        $this->assertSame(
             '2014-04-01T00:00:00+02:00',
             $sn->datetime->format('c')
         );
@@ -111,8 +111,8 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
         );
 
         $this->assertIsObject($sn->pPlainObject);
-        $this->assertInstanceOf('JsonMapperTest_PlainObject', $sn->pPlainObject);
-        $this->assertEquals('abc', $sn->pPlainObject->pStr);
+        $this->assertInstanceOf(JsonMapperTest_PlainObject::class, $sn->pPlainObject);
+        $this->assertSame('abc', $sn->pPlainObject->pStr);
     }
 
     public function testStrictTypeCheckingObjectError()
@@ -206,7 +206,8 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
             JsonMapperTest_ObjectConstructor::class
         );
 
-        $this->assertEquals('bar', $objs[0]->foo);
+        $this->assertSame('bar', $objs[0]->foo);
+        $this->assertSame(1, $objs[0]->id);
     }
 
     public function testConstructorWithOptionalParams()
@@ -219,7 +220,35 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
             JsonMapperTest_ObjectConstructorOptional::class
         );
 
-        $this->assertEquals('optional', $objs[0]->foo);
+        $this->assertSame('optional', $objs[0]->foo);
+        $this->assertSame(1, $objs[0]->id);
+    }
+
+    /**
+     * Test for PHP7 nullable types like "?Object"
+     */
+    public function testObjectSetterTypeNullable()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"typeNullableObject":null}'),
+            new JsonMapperTest_PHP7Object()
+        );
+        $this->assertNull($sn->typeNullableObject);
+    }
+
+    /**
+     * Test for non-nullable types like "@param object" with null value
+     */
+    public function testObjectSetterDocblockInvalidNull()
+    {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('JSON property "nonNullableObject" in class "JsonMapperTest_PHP7Object" must not be NULL');
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"nonNullableObject":null}'),
+            new JsonMapperTest_PHP7Object()
+        );
     }
 }
 ?>
