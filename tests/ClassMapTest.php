@@ -30,8 +30,8 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
         $testCase = $this;
 
         // the class/interface to be mapped
-        $testCase->assertEquals($testCase::CLASS_MAP_CLASS, $class);
-        $testCase->assertEquals($testCase::CLASS_MAP_DATA, $jvalue);
+        $testCase->assertSame($testCase::CLASS_MAP_CLASS, $class);
+        $testCase->assertSame($testCase::CLASS_MAP_DATA, $jvalue);
 
         return 'DateTime';
     }
@@ -48,8 +48,8 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
             'name' =>     ['DateTime'],
             'function' => [function ($class, $jvalue) use ($testCase) {
                 // the class/interface to be mapped
-                $testCase->assertEquals($testCase::CLASS_MAP_CLASS, $class);
-                $testCase->assertEquals($testCase::CLASS_MAP_DATA, $jvalue);
+                $testCase->assertSame($testCase::CLASS_MAP_CLASS, $class);
+                $testCase->assertSame($testCase::CLASS_MAP_DATA, $jvalue);
                 return 'DateTime';
             }],
             'invoke' =>   [$this],  // __invoke
@@ -68,9 +68,8 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Object()
         );
 
-        $this->assertIsObject($sn->pPlainObject);
-        $this->assertInstanceOf('DateTime', $sn->pPlainObject);
-        $this->assertEquals(
+        $this->assertInstanceOf(DateTime::class, $sn->pPlainObject);
+        $this->assertSame(
             self::CLASS_MAP_DATA,
             $sn->pPlainObject->format('c')
         );
@@ -124,7 +123,7 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertIsArray($data->typedSimpleArray);
         $this->assertCount(1, $data->typedSimpleArray);
-        $this->assertIsString($data->typedSimpleArray[0]);
+        $this->assertSame('2019-03-23', $data->typedSimpleArray[0]);
     }
 }
 ?>

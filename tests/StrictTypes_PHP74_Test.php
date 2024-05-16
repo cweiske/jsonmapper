@@ -26,11 +26,11 @@ class StrictTypes_PHP74_Test extends \PHPUnit\Framework\TestCase
             new \namespacetest\PhpStrictTypes()
         );
 
-        $this->assertEquals(123, $sn->id);
+        $this->assertSame(123, $sn->id);
         $this->assertInstanceOf(\namespacetest\model\User::class, $sn->importedNs);
         $this->assertInstanceOf(\othernamespace\Foo::class, $sn->otherNs);
-        $this->assertEquals('anything', $sn->withoutType);
-        $this->assertTrue(isset($sn->nullable));
+        $this->assertSame('anything', $sn->withoutType);
+        $this->assertSame('value', $sn->nullable);
         $this->assertIsArray($sn->fooArray);
         $this->assertCount(2, $sn->fooArray);
         $this->assertInstanceOf(\othernamespace\Foo::class, $sn->fooArray[0]);
