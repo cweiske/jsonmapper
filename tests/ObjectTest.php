@@ -34,7 +34,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertIsObject($sn->simple);
         $this->assertInstanceOf('JsonMapperTest_Simple', $sn->simple);
-        $this->assertEquals('stringvalue', $sn->simple->str);
+        $this->assertSame('stringvalue', $sn->simple->str);
     }
 
     public function testMapObjectByClassName()
@@ -46,7 +46,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertIsObject($sn->simple);
         $this->assertInstanceOf('JsonMapperTest_Simple', $sn->simple);
-        $this->assertEquals('stringvalue', $sn->simple->str);
+        $this->assertSame('stringvalue', $sn->simple->str);
     }
 
     public function testMapDateTime()
@@ -57,7 +57,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Object()
         );
         $this->assertInstanceOf('DateTime', $sn->datetime);
-        $this->assertEquals(
+        $this->assertSame(
             '2014-04-01T00:00:00+02:00',
             $sn->datetime->format('c')
         );
@@ -112,7 +112,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
 
         $this->assertIsObject($sn->pPlainObject);
         $this->assertInstanceOf('JsonMapperTest_PlainObject', $sn->pPlainObject);
-        $this->assertEquals('abc', $sn->pPlainObject->pStr);
+        $this->assertSame('abc', $sn->pPlainObject->pStr);
     }
 
     public function testStrictTypeCheckingObjectError()
@@ -206,7 +206,8 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
             JsonMapperTest_ObjectConstructor::class
         );
 
-        $this->assertEquals('bar', $objs[0]->foo);
+        $this->assertSame('bar', $objs[0]->foo);
+        $this->assertSame(1, $objs[0]->id);
     }
 
     public function testConstructorWithOptionalParams()
@@ -219,7 +220,8 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
             JsonMapperTest_ObjectConstructorOptional::class
         );
 
-        $this->assertEquals('optional', $objs[0]->foo);
+        $this->assertSame('optional', $objs[0]->foo);
+        $this->assertSame(1, $objs[0]->id);
     }
 
     /**
