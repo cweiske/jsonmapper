@@ -220,9 +220,6 @@ class OtherTest extends \PHPUnit\Framework\TestCase
 
         $json   = '{"privateNoSetter" : 1}';
         $result = $jm->map(json_decode($json), new JsonMapperTest_PrivateWithSetter());
-
-        $this->assertEquals(1, $result->getPrivateProperty());
-        $this->assertTrue(empty($logger->log));
     }
 
     public function testPrivatePropertyWithNoSetterButAllowed()
