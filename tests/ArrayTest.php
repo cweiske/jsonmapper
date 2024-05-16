@@ -35,7 +35,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Array()
         );
         $this->assertIsArray($sn->typedArray);
-        $this->assertEquals(2, count($sn->typedArray));
+        $this->assertCount(2, $sn->typedArray);
         $this->assertInstanceOf('JsonMapperTest_Simple', $sn->typedArray[0]);
         $this->assertInstanceOf('JsonMapperTest_Simple', $sn->typedArray[1]);
         $this->assertEquals('stringvalue', $sn->typedArray[0]->str);
@@ -54,7 +54,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Array()
         );
         $this->assertIsArray($sn->typedSimpleArray);
-        $this->assertEquals(3, count($sn->typedSimpleArray));
+        $this->assertCount(3, $sn->typedSimpleArray);
         $this->assertInstanceOf('DateTime', $sn->typedSimpleArray[0]);
         $this->assertNull($sn->typedSimpleArray[1]);
         $this->assertInstanceOf('DateTime', $sn->typedSimpleArray[2]);
@@ -166,7 +166,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Array()
         );
         $this->assertInstanceOf('ArrayObject', $sn->pArrayObject);
-        $this->assertEquals(2, count($sn->pArrayObject));
+        $this->assertCount(2, $sn->pArrayObject);
         $this->assertInstanceOf('\stdClass', $sn->pArrayObject[0]);
         $this->assertInstanceOf('\stdClass', $sn->pArrayObject[1]);
         $this->assertEquals('stringvalue', $sn->pArrayObject[0]->str);
@@ -186,7 +186,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Array()
         );
         $this->assertInstanceOf('ArrayObject', $sn->pTypedArrayObject);
-        $this->assertEquals(2, count($sn->pTypedArrayObject));
+        $this->assertCount(2, $sn->pTypedArrayObject);
         $this->assertInstanceOf('JsonMapperTest_Simple', $sn->pTypedArrayObject[0]);
         $this->assertInstanceOf('JsonMapperTest_Simple', $sn->pTypedArrayObject[1]);
         $this->assertEquals('stringvalue', $sn->pTypedArrayObject[0]->str);
@@ -206,7 +206,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Array()
         );
         $this->assertInstanceOf('ArrayObject', $sn->pSimpleArrayObject);
-        $this->assertEquals(2, count($sn->pSimpleArrayObject));
+        $this->assertCount(2, $sn->pSimpleArrayObject);
         $this->assertIsInt($sn->pSimpleArrayObject['eins']);
         $this->assertIsInt($sn->pSimpleArrayObject['zwei']);
         $this->assertEquals(1, $sn->pSimpleArrayObject['eins']);
@@ -314,7 +314,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Broken()
         );
         $this->assertInstanceOf('ArrayObject', $sn->pTypedArrayObjectNoClass);
-        $this->assertEquals(1, count($sn->pTypedArrayObjectNoClass));
+        $this->assertCount(1, $sn->pTypedArrayObjectNoClass);
         $this->assertInstanceOf(
             'ThisClassDoesNotExist', $sn->pTypedArrayObjectNoClass[0]
         );
@@ -413,13 +413,13 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Array()
         );
         $this->assertIsArray($sn->pMultiverse);
-        $this->assertEquals(1, count($sn->pMultiverse));
+        $this->assertCount(1, $sn->pMultiverse);
 
         $this->assertIsArray($sn->pMultiverse[0]);
-        $this->assertEquals(1, count($sn->pMultiverse[0]));
+        $this->assertCount(1, $sn->pMultiverse[0]);
 
         $this->assertIsArray($sn->pMultiverse[0][0]);
-        $this->assertEquals(1, count($sn->pMultiverse[0][0]));
+        $this->assertCount(1, $sn->pMultiverse[0][0]);
 
         $this->assertInstanceOf(
             'JsonMapperTest_Simple', $sn->pMultiverse[0][0][0]
@@ -464,7 +464,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Array()
         );
         $this->assertIsArray($sn->typedSimpleArray);
-        $this->assertEquals(1, count($sn->typedSimpleArray));
+        $this->assertCount(1, $sn->typedSimpleArray);
         $this->assertArrayHasKey('en-US', $sn->typedSimpleArray);
         $this->assertInstanceOf('DateTime', $sn->typedSimpleArray['en-US']);
         $this->assertEquals(
@@ -511,7 +511,7 @@ JSON;
         };
 
         $zoo = $jm->map(json_decode($zooJson), new Zoo());
-        $this->assertEquals(2, count($zoo->animals));
+        $this->assertCount(2, $zoo->animals);
 
         $this->assertInstanceOf(Cat::class, $zoo->animals[0]);
         $this->assertEquals('Lion', $zoo->animals[0]->name);
@@ -556,8 +556,8 @@ JSON;
         );
         $variadicArray = $sn->getVariadicDateTime();
 
+        $this->assertCount(2, $variadicArray);
         $this->assertIsArray($variadicArray);
-        $this->assertEquals(2, count($variadicArray));
         $this->assertInstanceOf('DateTime', $variadicArray[0]);
         $this->assertInstanceOf('DateTime', $variadicArray[1]);
         $this->assertEquals(
