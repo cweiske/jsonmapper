@@ -123,7 +123,7 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Array()
         );
         $this->assertIsArray($data->typedSimpleArray);
-        $this->assertEquals(1, count($data->typedSimpleArray));
+        $this->assertCount(1, $data->typedSimpleArray);
         $this->assertIsString($data->typedSimpleArray[0]);
     }
 }
