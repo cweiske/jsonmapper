@@ -264,7 +264,6 @@ class OtherTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $jm->bExceptionOnUndefinedProperty = true;
-        $jm->setLogger(new JsonMapperTest_Logger());
 
         $result = $jm->map(json_decode('{"privatePropertySetterWithoutDoc" : 1}'), new JsonMapperTest_PrivateWithSetter());
         $this->assertSame(1, $result->getPrivatePropertySetterWithoutDoc());
@@ -274,7 +273,6 @@ class OtherTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $jm->bExceptionOnUndefinedProperty = true;
-        $jm->setLogger(new JsonMapperTest_Logger());
 
         $result = $jm->map(json_decode('{"privatePropertyNullableSetterWithoutDoc" : 1}'), new JsonMapperTest_PrivateWithSetter());
         $this->assertSame(1, $result->getPrivatePropertyNullableSetterWithoutDoc());
@@ -284,7 +282,6 @@ class OtherTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $jm->bExceptionOnUndefinedProperty = true;
-        $jm->setLogger(new JsonMapperTest_Logger());
 
         $result = $jm->map(json_decode('{"privatePropertyNullableSetterWithoutDoc" : null}'), new JsonMapperTest_PrivateWithSetter());
         $this->assertNull($result->getPrivatePropertyNullableSetterWithoutDoc());
@@ -294,7 +291,6 @@ class OtherTest extends \PHPUnit\Framework\TestCase
     {
         $jm = new JsonMapper();
         $jm->bExceptionOnUndefinedProperty = true;
-        $jm->setLogger(new JsonMapperTest_Logger());
 
         $result = $jm->map(
             json_decode(
