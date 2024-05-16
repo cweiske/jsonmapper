@@ -262,10 +262,6 @@ class OtherTest extends \PHPUnit\Framework\TestCase
 
     public function testPrivatePropertySetterWithoutDoc()
     {
-        if (PHP_MAJOR_VERSION < 7) {
-            $this->markTestSkipped("This test is for PHP >= 7");
-        }
-
         $jm = new JsonMapper();
         $jm->bExceptionOnUndefinedProperty = true;
         $jm->setLogger(new JsonMapperTest_Logger());
@@ -276,10 +272,6 @@ class OtherTest extends \PHPUnit\Framework\TestCase
 
     public function testPrivatePropertyNullableNotNullSetterWithoutDoc()
     {
-        if (PHP_MAJOR_VERSION < 7) {
-            $this->markTestSkipped("This test is for PHP >= 7");
-        }
-
         $jm = new JsonMapper();
         $jm->bExceptionOnUndefinedProperty = true;
         $jm->setLogger(new JsonMapperTest_Logger());
@@ -290,10 +282,6 @@ class OtherTest extends \PHPUnit\Framework\TestCase
 
     public function testPrivatePropertyNullableNullSetterWithoutDoc()
     {
-        if (PHP_MAJOR_VERSION < 7) {
-            $this->markTestSkipped("This test is for PHP >= 7");
-        }
-
         $jm = new JsonMapper();
         $jm->bExceptionOnUndefinedProperty = true;
         $jm->setLogger(new JsonMapperTest_Logger());
