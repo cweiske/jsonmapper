@@ -21,7 +21,7 @@ class Array_PHP74_Test extends TestCase
         $json = json_decode('{"files": ["test.txt"]}');
         $jsonMapper = new \JsonMapper();
         $array = $jsonMapper->map($json, new JsonMapperTest_PHP74Array());
-        self::assertCount(1, $array->files);
+        $this->assertCount(1, $array->files);
     }
 
     public function testMapArrayValueToStringProperty()

@@ -14,11 +14,8 @@ class NameMappingTest extends TestCase
             string $key,
             $value
         ): string {
-            return lcfirst(
-                str_replace(
-                    ' ', '', ucwords(str_replace(array('_', '-'), ' ', $key))
-                )
-            );
+            $this->assertSame('hyphen_value', $key);
+            return 'hyphenValue';
         };
 
         /** @var JsonMapperTest_Simple $sn */
@@ -27,7 +24,7 @@ class NameMappingTest extends TestCase
             new JsonMapperTest_Simple()
         );
 
-        self::assertSame('abc', $sn->hyphenValue);
+        $this->assertSame('abc', $sn->hyphenValue);
     }
 
     public function testItDoesNotMapKeyIfUndefinedPropertyHandlerDoesNotReturnValue(): void
@@ -45,6 +42,6 @@ class NameMappingTest extends TestCase
             new JsonMapperTest_Simple()
         );
 
-        self::assertNull($sn->hyphenValue);
+        $this->assertNull($sn->hyphenValue);
     }
 }

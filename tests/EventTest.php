@@ -39,7 +39,7 @@ class EventTest extends TestCase
             new JsonMapperTest_EventObject()
         );
         $this->assertIsString($sn->pStr);
-        $this->assertEquals('two', $sn->pStr);
+        $this->assertSame('two', $sn->pStr);
     }
 
     public function testDeserializePostEventArguments()
@@ -53,7 +53,7 @@ class EventTest extends TestCase
             new JsonMapperTest_EventObject()
         );
         $this->assertIsString($sn->pStr);
-        $this->assertEquals('barbarbar', $sn->pStr);
+        $this->assertSame('barbarbar', $sn->pStr);
     }
 }
 ?>
