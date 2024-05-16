@@ -36,8 +36,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertIsArray($sn->typedArray);
         $this->assertCount(2, $sn->typedArray);
-        $this->assertInstanceOf('JsonMapperTest_Simple', $sn->typedArray[0]);
-        $this->assertInstanceOf('JsonMapperTest_Simple', $sn->typedArray[1]);
+        $this->assertContainsOnlyInstancesOf(JsonMapperTest_Simple::class, $sn->typedArray);
         $this->assertEquals('stringvalue', $sn->typedArray[0]->str);
         $this->assertEquals(1.2, $sn->typedArray[1]->fl);
     }
@@ -167,8 +166,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertInstanceOf('ArrayObject', $sn->pArrayObject);
         $this->assertCount(2, $sn->pArrayObject);
-        $this->assertInstanceOf('\stdClass', $sn->pArrayObject[0]);
-        $this->assertInstanceOf('\stdClass', $sn->pArrayObject[1]);
+        $this->assertContainsOnlyInstancesOf(stdClass::class, $sn->pArrayObject);
         $this->assertEquals('stringvalue', $sn->pArrayObject[0]->str);
         $this->assertEquals('1.2', $sn->pArrayObject[1]->fl);
     }
@@ -187,8 +185,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertInstanceOf('ArrayObject', $sn->pTypedArrayObject);
         $this->assertCount(2, $sn->pTypedArrayObject);
-        $this->assertInstanceOf('JsonMapperTest_Simple', $sn->pTypedArrayObject[0]);
-        $this->assertInstanceOf('JsonMapperTest_Simple', $sn->pTypedArrayObject[1]);
+        $this->assertContainsOnlyInstancesOf(JsonMapperTest_Simple::class, $sn->pTypedArrayObject);
         $this->assertEquals('stringvalue', $sn->pTypedArrayObject[0]->str);
         $this->assertEquals('1.2', $sn->pTypedArrayObject[1]->fl);
     }
@@ -207,8 +204,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertInstanceOf('ArrayObject', $sn->pSimpleArrayObject);
         $this->assertCount(2, $sn->pSimpleArrayObject);
-        $this->assertIsInt($sn->pSimpleArrayObject['eins']);
-        $this->assertIsInt($sn->pSimpleArrayObject['zwei']);
+        $this->assertContainsOnly('int', $sn->pSimpleArrayObject, true);
         $this->assertEquals(1, $sn->pSimpleArrayObject['eins']);
         $this->assertEquals(1, $sn->pSimpleArrayObject['zwei']);
     }
@@ -557,9 +553,7 @@ JSON;
         $variadicArray = $sn->getVariadicDateTime();
 
         $this->assertCount(2, $variadicArray);
-        $this->assertIsArray($variadicArray);
-        $this->assertInstanceOf('DateTime', $variadicArray[0]);
-        $this->assertInstanceOf('DateTime', $variadicArray[1]);
+        $this->assertContainsOnlyInstancesOf(DateTime::class, $variadicArray);
         $this->assertEquals(
             '2014-01-02', $variadicArray[0]->format('Y-m-d')
         );
