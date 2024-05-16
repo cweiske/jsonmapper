@@ -143,7 +143,6 @@ class SimpleTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Simple()
         );
         $this->assertNull($sn->pnullable);
-        $this->assertEquals(null, $sn->pnullable);
     }
 
     /**
