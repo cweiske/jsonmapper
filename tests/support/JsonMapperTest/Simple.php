@@ -20,6 +20,8 @@
  */
 class JsonMapperTest_Simple
 {
+    public $db;
+
     /**
      * @var bool
      */
