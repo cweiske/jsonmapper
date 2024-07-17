@@ -138,6 +138,17 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(['str', '', '2.048'], $sn->strArrayV2);
     }
 
+    public function testNullArrayValue()
+    {
+        $jm = new JsonMapper();
+        $jm->bStrictNullTypes = true;
+        $sn = $jm->map(
+            json_decode('{"strArray":["a",null,"c"]}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertSame(['a', null, 'c'], $sn->strArray);
+    }
+
     /**
      * Test for "@var ArrayObject"
      */
