@@ -31,5 +31,7 @@ class JsonMapperTest_Broken
      * @required
      */
     public $pMissingData;
+
+    public $store;
 }
 ?>

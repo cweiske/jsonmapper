@@ -187,12 +187,12 @@ class OtherTest extends \PHPUnit\Framework\TestCase
             new JsonMapperTest_Broken()
         );
 
-        $this->assertSame(123, $sn->ADDundefinedProperty);
+        $this->assertSame(123, $sn->store['undefinedProperty']);
     }
 
     public function setUnknownProperty($object, $propName, $jsonValue)
     {
-        $object->{'ADD' . $propName} = $jsonValue;
+        $object->store[$propName] = $jsonValue;
     }
 
     public function testPrivatePropertyWithPublicSetter()
