@@ -39,20 +39,17 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
     const CLASS_MAP_CLASS = 'JsonMapperTest_PlainObject';
     const CLASS_MAP_DATA = '2016-04-14T23:15:42+02:00';
 
-    public function classMapTestData()
+    public static function classMapTestData()
     {
-        $testCase = $this;
-
         // classMap value
         return [
             'name' =>     ['DateTime'],
-            'function' => [function ($class, $jvalue) use ($testCase) {
+            'function' => [function ($class, $jvalue) {
                 // the class/interface to be mapped
-                $testCase->assertSame($testCase::CLASS_MAP_CLASS, $class);
-                $testCase->assertSame($testCase::CLASS_MAP_DATA, $jvalue);
+                static::assertSame(static::CLASS_MAP_CLASS, $class);
+                static::assertSame(static::CLASS_MAP_DATA, $jvalue);
                 return 'DateTime';
-            }],
-            'invoke' =>   [$this],  // __invoke
+            }]
         ];
     }
 
