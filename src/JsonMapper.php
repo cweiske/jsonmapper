@@ -75,6 +75,14 @@ class JsonMapper
     public $bStrictNullTypes = true;
 
     /**
+     * Throw an exception if the flat (simple) type of
+     * the JSON input does not match class property type
+     *
+     * @var bool
+     */
+    public $bStrictFlatTypes = false;
+
+    /**
      * Allow mapping of private and protected properties.
      *
      * @var boolean
@@ -260,6 +268,13 @@ class JsonMapper
                 if ($this->isFlatType($type)
                     && !$this->isFlatType(gettype($jvalue))
                 ) {
+                    throw new JsonMapper_Exception(
+                        'JSON property "' . $key . '" in class "'
+                        . $strClassName . '" is of type ' . gettype($jvalue) . ' and'
+                        . ' cannot be converted to ' . $type
+                    );
+                }
+                if ($this->bStrictFlatTypes === true && !$this->strictTypeMatch($type, gettype($jvalue))) {
                     throw new JsonMapper_Exception(
                         'JSON property "' . $key . '" in class "'
                         . $strClassName . '" is of type ' . gettype($jvalue) . ' and'
@@ -814,6 +829,24 @@ class JsonMapper
             || $type == 'boolean' || $type == 'bool'
             || $type == 'integer' || $type == 'int'
             || $type == 'double' || $type == 'float';
+    }
+
+    /**
+     * Checks if the given classType is semantically the same
+     * type as the given json type
+     *
+     * @param $classType
+     * @param $jType
+     * @return boolean True if is semantically the same
+     */
+    protected function strictTypeMatch($classType, $jType) {
+        switch ($classType) {
+            case 'string': return $jType === 'string';
+            case 'bool': return $jType === 'boolean';
+            case 'int': return $jType === 'integer';
+            case 'float': return $jType === 'double' || $jType === 'float' || $jType == 'integer';
+            case 'null': return $jType === 'null' || $jType === 'NULL';
+        }
     }
 
     /**
