@@ -59,6 +59,7 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
     public function testClassMap($classMapValue)
     {
         $jm = new JsonMapper();
+        $jm->bStrictObjectTypeChecking = false;
         $jm->classMap[self::CLASS_MAP_CLASS] = $classMapValue;
         $sn = $jm->map(
             json_decode('{"pPlainObject":"'.self::CLASS_MAP_DATA.'"}'),
@@ -75,6 +76,7 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
     public function testNamespaceKeyWithLeadingBackslash()
     {
         $jm = new JsonMapper();
+        $jm->bStrictObjectTypeChecking = false;
         $jm->classMap['\\namespacetest\\model\\User']
             = \namespacetest\Unit::class;
         $data = $jm->map(
@@ -88,6 +90,7 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
     public function testNamespaceKeyNoLeadingBackslash()
     {
         $jm = new JsonMapper();
+        $jm->bStrictObjectTypeChecking = false;
         $jm->classMap[\namespacetest\model\User::class]
             = \namespacetest\Unit::class;
         $data = $jm->map(

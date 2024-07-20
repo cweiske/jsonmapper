@@ -477,17 +477,33 @@ setter methods by setting ``$bIgnoreVisibility`` to true:
 Simple types instead of objects
 ===============================
 When a variable's type is a class and JSON data is a simple type
-like ``string``, JsonMapper passes this value to the class' constructor.
-
-If you do not want this, set ``$bStrictObjectTypeChecking`` to ``true``:
+like ``string``, JsonMapper can pass this value to the class' constructor
+when configured to do so:
 
 .. code:: php
 
     $jm = new JsonMapper();
-    $jm->bStrictObjectTypeChecking = true;
+    $jm->bStrictObjectTypeChecking = false;
     $jm->map(...);
 
-An exception is then thrown in such cases.
+This can be used to automatically initialize DateTime objects
+from date strings.
+
+Disabling this strict object type checks may lead to problems, though:
+
+- When a class does not have a constructor or no constructor parameter,
+  the value will get lost
+- When the constructor has more than 1 required parameter, it will crash.
+- When the constructor's parameter type does not match the one of the
+  data in JSON, it will crash
+- ``@required`` properties will not be filled
+
+.. note::
+   The default value changed from ``false`` to ``true`` in version 5 to
+   increase security.
+
+   Now you have to opt in if you want to pass simple types to
+   the class constructor.
 
 
 Passing arrays to ``map()``

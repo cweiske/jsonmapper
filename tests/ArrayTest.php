@@ -48,6 +48,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
     public function testMapTypedSimpleArray()
     {
         $jm = new JsonMapper();
+        $jm->bStrictObjectTypeChecking = false;
         $jm->bStrictNullTypesInArrays = false;
         $sn = $jm->map(
             json_decode('{"typedSimpleArray":["2014-01-02",null,"2014-05-07"]}'),
@@ -510,6 +511,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
     public function testMapTypedSimpleArrayFromObject()
     {
         $jm = new JsonMapper();
+        $jm->bStrictObjectTypeChecking = false;
         $sn = $jm->map(
             json_decode('{"typedSimpleArray":{"en-US":"2014-01-02"}}'),
             new JsonMapperTest_Array()
@@ -587,6 +589,7 @@ JSON;
     public function testMapArrayFromVariadicFunctionWithObjectType()
     {
         $jm = new JsonMapper();
+        $jm->bStrictObjectTypeChecking = false;
         /** @var JsonMapperTest_VariadicArray $sn */
         $sn = $jm->map(
             json_decode('{"variadicDateTime":["2014-01-02","2014-05-07"]}'),

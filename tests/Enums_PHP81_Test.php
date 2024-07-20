@@ -22,6 +22,7 @@ class Enums_PHP81_Test extends \PHPUnit\Framework\TestCase
     public function testEnumMapping()
     {
         $jm = new JsonMapper();
+        $jm->bStrictObjectTypeChecking = false;
         /** @var \Enums\ObjectWithEnum $sn */
         $sn = $jm->map(
             json_decode(self::TEST_DATA),
