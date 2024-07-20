@@ -36,6 +36,16 @@ class JsonMapperTest_Array
     public $strArrayV2;
 
     /**
+     * @var array[string|null]
+     */
+    public $strMaybeNullArray;
+
+    /**
+     * @var array[?string]
+     */
+    public $strMaybeNullArrayV2;
+
+    /**
      * @var JsonMapperTest_Simple[]
      * @see http://phpdoc.org/docs/latest/references/phpdoc/types.html#arrays
      */
