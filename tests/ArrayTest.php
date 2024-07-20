@@ -48,6 +48,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
     public function testMapTypedSimpleArray()
     {
         $jm = new JsonMapper();
+        $jm->bStrictNullTypesInArrays = false;
         $sn = $jm->map(
             json_decode('{"typedSimpleArray":["2014-01-02",null,"2014-05-07"]}'),
             new JsonMapperTest_Array()
@@ -138,10 +139,63 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(['str', '', '2.048'], $sn->strArrayV2);
     }
 
-    public function testNullArrayValue()
+    /**
+     * Test for an array of strings-or-null values - "@var array[string|null]"
+     */
+    public function testStrMaybeNullArray()
     {
         $jm = new JsonMapper();
-        $jm->bStrictNullTypes = true;
+        $this->assertTrue($jm->bStrictNullTypesInArrays);
+        $sn = $jm->map(
+            json_decode('{"strMaybeNullArray":["str",null,2.048]}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertSame(['str', null, '2.048'], $sn->strMaybeNullArray);
+    }
+
+    /**
+     * Test for an array of strings-or-null values - "@var array[?string]"
+     * Alternative syntax
+     */
+    public function testStrMaybeNullArrayV2()
+    {
+        $jm = new JsonMapper();
+        $this->assertTrue($jm->bStrictNullTypesInArrays);
+        $sn = $jm->map(
+            json_decode('{"strMaybeNullArrayV2":["str",null,2.048]}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertSame(['str', null, '2.048'], $sn->strMaybeNullArrayV2);
+    }
+
+    public function testNullArrayValueStrict()
+    {
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('JSON property "strArray[1]" must not be NULL');
+
+        $jm = new JsonMapper();
+        $this->assertTrue(
+            $jm->bStrictNullTypes,
+            'Default value for bStrictNullTypes is wrong'
+        );
+        $this->assertTrue(
+            $jm->bStrictNullTypesInArrays,
+            'Default value for bStrictNullTypesInArrays is wrong'
+        );
+        $sn = $jm->map(
+            json_decode('{"strArray":["a",null,"c"]}'),
+            new JsonMapperTest_Array()
+        );
+    }
+
+    public function testNullArrayValueNonStrict()
+    {
+        $jm = new JsonMapper();
+        $this->assertTrue(
+            $jm->bStrictNullTypes,
+            'Default value for bStrictNullTypes is wrong'
+        );
+        $jm->bStrictNullTypesInArrays = false;
         $sn = $jm->map(
             json_decode('{"strArray":["a",null,"c"]}'),
             new JsonMapperTest_Array()

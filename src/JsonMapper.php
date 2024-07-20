@@ -70,9 +70,17 @@ class JsonMapper
      * Throw an exception, if null value is found
      * but the type of attribute does not allow nulls.
      *
-     * @var bool
+     * @var boolean
      */
     public $bStrictNullTypes = true;
+
+    /**
+     * Throw an exception if null value is found in an array
+     * but the type of attribute does not allow nulls.
+     *
+     * @var boolean
+     */
+    public $bStrictNullTypesInArrays = true;
 
     /**
      * Allow mapping of private and protected properties.
@@ -277,7 +285,8 @@ class JsonMapper
                     'Empty type at property "'
                     . $strClassName . '::$' . $key . '"'
                 );
-            } else if (strpos($type, '|')) {
+
+            } else if (strpos(str_replace('|null', '', $type), '|')) {
                 throw new JsonMapper_Exception(
                     'Cannot decide which of the union types shall be used: '
                     . $type
@@ -316,9 +325,14 @@ class JsonMapper
                     );
                 }
 
+                $subtypeNullable = $this->isNullable($subtype);
                 $cleanSubtype = $this->removeNullable($subtype);
                 $subtype = $this->getFullNamespace($cleanSubtype, $strNs);
+                if ($subtypeNullable) {
+                    $subtype = '?' . $subtype;
+                }
                 $child = $this->mapArray($jvalue, $array, $subtype, $key);
+
             } else if ($this->isFlatType(gettype($jvalue))) {
                 //use constructor parameter if we have a class
                 // but only a flat type (i.e. string, int)
@@ -447,8 +461,19 @@ class JsonMapper
      */
     public function mapArray($json, $array, $class = null, $parent_key = '')
     {
+        $isNullable = $this->isNullable($class);
+        $class = $this->removeNullable($class);
         $originalClass = $class;
+
         foreach ($json as $key => $jvalue) {
+            if ($jvalue === null && !$isNullable && $this->bStrictNullTypesInArrays) {
+                throw new JsonMapper_Exception(
+                    'JSON property'
+                    . ' "' . ($parent_key ? $parent_key : '?') . '[' . $key . ']"'
+                    . ' must not be NULL'
+                );
+            }
+
             $class = $this->getMappedType($originalClass, $jvalue);
             if ($class === null) {
                 $array[$key] = $jvalue;

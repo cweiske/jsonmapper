@@ -336,6 +336,15 @@ to make all your type definitions nullable, set:
 
     $jm->bStrictNullTypes = false;
 
+Since version 5.0.0, ``null`` values in arrays lead to a ``JsonMapper_Exception``
+unless the type is nullable - e.g. ``array[?string]`` or ``array[string|null]``.
+
+To get the previous behavior back (allowing nulls even when not declared so) set:
+
+.. code:: php
+
+    $jm->bStrictNullTypesInArrays = false;
+
 
 Logging
 =======
