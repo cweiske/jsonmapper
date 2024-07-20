@@ -1,17 +1,5 @@
 <?php
 /**
- * Part of JsonMapper
- *
- * PHP version 5
- *
- * @category Tools
- * @package  JsonMapper
- * @author   Christian Weiske <cweiske@cweiske.de>
- * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
- * @link     https://github.com/cweiske/jsonmapper
- */
-
-/**
  * Unit tests for JsonMapper's classMap
  *
  * @category Tools

@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jaredchu
- * Date: 11/08/2017
- * Time: 16:39
- */
-
 class JsonMapperTest_ComplexObject
 {
     /**
