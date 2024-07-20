@@ -42,4 +42,4 @@ jobs:
         run: composer install --no-interaction --prefer-dist
 
       - name: Check codestyle
-        run: ./vendor/bin/phpcs --standard=PEAR src/
+        run: ./vendor/bin/phpcs
