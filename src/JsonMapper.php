@@ -495,9 +495,8 @@ class JsonMapper
                     } else if ($this->bStrictObjectTypeChecking) {
                         throw new JsonMapper_Exception(
                             'JSON property'
-                                . ' "' . ($parent_key ? $parent_key : '?') . '"'
-                                . ' (array key "' . $key . '") must be an object, '
-                                . gettype($jvalue) . ' given'
+                            . ' "' . ($parent_key ? $parent_key : '?') . '[' . $key . ']"'
+                            . ' must be an object, ' . gettype($jvalue) . ' given'
                         );
                     } else {
                         $array[$key] = $this->createInstance(

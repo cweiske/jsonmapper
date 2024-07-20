@@ -145,7 +145,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(JsonMapper_Exception::class);
         $this->expectExceptionMessage(
-            'JSON property "?" (array key "0") must be an object, string given'
+            'JSON property "?[0]" must be an object, string given'
         );
         $jm = new JsonMapper();
         $jm->bStrictObjectTypeChecking = true;
