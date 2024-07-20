@@ -527,6 +527,20 @@ JSON;
         $this->assertSame('2014-01-02', $variadicArray[0]->format('Y-m-d'));
         $this->assertSame('2014-05-07', $variadicArray[1]->format('Y-m-d'));
     }
+
+    /**
+     * Test the "if (count($parameters) !== 1) {" condition in "hasVariadicArrayType()"
+     */
+    public function testMapArrayVariadicMethodWithMultipleParams()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"multipleParams":[23]}'),
+            new JsonMapperTest_VariadicArray()
+        );
+
+        $this->assertSame([23], $sn->multipleParamsVal);
+    }
 }
 
 ?>

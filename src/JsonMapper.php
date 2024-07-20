@@ -822,7 +822,7 @@ class JsonMapper
 
     /**
      * Returns true if accessor is a method and has only one parameter
-     * which is variadic.
+     * which is variadic ("...$args").
      *
      * @param ReflectionMethod|ReflectionProperty|null $accessor accessor
      *                                                           to set value
