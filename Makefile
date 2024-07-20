@@ -1,3 +1,3 @@
 check:
 	./vendor/bin/phpunit
-	./vendor/bin/phpcs --standard=PEAR src/
+	./vendor/bin/phpcs
