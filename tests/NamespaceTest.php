@@ -53,6 +53,7 @@ class NamespaceTest extends \PHPUnit\Framework\TestCase
     public function testMapChildClassConstructorNamespace()
     {
         $mapper = new \JsonMapper();
+        $mapper->bStrictObjectTypeChecking = false;
         $json = '{"user":"John Smith"}';
         $res = $mapper->map(json_decode($json), new UnitData());
         $this->assertInstanceOf(\namespacetest\UnitData::class, $res);
@@ -106,6 +107,7 @@ class NamespaceTest extends \PHPUnit\Framework\TestCase
     public function testSetterNamespacedTypeHint()
     {
         $mapper = new \JsonMapper();
+        $mapper->bStrictObjectTypeChecking = false;
         $json = '{"namespacedTypeHint":"Foo"}';
         $res = $mapper->map(json_decode($json), new UnitData());
         $this->assertInstanceOf(\namespacetest\UnitData::class, $res);

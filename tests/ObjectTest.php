@@ -52,6 +52,7 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
     public function testMapDateTime()
     {
         $jm = new JsonMapper();
+        $jm->bStrictObjectTypeChecking = false;
         $sn = $jm->map(
             json_decode('{"datetime":"2014-04-01T00:00:00+02:00"}'),
             new JsonMapperTest_Object()
