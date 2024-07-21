@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Unit tests for JsonMapper's support for PHP 8.0 typed arrays for properties with constructor promotion
  *
- * @category Tools
+ * @category Tests
  * @package  JsonMapper
  * @author   Andreas Wunderwald <wundii@gmail.com>
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0

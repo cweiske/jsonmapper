@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Unit tests for JsonMapper's object handling (events)
  *
- * @category Tools
+ * @category Tests
  * @package  JsonMapper
  * @author   Christian Weiske <cweiske@cweiske.de>
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0

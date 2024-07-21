@@ -3,7 +3,7 @@
 /**
  * Unit tests for JsonMapper's support for PHP 7.4 strict types
  *
- * @category Tools
+ * @category Tests
  * @package  JsonMapper
  * @author   Lukas Cerny <lukas.cerny@futuretek.cz>
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
