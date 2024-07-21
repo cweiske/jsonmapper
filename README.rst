@@ -12,8 +12,9 @@ It's a bit like the native SOAP parameter mapping PHP's ``SoapClient``
 gives you, but for JSON.
 It does not rely on any schema, only your PHP class definitions.
 
-Type detection works by parsing ``@var`` docblock annotations of
-class properties, as well as type hints in setter methods.
+Type detection works by parsing type declarations and ``@var``
+docblock annotations of class properties,
+as well as type hints in setter methods.
 
 You do not have to modify your model classes by adding JSON specific code;
 it works automatically by parsing already-existing docblocks.
@@ -55,7 +56,7 @@ Usage
 
 Basic usage
 ===========
-#. Register an autoloader that can load `PSR-0`__ compatible classes.
+#. `Install`__ ``netresearch/jsonmapper`` with composer
 #. Create a ``JsonMapper`` object instance
 #. Call the ``map`` or ``mapArray`` method, depending on your data
 
@@ -69,7 +70,6 @@ Map a normal object:
     $contactObject = $mapper->map($jsonContact, new Contact());
     // or as classname
     $contactObject = $mapper->map($jsonContact, Contact::class);
-    ?>
 
 Map an array of objects:
 
@@ -81,12 +81,11 @@ Map an array of objects:
     $contactsArray = $mapper->mapArray(
         $jsonContacts, array(), 'Contact'
     );
-    ?>
 
-Instead of ``array()`` you may also use ``ArrayObject`` and descending classes
+Instead of ``array()`` you may also use ``ArrayObject`` and derived classes,
 as well as classes implementing ``ArrayAccess``.
 
-__ http://www.php-fig.org/psr/psr-0/
+.. __: #installation
 
 
 Example
@@ -96,10 +95,10 @@ JSON from an address book web service:
 .. code:: javascript
 
     {
-        'name':'Sheldon Cooper',
-        'address': {
-            'street': '2311 N. Los Robles Avenue',
-            'city': 'Pasadena'
+        "name":"Sheldon Cooper",
+        "address": {
+            "street": "2311 N. Los Robles Avenue",
+            "city": "Pasadena"
         }
     }
 
@@ -112,16 +111,11 @@ Your local ``Contact`` class:
     {
         /**
          * Full name
-         * @var string
          */
-        public $name;
+        public string $name;
 
-        /**
-         * @var Address
-         */
-        public $address;
+        public ?Address $address;
     }
-    ?>
 
 Your local ``Address`` class:
 
@@ -138,7 +132,6 @@ Your local ``Address`` class:
             //do something with $street and $city
         }
     }
-    ?>
 
 Your application code:
 
@@ -151,15 +144,14 @@ Your application code:
 
     echo "Geo coordinates for " . $contact->name . ": "
         . var_export($contact->address->getGeoCoords(), true);
-    ?>
 
 
 Property type mapping
 =====================
 ``JsonMapper`` uses several sources to detect the correct type of
-a property:
+a property in the following order:
 
-#. The setter method (``set`` + ``ucwords($propertyname)``) is inspected.
+#. Setter method (``set`` + ``ucwords($propertyname)``)
 
    Underscores "``_``" and hyphens "``-``" make the next letter uppercase.
    Property ``foo_bar-baz`` leads to setter method ``setFooBarBaz``.
@@ -268,6 +260,13 @@ __ http://phpdoc.org/docs/latest/references/phpdoc/types.html
 
 Simple type mapping
 -------------------
+
+.. note::
+   This feature is disabled by default for security reasons since version 5.
+   See `$bStrictObjectTypeChecking`__ for details.
+
+   .. __: #prop-bstrictobjecttypechecking
+
 When an object shall be created but the JSON contains a simple type
 only (e.g. string, float, boolean), this value is passed to
 the classes' constructor. Example:
@@ -276,10 +275,7 @@ PHP code:
 
 .. code:: php
 
-    /**
-     * @var DateTime
-     */
-    public $date;
+    public DateTime $date;
 
 JSON:
 
@@ -430,6 +426,12 @@ from the ``$undefinedPropertyHandler`` which will be used as property name.
 
 Missing properties
 ------------------
+
+.. note::
+   This only works when `$bStrictObjectTypeChecking`__ stays enabled.
+
+   .. __: #prop-bstrictobjecttypechecking
+
 Properties in your PHP classes can be marked as "required" by
 putting ``@required`` in their docblock:
 
@@ -442,7 +444,7 @@ putting ``@required`` in their docblock:
     public $someDatum;
 
 When the JSON data do not contain this property, JsonMapper will throw
-an exception when ``$bExceptionOnMissingData`` is activated:
+a ``JsonMapper_Exception`` when ``$bExceptionOnMissingData`` is activated:
 
 .. code:: php
 
@@ -473,6 +475,8 @@ setter methods by setting ``$bIgnoreVisibility`` to true:
     $jm->bIgnoreVisibility = true;
     $jm->map(...);
 
+
+.. _prop-bstrictobjecttypechecking:
 
 Simple types instead of objects
 ===============================
@@ -548,6 +552,8 @@ You may pass additional arguments to the post-mapping callback:
     $jm->postMappingMethodArguments = [23, 'foo'];
     $jm->map(...);
 
+
+.. _installation:
 
 ============
 Installation
