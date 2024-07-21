@@ -5,6 +5,7 @@
 
     <rule ref="PEAR">
         <exclude name="PEAR.Commenting.FileComment.Missing"/>
+        <exclude name="PEAR.Commenting.ClassComment.MissingCategoryTag"/>
     </rule>
     <rule ref="Generic.Files.LineLength">
         <properties>

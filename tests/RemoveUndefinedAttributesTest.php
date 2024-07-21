@@ -2,6 +2,7 @@
 /**
  * Unit tests for JsonMapper option "bRemoveUndefinedAttributes".
  *
+ * @category Tests
  * @package  JsonMapper
  * @author   Christian Weiske <cweiske@cweiske.de>
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0

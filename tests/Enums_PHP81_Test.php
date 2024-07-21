@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * Unit tests for JsonMapper's support for PHP 8.1 enums
  *
- * @category Tools
+ * @category Tests
  * @package  JsonMapper
  * @author   Martin Reinfandt <martin.reinfandt@check24.de>
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
