@@ -1,3 +1,15 @@
+2024-09-08  Christian Weiske  <cweiske@cweiske.de>
+
+	* Add support "?type" syntax for nullable types
+	  by @RobinvanderVliet
+	  https://github.com/cweiske/jsonmapper/pull/235
+	* Clean up phpunit tests
+	  by @SvenRtbg
+	  https://github.com/cweiske/jsonmapper/pull/232
+	* Increase test coverage to 100%
+	  by @cweiske
+	* Version 4.5.0
+
 2024-01-31  Christian Weiske  <cweiske@cweiske.de>
 
 	* Fix crash for case-insentive match without docblock
