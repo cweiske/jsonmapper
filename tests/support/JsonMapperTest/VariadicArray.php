@@ -30,6 +30,8 @@ class JsonMapperTest_VariadicArray
      */
     private $variadicInt;
 
+    public $multipleParamsVal;
+
     /**
      * @param DateTime[] $items
      *
@@ -68,6 +70,11 @@ class JsonMapperTest_VariadicArray
         $this->variadicInt = $items;
 
         return $this;
+    }
+
+    public function setMultipleParams(array $param, int ...$dummy)
+    {
+        $this->multipleParamsVal = $param;
     }
 }
 ?>

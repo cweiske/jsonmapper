@@ -725,6 +725,8 @@ class JsonMapper
      * Get the mapped class/type name for this class.
      * Returns the incoming classname if not mapped.
      *
+     * Lets you override class names via the $classMap property.
+     *
      * @param string|null $type   Type name to map
      * @param mixed       $jvalue Constructor parameter (the json value)
      *
@@ -822,7 +824,7 @@ class JsonMapper
 
     /**
      * Returns true if accessor is a method and has only one parameter
-     * which is variadic.
+     * which is variadic ("...$args").
      *
      * @param ReflectionMethod|ReflectionProperty|null $accessor accessor
      *                                                           to set value

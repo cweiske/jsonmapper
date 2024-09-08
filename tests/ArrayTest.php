@@ -138,6 +138,17 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(['str', '', '2.048'], $sn->strArrayV2);
     }
 
+    public function testNullArrayValue()
+    {
+        $jm = new JsonMapper();
+        $jm->bStrictNullTypes = true;
+        $sn = $jm->map(
+            json_decode('{"strArray":["a",null,"c"]}'),
+            new JsonMapperTest_Array()
+        );
+        $this->assertSame(['a', null, 'c'], $sn->strArray);
+    }
+
     /**
      * Test for "@var ArrayObject"
      */
@@ -515,6 +526,20 @@ JSON;
         $this->assertContainsOnlyInstancesOf(DateTime::class, $variadicArray);
         $this->assertSame('2014-01-02', $variadicArray[0]->format('Y-m-d'));
         $this->assertSame('2014-05-07', $variadicArray[1]->format('Y-m-d'));
+    }
+
+    /**
+     * Test the "if (count($parameters) !== 1) {" condition in "hasVariadicArrayType()"
+     */
+    public function testMapArrayVariadicMethodWithMultipleParams()
+    {
+        $jm = new JsonMapper();
+        $sn = $jm->map(
+            json_decode('{"multipleParams":[23]}'),
+            new JsonMapperTest_VariadicArray()
+        );
+
+        $this->assertSame([23], $sn->multipleParamsVal);
     }
 }
 
