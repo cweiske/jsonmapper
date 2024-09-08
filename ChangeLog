@@ -1,3 +1,10 @@
+2024-01-31  Christian Weiske  <cweiske@cweiske.de>
+
+	* Fix crash for case-insentive match without docblock
+	  by @jorrit
+	  https://github.com/cweiske/jsonmapper/pull/222
+	* Version 4.4.1
+
 2024-01-28  Christian Weiske  <cweiske@cweiske.de>
 
 	* Add optional arguments for post mapping event
