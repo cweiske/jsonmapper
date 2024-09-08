@@ -1,5 +1,26 @@
 2024-09-08  Christian Weiske  <cweiske@cweiske.de>
 
+	* BC break: Enforce bStrictObjectTypeChecking on arrays
+	  by @dktapps
+	  https://github.com/cweiske/jsonmapper/pull/225
+	* BC break: Only objects implementing both ArrayAccess and Traversable
+	  are handled as arrays now.
+	  Previously classes implementing only ArrayAccess were used as arrays,
+	  which broke non-traversable objects providing array access.
+	  by @daniser
+	  https://github.com/cweiske/jsonmapper/pull/224
+	* BC break: Reject NULL values in arrays unless explicitly allowed
+	  Set $bStrictNullTypesInArrays to get old behavior back.
+	  by @cweiske
+	  https://github.com/cweiske/jsonmapper/issues/233
+	* BC break: Default $bStrictObjectTypeChecking to true
+	  Class constructors are not called automatically anymore.
+	  by @cweiske
+	  https://github.com/cweiske/jsonmapper/issues/226
+	* Version 5.0.0
+
+2024-09-08  Christian Weiske  <cweiske@cweiske.de>
+
 	* Add support "?type" syntax for nullable types
 	  by @RobinvanderVliet
 	  https://github.com/cweiske/jsonmapper/pull/235
