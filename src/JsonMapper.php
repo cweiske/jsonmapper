@@ -369,7 +369,7 @@ class JsonMapper
      */
     protected function getFullNamespace($type, $strNs)
     {
-        if ($type === null || $type === '' || $type[0] === '\\' || $strNs === '') {
+        if ($type === null || $type === '' || $type[0] === '\\' || $strNs === '' || str_starts_with($type, 'array<')) {
             return $type;
         }
         list($first) = explode('[', $type, 2);
