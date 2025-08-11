@@ -146,6 +146,26 @@ class JsonMapper
      */
     public function map($json, $object)
     {
+        return $this->mapWithAncestors($json, $object, array());
+    }
+
+    /**
+     * Map data all data in $json into the given $object instance with ancestor tracking.
+     *
+     * @param object|array        $json      JSON object structure from json_decode()
+     * @param object|class-string $object    Object to map $json data into
+     * @param array               $ancestors Array of ancestor JSON objects from root to current level
+     *
+     * @return mixed Mapped object is returned.
+     *
+     * @template       T
+     * @phpstan-param  class-string<T>|T $object
+     * @phpstan-return T
+     *
+     * @see map()
+     */
+    protected function mapWithAncestors($json, $object, $ancestors)
+    {
         if ($this->bEnforceMapType && !is_object($json)) {
             throw new InvalidArgumentException(
                 'JsonMapper::map() requires first argument to be an object'
@@ -240,7 +260,7 @@ class JsonMapper
             }
 
             $type = $this->getFullNamespace($type, $strNs);
-            $type = $this->getMappedType($type, $jvalue);
+            $type = $this->getMappedType($type, $jvalue, $ancestors);
 
             if ($type === null || $type === 'mixed') {
                 //no given type - simply set the json data
@@ -318,7 +338,7 @@ class JsonMapper
                 if ($subtypeNullable) {
                     $subtype = '?' . $subtype;
                 }
-                $child = $this->mapArray($jvalue, $array, $subtype, $key);
+                $child = $this->mapArray($jvalue, $array, $subtype, $key, $ancestors);
 
             } else if ($this->isFlatType(gettype($jvalue))) {
                 //use constructor parameter if we have a class
@@ -332,7 +352,8 @@ class JsonMapper
                 $child = $this->createInstance($type, true, $jvalue);
             } else {
                 $child = $this->createInstance($type, false, $jvalue);
-                $this->map($jvalue, $child);
+                // Add current parent JSON object to ancestors for nested mapping
+                $this->mapWithAncestors($jvalue, $child, array_merge($ancestors, [$json]));
             }
             $this->setProperty($object, $accessor, $child);
         }
@@ -443,10 +464,11 @@ class JsonMapper
      *                           Pass "null" to not convert any values
      * @param string $parent_key Defines the key this array belongs to
      *                           in order to aid debugging.
+     * @param array  $ancestors  Array of ancestor JSON objects from root to current level
      *
      * @return mixed Mapped $array is returned
      */
-    public function mapArray($json, $array, $class = null, $parent_key = '')
+    public function mapArray($json, $array, $class = null, $parent_key = '', $ancestors = array())
     {
         $isNullable = $this->isNullable($class);
         $class = $this->removeNullable($class);
@@ -461,14 +483,17 @@ class JsonMapper
                 );
             }
 
-            $class = $this->getMappedType($originalClass, $jvalue);
+            $class = $this->getMappedType($originalClass, $jvalue, $ancestors);
             if ($class === null) {
                 $array[$key] = $jvalue;
             } else if ($this->isArrayOfType($class)) {
+                // Add current JSON object to ancestors for nested array mapping
                 $array[$key] = $this->mapArray(
                     $jvalue,
                     array(),
-                    substr($class, 0, -2)
+                    substr($class, 0, -2),
+                    '',
+                    array_merge($ancestors, [$json])
                 );
             } else if ($this->isFlatType(gettype($jvalue))) {
                 //use constructor parameter if we have a class
@@ -499,13 +524,20 @@ class JsonMapper
                     . ' "' . gettype($jvalue) . '"'
                 );
             } else if (is_a($class, 'ArrayObject', true)) {
+                // Add current JSON object to ancestors for ArrayObject mapping
                 $array[$key] = $this->mapArray(
                     $jvalue,
-                    $this->createInstance($class)
+                    $this->createInstance($class),
+                    null,
+                    '',
+                    array_merge($ancestors, [$json])
                 );
             } else {
-                $array[$key] = $this->map(
-                    $jvalue, $this->createInstance($class, false, $jvalue)
+                // Add current JSON object to ancestors for nested object mapping
+                $array[$key] = $this->mapWithAncestors(
+                    $jvalue, 
+                    $this->createInstance($class, false, $jvalue), 
+                    array_merge($ancestors, [$json])
                 );
             }
         }
@@ -747,12 +779,13 @@ class JsonMapper
      *
      * Lets you override class names via the $classMap property.
      *
-     * @param string|null $type   Type name to map
-     * @param mixed       $jvalue Constructor parameter (the json value)
+     * @param string|null $type      Type name to map
+     * @param mixed       $jvalue    Constructor parameter (the json value)
+     * @param array       $ancestors Array of ancestor JSON objects from root to current level
      *
      * @return string|null The mapped type/class name
      */
-    protected function getMappedType($type, $jvalue = null)
+    protected function getMappedType($type, $jvalue = null, $ancestors = array())
     {
         if (isset($this->classMap[$type])) {
             $target = $this->classMap[$type];
@@ -766,7 +799,7 @@ class JsonMapper
 
         if ($target) {
             if (is_callable($target)) {
-                $type = $target($type, $jvalue);
+                $type = $target($type, $jvalue, $ancestors);
             } else {
                 $type = $target;
             }
