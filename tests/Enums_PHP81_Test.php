@@ -32,4 +32,45 @@ class Enums_PHP81_Test extends \PHPUnit\Framework\TestCase
         $this->assertSame(\Enums\StringBackedEnum::FOO, $sn->stringBackedEnum);
         $this->assertSame(\Enums\IntBackedEnum::BAR, $sn->intBackedEnum);
     }
+
+    /**
+     * Test that string values are correctly mapped to backed enum properties.
+     */
+    public function testBackedEnumPropertyIsMappedFromString(): void
+    {
+        $json = (object) [
+            'stringBackedEnum' => 'foo',
+            'intBackedEnum' => 2,
+        ];
+
+        $mapper = new \JsonMapper();
+        $target = new \Enums\ObjectWithEnum();
+
+        $mapped = $mapper->map($json, $target);
+
+        $this->assertSame(
+            \Enums\StringBackedEnum::FOO,
+            $mapped->stringBackedEnum,
+            'Expected JSON scalar to be converted to the corresponding backed enum case'
+        );
+    }
+
+    /**
+     * Test that mapping invalid string values to backed enum properties throws an exception.
+     */
+    public function testBackedEnumPropertyWithInvalidStringThrowsJsonMapperException(): void
+    {
+        $json = (object) [
+            'stringBackedEnum' => 'not-a-valid-enum-value',
+            'intBackedEnum' => 'not-a-valid-enum-value',
+        ];
+
+        $mapper = new \JsonMapper();
+        $target = new \Enums\ObjectWithEnum();
+
+        $this->expectException(\JsonMapper_Exception::class);
+        $this->expectExceptionMessage('Enum value "not-a-valid-enum-value" does not belong to');
+
+        $mapper->map($json, $target);
+    }
 }

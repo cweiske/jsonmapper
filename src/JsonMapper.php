@@ -296,12 +296,20 @@ class JsonMapper
             } else if (is_array($jvalue) && $this->hasVariadicArrayType($accessor)) {
                 $array = array();
                 $subtype = $type;
-            } else {
-                if (is_a($type, 'ArrayAccess', true)
-                    && is_a($type, 'Traversable', true)
-                ) {
-                    $array = $this->createInstance($type, false, $jvalue);
+            } else if (is_a($type, 'ArrayAccess', true)
+                && is_a($type, 'Traversable', true)
+            ) {
+                $array = $this->createInstance($type, false, $jvalue);
+            } else if (PHP_VERSION_ID >= 80100 && enum_exists($type)) {
+                $evalue = $type::tryFrom($jvalue);
+                if ($evalue === null) {
+                    throw new JsonMapper_Exception(
+                        'Enum value "' . $jvalue . '" does not belong to '
+                        . $type . ' enumerator class'
+                    );
                 }
+                $this->setProperty($object, $accessor, $evalue);
+                continue;
             }
 
             if ($array !== null) {
