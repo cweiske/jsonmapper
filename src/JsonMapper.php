@@ -754,7 +754,7 @@ class JsonMapper
      */
     protected function getMappedType($type, $jvalue = null)
     {
-        if (isset($this->classMap[$type])) {
+        if (isset($this->classMap[$type ?? ''])) {
             $target = $this->classMap[$type];
         } else if (is_string($type) && $type !== '' && $type[0] == '\\'
             && isset($this->classMap[substr($type, 1)])
