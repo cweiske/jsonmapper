@@ -52,7 +52,7 @@ class JsonMapperTest_PrivateWithSetter
         return $this;
     }
 
-    public function setPrivatePropertyNullableSetterWithoutDoc(int $privateProperty = null)
+    public function setPrivatePropertyNullableSetterWithoutDoc(?int $privateProperty = null)
     {
         $this->privatePropertyNullableSetterWithoutDoc = $privateProperty;
         return $this;
