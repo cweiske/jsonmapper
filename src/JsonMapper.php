@@ -600,7 +600,9 @@ class JsonMapper
                         && isset($annotations['param'])
                     ) {
                         foreach ($annotations['param'] as $param) {
-                            if (strpos($param, '$' . $rprop->getName()) !== false) {
+                            if (strpos($param . ' ', '$' . $rprop->getName() . ' ') !== false
+                                || strpos($param . "\t", '$' . $rprop->getName() . "\t") !== false
+                            ) {
                                 list($type) = explode(' ', $param);
                                 return array(
                                     true, $rprop, $type, $this->isNullable($type)

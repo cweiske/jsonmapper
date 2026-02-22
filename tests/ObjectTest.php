@@ -243,6 +243,26 @@ class ObjectTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * When a property's name was the prefix of another property's name,
+     * the wrong property would be selected sometimes.
+     * The type of "$idDate" would be used as type for "$id".
+     */
+    public function testConstructorPrefixBug()
+    {
+        $jm = new JsonMapper();
+        $jm->bStrictObjectTypeChecking = false;
+        $json = '[{"id":1,"idDate":"2025-02-23"}]';
+        $objs = $jm->mapArray(
+            json_decode($json),
+            [],
+            JsonMapperTest_ObjectConstructorPrefixBug::class
+        );
+
+        $this->assertSame(1, $objs[0]->id);
+        $this->assertSame('2025-02-23', $objs[0]->idDate->format('Y-m-d'));
+    }
+
+    /**
      * Test for PHP7 nullable types like "?Object"
      */
     public function testObjectSetterTypeNullable()
