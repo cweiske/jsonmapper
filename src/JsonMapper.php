@@ -144,7 +144,7 @@ class JsonMapper
      *
      * @see mapArray()
      */
-    public function map($json, $object): mixed
+    public function map($json, $object)
     {
         if ($this->bEnforceMapType && !is_object($json)) {
             throw new InvalidArgumentException(
@@ -448,7 +448,7 @@ class JsonMapper
      *
      * @return mixed Mapped $array is returned
      */
-    public function mapArray($json, $array, $class = null, $parent_key = ''): mixed
+    public function mapArray($json, $array, $class = null, $parent_key = '')
     {
         $isNullable = $this->isNullable($class);
         $class = $this->removeNullable($class);
