@@ -726,7 +726,7 @@ class JsonMapper
      */
     protected function createInstance(
         $class, $useParameter = false, $jvalue = null
-    ): object {
+    ) {
         if ($useParameter) {
             if (PHP_VERSION_ID >= 80100
                 && is_subclass_of($class, \BackedEnum::class)
