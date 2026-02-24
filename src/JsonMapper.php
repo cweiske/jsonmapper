@@ -22,7 +22,7 @@ class JsonMapper
      * Throw an exception when JSON data contain a property
      * that is not defined in the PHP class
      *
-     * @var boolean
+     * @var bool
      */
     public $bExceptionOnUndefinedProperty = false;
 
@@ -30,7 +30,7 @@ class JsonMapper
      * Throw an exception if the JSON data miss a property
      * that is marked with @required in the PHP class
      *
-     * @var boolean
+     * @var bool
      */
     public $bExceptionOnMissingData = false;
 
@@ -41,7 +41,7 @@ class JsonMapper
      *
      *     json_decode($str, false)
      *
-     * @var boolean
+     * @var bool
      */
     public $bEnforceMapType = true;
 
@@ -49,7 +49,7 @@ class JsonMapper
      * Throw an exception when an object is expected but the JSON contains
      * a non-object type.
      *
-     * @var boolean
+     * @var bool
      */
     public $bStrictObjectTypeChecking = true;
 
@@ -57,7 +57,7 @@ class JsonMapper
      * Throw an exception, if null value is found
      * but the type of attribute does not allow nulls.
      *
-     * @var boolean
+     * @var bool
      */
     public $bStrictNullTypes = true;
 
@@ -65,14 +65,14 @@ class JsonMapper
      * Throw an exception if null value is found in an array
      * but the type of attribute does not allow nulls.
      *
-     * @var boolean
+     * @var bool
      */
     public $bStrictNullTypesInArrays = true;
 
     /**
      * Allow mapping of private and protected properties.
      *
-     * @var boolean
+     * @var bool
      */
     public $bIgnoreVisibility = false;
 
@@ -80,7 +80,7 @@ class JsonMapper
      * Remove attributes that were not passed in JSON,
      * to avoid confusion between them and NULL values.
      *
-     * @var boolean
+     * @var bool
      */
     public $bRemoveUndefinedAttributes = false;
 
@@ -370,7 +370,7 @@ class JsonMapper
      *
      * @return string|null Fully-qualified type name with namespace
      */
-    protected function getFullNamespace($type, $strNs)
+    protected function getFullNamespace($type, $strNs): ?string
     {
         if ($type === null || $type === '' || $type[0] === '\\' || $strNs === '') {
             return $type;
@@ -394,7 +394,7 @@ class JsonMapper
      *
      * @return void
      */
-    protected function checkMissingData($providedProperties, ReflectionClass $rc)
+    protected function checkMissingData($providedProperties, ReflectionClass $rc): void
     {
         foreach ($rc->getProperties() as $property) {
             $rprop = $rc->getProperty($property->name);
@@ -423,7 +423,7 @@ class JsonMapper
      *
      * @return void
      */
-    protected function removeUndefinedAttributes($object, $providedProperties)
+    protected function removeUndefinedAttributes($object, $providedProperties): void
     {
         foreach (get_object_vars($object) as $propertyName => $dummy) {
             if (!isset($providedProperties[$propertyName])) {
@@ -527,7 +527,7 @@ class JsonMapper
      *               Third value: type of the property
      *               Fourth value: if the property is nullable
      */
-    protected function inspectProperty(ReflectionClass $rc, $name)
+    protected function inspectProperty(ReflectionClass $rc, $name): array
     {
         //try setter method first
         $setter = 'set' . $this->getCamelCaseName($name);
@@ -657,7 +657,7 @@ class JsonMapper
      *
      * @return string CamelCasedVariableName
      */
-    protected function getCamelCaseName($name)
+    protected function getCamelCaseName($name): string
     {
         return str_replace(
             ' ', '', ucwords(str_replace(array('_', '-'), ' ', $name))
@@ -673,7 +673,7 @@ class JsonMapper
      *
      * @return string Name without hyphen
      */
-    protected function getSafeName($name)
+    protected function getSafeName($name): string
     {
         if (strpos($name, '-') !== false) {
             $name = $this->getCamelCaseName($name);
@@ -696,7 +696,7 @@ class JsonMapper
      */
     protected function setProperty(
         $object, $accessor, $value
-    ) {
+    ): void {
         if (!$accessor->isPublic() && $this->bIgnoreVisibility) {
             if (\PHP_VERSION_ID < 80100) {
                 $accessor->setAccessible(true);
@@ -718,9 +718,9 @@ class JsonMapper
      * This method exists to be overwritten in child classes,
      * so you can do dependency injection or so.
      *
-     * @param string  $class        Class name to instantiate
-     * @param boolean $useParameter Pass $parameter to the constructor or not
-     * @param mixed   $jvalue       Constructor parameter (the json value)
+     * @param string $class        Class name to instantiate
+     * @param bool   $useParameter Pass $parameter to the constructor or not
+     * @param mixed  $jvalue       Constructor parameter (the json value)
      *
      * @return object Freshly created object
      */
@@ -758,7 +758,7 @@ class JsonMapper
      *
      * @return string|null The mapped type/class name
      */
-    protected function getMappedType($type, $jvalue = null)
+    protected function getMappedType($type, $jvalue = null): ?string
     {
         if (isset($this->classMap[$type ?? ''])) {
             $target = $this->classMap[$type];
@@ -785,11 +785,11 @@ class JsonMapper
      *
      * @param string $type type name from gettype()
      *
-     * @return boolean True if it is a simple PHP type
+     * @return bool True if it is a simple PHP type
      *
      * @see isFlatType()
      */
-    protected function isSimpleType($type)
+    protected function isSimpleType($type): bool
     {
         return $type == 'string'
             || $type == 'boolean' || $type == 'bool'
@@ -805,9 +805,9 @@ class JsonMapper
      * @param string $type  class name of type being required
      * @param mixed  $value Some PHP value to be tested
      *
-     * @return boolean True if $object has type of $type
+     * @return bool True if $object has type of $type
      */
-    protected function isObjectOfSameType($type, $value)
+    protected function isObjectOfSameType($type, $value): bool
     {
         if (false === is_object($value)) {
             return false;
@@ -822,11 +822,11 @@ class JsonMapper
      *
      * @param string $type type name from gettype()
      *
-     * @return boolean True if it is a non-nested PHP type
+     * @return bool True if it is a non-nested PHP type
      *
      * @see isSimpleType()
      */
-    protected function isFlatType($type)
+    protected function isFlatType($type): bool
     {
         return $type == 'NULL'
             || $type == 'string'
@@ -843,7 +843,7 @@ class JsonMapper
      *
      * @return bool
      */
-    protected function isArrayOfType($strType)
+    protected function isArrayOfType($strType): bool
     {
         return substr($strType, -2) === '[]';
     }
@@ -857,7 +857,7 @@ class JsonMapper
      *
      * @return bool
      */
-    protected function hasVariadicArrayType($accessor)
+    protected function hasVariadicArrayType($accessor): bool
     {
         if (!$accessor instanceof ReflectionMethod) {
             return false;
@@ -879,9 +879,9 @@ class JsonMapper
      *
      * @param string $type type name from the phpdoc param
      *
-     * @return boolean True if it is nullable
+     * @return bool True if it is nullable
      */
-    protected function isNullable($type)
+    protected function isNullable($type): bool
     {
         return stripos('|' . $type . '|', '|null|') !== false
             || strpos('|' . $type, '|?') !== false;
@@ -894,7 +894,7 @@ class JsonMapper
      *
      * @return string|null The new type value
      */
-    protected function removeNullable($type)
+    protected function removeNullable($type): ?string
     {
         if ($type === null) {
             return null;
@@ -913,7 +913,7 @@ class JsonMapper
      *
      * @return string "foo|bar"
      */
-    protected function stringifyReflectionType(ReflectionType $type)
+    protected function stringifyReflectionType(ReflectionType $type): string
     {
         if ($type instanceof ReflectionNamedType) {
             return ($type->isBuiltin() ? '' : '\\') . $type->getName();
@@ -939,7 +939,7 @@ class JsonMapper
      *               Key is the "@"-name like "param",
      *               each value is an array of the rest of the @-lines
      */
-    protected static function parseAnnotations($docblock)
+    protected static function parseAnnotations($docblock): array
     {
         $annotations = array();
         // Strip away the docblock header and footer
@@ -967,7 +967,7 @@ class JsonMapper
      *
      * @return void
      */
-    protected function log($level, $message, array $context = array())
+    protected function log($level, $message, array $context = array()): void
     {
         if ($this->logger) {
             $this->logger->log($level, $message, $context);
@@ -981,7 +981,7 @@ class JsonMapper
      *
      * @return void
      */
-    public function setLogger($logger)
+    public function setLogger($logger): void
     {
         $this->logger = $logger;
     }
