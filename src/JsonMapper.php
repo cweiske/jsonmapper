@@ -323,7 +323,9 @@ class JsonMapper
             } else if ($this->isFlatType(gettype($jvalue))) {
                 //use constructor parameter if we have a class
                 // but only a flat type (i.e. string, int)
-                if ($this->bStrictObjectTypeChecking) {
+                if ($this->bStrictObjectTypeChecking
+                    && !$this->isSafeDateTimeMapping($type, $jvalue)
+                ) {
                     throw new JsonMapper_Exception(
                         'JSON property "' . $key . '" must be an object, '
                         . gettype($jvalue) . ' given'
@@ -481,7 +483,9 @@ class JsonMapper
                     if ($this->isSimpleType($class)) {
                         settype($jvalue, $class);
                         $array[$key] = $jvalue;
-                    } else if ($this->bStrictObjectTypeChecking) {
+                    } else if ($this->bStrictObjectTypeChecking
+                        && !$this->isSafeDateTimeMapping($class, $jvalue)
+                    ) {
                         throw new JsonMapper_Exception(
                             'JSON property'
                             . ' "' . ($parent_key ? $parent_key : '?') . '[' . $key . ']"'
@@ -745,6 +749,70 @@ class JsonMapper
             }
             return $reflectClass->newInstance();
         }
+    }
+
+    /**
+     * Check whether mapping the given JSON scalar to the given class can be
+     * safely allowed through bStrictObjectTypeChecking by treating it as a
+     * DateTime construction.
+     *
+     * The bStrictObjectTypeChecking flag exists to refuse the broad
+     * "construct an arbitrary class from an arbitrary scalar" pattern,
+     * because PHP constructors that trust their input can be exploited.
+     * DateTime, however, is the canonical case where a scalar IS the
+     * natural wire form. To avoid users having to flip the flag globally
+     * (and exposing every other class), we exempt DateTime mapping when --
+     * and only when -- the scalar matches a strict ISO 8601 / RFC 3339 /
+     * date-only shape AND is round-trippable as a real instant.
+     *
+     * Strings that PHP's DateTime constructor would happily accept but
+     * that are unlikely to come from a well-formed JSON producer (e.g.
+     * "now", "+1month", "yesterday", "2pm", "tomorrow 5pm") are NOT
+     * accepted here -- they fall through to the original strict-mode
+     * exception so the caller learns that their input is not a recognised
+     * date format.
+     *
+     * @param string|null $class  Fully qualified class name (may include
+     *                            a leading backslash) or null.
+     * @param mixed       $jvalue The JSON value being mapped.
+     *
+     * @return bool True if class is DateTime/DateTimeImmutable (or a
+     *              subclass) AND $jvalue is a safe date string.
+     */
+    protected function isSafeDateTimeMapping($class, $jvalue)
+    {
+        if (!is_string($class) || $class === '') {
+            return false;
+        }
+        if (!is_string($jvalue) || $jvalue === '') {
+            return false;
+        }
+        if (!is_subclass_of($class, \DateTimeInterface::class)) {
+            return false;
+        }
+        // Strict shape check before any DateTime construction. We accept:
+        //   YYYY-MM-DD
+        //   YYYY-MM-DD[T ]HH:MM:SS[.fff][Z|+-HH:MM|+-HHMM]
+        $datePattern = '/^\d{4}-\d{2}-\d{2}'
+            . '([T ]\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:?\d{2})?)?$/';
+        if (preg_match($datePattern, $jvalue) !== 1) {
+            return false;
+        }
+        // Round-trip: the string must produce a real DateTime without
+        // raising warnings. This guards against pattern matches that are
+        // syntactically valid but semantically impossible (e.g. "2024-13-40").
+        try {
+            new \DateTimeImmutable($jvalue);
+        } catch (\Exception $e) {
+            return false;
+        }
+        $errors = \DateTimeImmutable::getLastErrors();
+        if (is_array($errors)
+            && (!empty($errors['warnings']) || !empty($errors['errors']))
+        ) {
+            return false;
+        }
+        return true;
     }
 
     /**
