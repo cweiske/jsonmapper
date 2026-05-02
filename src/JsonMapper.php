@@ -323,7 +323,9 @@ class JsonMapper
             } else if ($this->isFlatType(gettype($jvalue))) {
                 //use constructor parameter if we have a class
                 // but only a flat type (i.e. string, int)
-                if ($this->bStrictObjectTypeChecking) {
+                if ($this->bStrictObjectTypeChecking
+                    && !$this->isBackedEnum($type)
+                ) {
                     throw new JsonMapper_Exception(
                         'JSON property "' . $key . '" must be an object, '
                         . gettype($jvalue) . ' given'
@@ -481,7 +483,9 @@ class JsonMapper
                     if ($this->isSimpleType($class)) {
                         settype($jvalue, $class);
                         $array[$key] = $jvalue;
-                    } else if ($this->bStrictObjectTypeChecking) {
+                    } else if ($this->bStrictObjectTypeChecking
+                        && !$this->isBackedEnum($class)
+                    ) {
                         throw new JsonMapper_Exception(
                             'JSON property'
                             . ' "' . ($parent_key ? $parent_key : '?') . '[' . $key . ']"'
@@ -745,6 +749,34 @@ class JsonMapper
             }
             return $reflectClass->newInstance();
         }
+    }
+
+    /**
+     * Check whether the given class name refers to a PHP 8.1+ BackedEnum.
+     *
+     * BackedEnum cases are represented in JSON as their scalar backing value
+     * (a string or an int), not as an object. They therefore need to be
+     * exempted from the bStrictObjectTypeChecking rule, which otherwise
+     * forbids creating an object from a scalar JSON value.
+     *
+     * @param string|null $class Fully qualified class name (may include
+     *                           a leading backslash) or null.
+     *
+     * @return bool True if the class exists and is a BackedEnum subclass,
+     *              false otherwise (including on PHP < 8.1).
+     */
+    protected function isBackedEnum($class)
+    {
+        if (PHP_VERSION_ID < 80100) {
+            return false;
+        }
+        if (!is_string($class) || $class === '') {
+            return false;
+        }
+        if (!class_exists($class) && !enum_exists($class)) {
+            return false;
+        }
+        return is_subclass_of($class, \BackedEnum::class);
     }
 
     /**
