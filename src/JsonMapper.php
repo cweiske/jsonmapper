@@ -323,7 +323,9 @@ class JsonMapper
             } else if ($this->isFlatType(gettype($jvalue))) {
                 //use constructor parameter if we have a class
                 // but only a flat type (i.e. string, int)
-                if ($this->bStrictObjectTypeChecking) {
+                if ($this->bStrictObjectTypeChecking
+                    && !is_subclass_of($type, \BackedEnum::class)
+                ) {
                     throw new JsonMapper_Exception(
                         'JSON property "' . $key . '" must be an object, '
                         . gettype($jvalue) . ' given'
@@ -481,7 +483,9 @@ class JsonMapper
                     if ($this->isSimpleType($class)) {
                         settype($jvalue, $class);
                         $array[$key] = $jvalue;
-                    } else if ($this->bStrictObjectTypeChecking) {
+                    } else if ($this->bStrictObjectTypeChecking
+                        && !is_subclass_of($class, \BackedEnum::class)
+                    ) {
                         throw new JsonMapper_Exception(
                             'JSON property'
                             . ' "' . ($parent_key ? $parent_key : '?') . '[' . $key . ']"'
