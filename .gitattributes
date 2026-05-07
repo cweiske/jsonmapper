@@ -7,3 +7,6 @@
 /.editorconfig export-ignore
 /.github export-ignore
 /contributing.rst export-ignore
+/Makefile export-ignore
+/phpcs.xml export-ignore
+/phpunit.xml export-ignore
