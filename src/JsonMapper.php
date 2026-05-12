@@ -353,9 +353,6 @@ class JsonMapper
             $refDeserializePostMethod = $rc->getMethod(
                 $this->postMappingMethod
             );
-            if (\PHP_VERSION_ID < 80100) {
-                $refDeserializePostMethod->setAccessible(true);
-            }
             $refDeserializePostMethod->invoke(
                 $object, ...$this->postMappingMethodArguments
             );
@@ -592,17 +589,13 @@ class JsonMapper
         if ($rprop !== null) {
             if ($rprop->isPublic() || $this->bIgnoreVisibility) {
                 $docblock = $rprop->getDocComment();
-                if (PHP_VERSION_ID >= 80000 && $docblock === false
-                    && $class->hasMethod('__construct')
-                ) {
+                if ($docblock === false && $class->hasMethod('__construct')) {
                     $docblock = $class->getMethod('__construct')->getDocComment();
                 }
                 $annotations = static::parseAnnotations($docblock);
 
                 if (!isset($annotations['var'][0])) {
-                    if (PHP_VERSION_ID >= 80000 && $rprop->hasType()
-                        && isset($annotations['param'])
-                    ) {
+                    if ($rprop->hasType() && isset($annotations['param'])) {
                         foreach ($annotations['param'] as $param) {
                             if (strpos($param . ' ', '$' . $rprop->getName() . ' ') !== false
                                 || strpos($param . "\t", '$' . $rprop->getName() . "\t") !== false
@@ -617,7 +610,7 @@ class JsonMapper
 
                     // If there is no annotations (higher priority) inspect
                     // if there's a scalar type being defined
-                    if (PHP_VERSION_ID >= 70400 && $rprop->hasType()) {
+                    if ($rprop->hasType()) {
                         $rPropType = $rprop->getType();
                         $propTypeName = $this->stringifyReflectionType($rPropType);
                         if ($this->isSimpleType($propTypeName)) {
@@ -701,11 +694,6 @@ class JsonMapper
     protected function setProperty(
         $object, $accessor, $value
     ) {
-        if (!$accessor->isPublic() && $this->bIgnoreVisibility) {
-            if (\PHP_VERSION_ID < 80100) {
-                $accessor->setAccessible(true);
-            }
-        }
         if ($accessor instanceof ReflectionProperty) {
             $accessor->setValue($object, $value);
         } else if (is_array($value) && $this->hasVariadicArrayType($accessor)) {
@@ -732,9 +720,7 @@ class JsonMapper
         $class, $useParameter = false, $jvalue = null
     ) {
         if ($useParameter) {
-            if (PHP_VERSION_ID >= 80100
-                && is_subclass_of($class, \BackedEnum::class)
-            ) {
+            if (is_subclass_of($class, \BackedEnum::class)) {
                 return $class::from($jvalue);
             }
 

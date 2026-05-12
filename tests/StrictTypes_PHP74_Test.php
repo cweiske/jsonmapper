@@ -8,7 +8,6 @@
  * @author   Lukas Cerny <lukas.cerny@futuretek.cz>
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
- * @requires PHP 7.4
  */
 class StrictTypes_PHP74_Test extends \PHPUnit\Framework\TestCase
 {

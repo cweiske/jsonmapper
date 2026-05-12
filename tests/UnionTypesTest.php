@@ -8,7 +8,6 @@
  * @author   Christian Weiske <cweiske@cweiske.de>
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
- * @requires PHP 8.0
  */
 class UnionTypesTest extends \PHPUnit\Framework\TestCase
 {

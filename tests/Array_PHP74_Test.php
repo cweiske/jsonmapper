@@ -12,7 +12,6 @@ use PHPUnit\Framework\TestCase;
  * @author   Martin Reinfandt <martin.reinfandt@check24.de>
  * @license  OSL-3.0 http://opensource.org/licenses/osl-3.0
  * @link     https://github.com/cweiske/jsonmapper
- * @requires PHP 7.4
  */
 class Array_PHP74_Test extends TestCase
 {
