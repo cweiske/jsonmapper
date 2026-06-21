@@ -77,6 +77,13 @@ class JsonMapper
     public array $classMap = [];
 
     /**
+     * Override constructors that JsonMapper uses to create objects.
+     *
+     * @var array<class-string, callable>
+     */
+    public array $constructorMap = [];
+
+    /**
      * Callback used when an undefined property is found.
      *
      * Works only when $bExceptionOnUndefinedProperty is disabled.
@@ -312,6 +319,7 @@ class JsonMapper
                 // but only a flat type (i.e. string, int)
                 if ($this->bStrictObjectTypeChecking
                     && !is_subclass_of($type, \BackedEnum::class)
+                    && !$this->getMappedConstructor($type)
                 ) {
                     throw new JsonMapper_Exception(
                         'JSON property "' . $key . '" must be an object, '
@@ -466,6 +474,7 @@ class JsonMapper
                         $array[$key] = $jvalue;
                     } else if ($this->bStrictObjectTypeChecking
                         && !is_subclass_of($class, \BackedEnum::class)
+                        && !$this->getMappedConstructor($class)
                     ) {
                         throw new JsonMapper_Exception(
                             'JSON property'
@@ -707,13 +716,21 @@ class JsonMapper
     protected function createInstance(
         string $class, bool $useParameter = false, mixed $jvalue = null
     ): object {
+        $constructor = $this->getMappedConstructor($class);
+
         if ($useParameter) {
             if (is_subclass_of($class, \BackedEnum::class)) {
                 return $class::from($jvalue);
             }
 
-            return new $class($jvalue);
+            return null === $constructor
+                ? new $class($jvalue)
+                : $constructor($jvalue);
         } else {
+            if ($constructor) {
+                return $constructor();
+            }
+
             $reflectClass = new ReflectionClass($class);
             $constructor  = $reflectClass->getConstructor();
             if (null === $constructor
@@ -756,6 +773,29 @@ class JsonMapper
             }
         }
         return $type;
+    }
+
+    /**
+     * Get the mapped constructor for this class.
+     * Returns null if not mapped.
+     *
+     * Lets you override constructors via the $constructorMap property.
+     *
+     * @param $class Class name to map
+     *
+     * @return ?callable The mapped constructor
+     */
+    protected function getMappedConstructor(string $class): ?callable
+    {
+        if (isset($this->constructorMap[$class])) {
+            return $this->constructorMap[$class];
+        } else if ($class !== '' && $class[0] == '\\'
+            && isset($this->constructorMap[substr($class, 1)])
+        ) {
+            return $this->constructorMap[substr($class, 1)];
+        } else {
+            return null;
+        }
     }
 
     /**

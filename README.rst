@@ -320,6 +320,28 @@ parameters into the call.
     $jm->map(...);
 
 
+Constructor map
+---------
+Using JsonMapper's ``$constructorMap`` property, you can override how classes
+shall get instantiated:
+
+.. code:: php
+
+    $jm = new JsonMapper();
+    $jm->constructorMap[\DateTime::class] = function ($jvalue) {
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $jvalue)) {
+            return new \DateTime($jvalue);
+        } else {
+            throw new \Exception('Invalid date pattern');
+        }
+    };
+    $jm->map(...);
+
+.. note::
+   This can be used to map JSON datetime strings to ``DateTime`` objects when
+   `$bStrictObjectTypeChecking`__ is enabled.
+
+
 Nullables
 ---------
 JsonMapper throws an exception when a JSON property is ``null``,
@@ -489,9 +511,6 @@ when configured to do so:
     $jm = new JsonMapper();
     $jm->bStrictObjectTypeChecking = false;
     $jm->map(...);
-
-This can be used to automatically initialize DateTime objects
-from date strings.
 
 Disabling this strict object type checks may lead to problems, though:
 
