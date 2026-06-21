@@ -320,6 +320,31 @@ parameters into the call.
     $jm->map(...);
 
 
+.. _prop-classfactories:
+
+Class factories
+---------------
+Using JsonMapper's ``$classFactories`` property, you can override how classes
+get instantiated:
+
+.. code:: php
+
+    $jm = new JsonMapper();
+    $jm->classFactories[\DateTime::class] = function ($jvalue) {
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $jvalue)) {
+            return new \DateTime($jvalue);
+        } else {
+            throw new \Exception('Invalid date pattern');
+        }
+    };
+    $jm->map(...);
+
+This can be used to map JSON datetime strings to ``DateTime`` objects when
+`$bStrictObjectTypeChecking`__ is enabled.
+
+.. __: #prop-bstrictobjecttypechecking
+
+
 Nullables
 ---------
 JsonMapper throws an exception when a JSON property is ``null``,
@@ -490,17 +515,19 @@ when configured to do so:
     $jm->bStrictObjectTypeChecking = false;
     $jm->map(...);
 
-This can be used to automatically initialize DateTime objects
-from date strings.
-
 Disabling this strict object type checks may lead to problems, though:
 
 - When a class does not have a constructor or no constructor parameter,
-  the value will get lost
+  the value will get lost.
 - When the constructor has more than 1 required parameter, it will crash.
 - When the constructor's parameter type does not match the one of the
-  data in JSON, it will crash
-- ``@required`` properties will not be filled
+  data in JSON, it will crash.
+- ``@required`` properties will not be filled.
+
+A better alternative to disabling strict object type checking is to use
+the `$classFactories`__ property.
+
+.. __: #prop-classfactories
 
 .. note::
    The default value changed from ``false`` to ``true`` in version 5 to

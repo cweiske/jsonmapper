@@ -77,6 +77,13 @@ class JsonMapper
     public array $classMap = [];
 
     /**
+     * Define custom methods that are used to create objects.
+     *
+     * @var array<class-string, callable>
+     */
+    public array $classFactories = [];
+
+    /**
      * Callback used when an undefined property is found.
      *
      * Works only when $bExceptionOnUndefinedProperty is disabled.
@@ -312,6 +319,7 @@ class JsonMapper
                 // but only a flat type (i.e. string, int)
                 if ($this->bStrictObjectTypeChecking
                     && !is_subclass_of($type, \BackedEnum::class)
+                    && !$this->getClassFactory($type)
                 ) {
                     throw new JsonMapper_Exception(
                         'JSON property "' . $key . '" must be an object, '
@@ -466,6 +474,7 @@ class JsonMapper
                         $array[$key] = $jvalue;
                     } else if ($this->bStrictObjectTypeChecking
                         && !is_subclass_of($class, \BackedEnum::class)
+                        && !$this->getClassFactory($class)
                     ) {
                         throw new JsonMapper_Exception(
                             'JSON property'
@@ -707,13 +716,23 @@ class JsonMapper
     protected function createInstance(
         string $class, bool $useParameter = false, mixed $jvalue = null
     ): object {
+        $factory = $this->getClassFactory($class);
+
         if ($useParameter) {
+            if ($factory) {
+                return $factory($jvalue);
+            }
             if (is_subclass_of($class, \BackedEnum::class)) {
                 return $class::from($jvalue);
             }
 
             return new $class($jvalue);
+
         } else {
+            if ($factory) {
+                return $factory();
+            }
+
             $reflectClass = new ReflectionClass($class);
             $constructor  = $reflectClass->getConstructor();
             if ($constructor === null
@@ -756,6 +775,29 @@ class JsonMapper
             }
         }
         return $type;
+    }
+
+    /**
+     * Get the constructor function for a class
+     *
+     * Lets you override constructors via the $classFactories property.
+     *
+     * @param $class Class name to get constructor for
+     *
+     * @return ?callable Constructor for the class
+     */
+    protected function getClassFactory(string $class): ?callable
+    {
+        if (isset($this->classFactories[$class])) {
+            return $this->classFactories[$class];
+
+        } else if ($class !== '' && $class[0] == '\\'
+            && isset($this->classFactories[substr($class, 1)])
+        ) {
+            return $this->classFactories[substr($class, 1)];
+        }
+
+        return null;
     }
 
     /**
