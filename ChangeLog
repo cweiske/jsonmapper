@@ -1,3 +1,19 @@
+2026-06-29  Christian Weiske  <cweiske@cweiske.de>
+
+	* BC break: Drop support for PHP < 8.1
+	* BC break: All JsonMapper properties have native type declarations
+	* BC break: All JsonMapper methods have native parameter and return declarations
+	* Add support for BackendEnums when $bStrictObjectTypeChecking is enabled
+	  by @djairhogeuens
+	  https://github.com/cweiske/jsonmapper/pull/253
+	* Add $classFactories feature
+	  by @djairhogeuens
+	  https://github.com/cweiske/jsonmapper/pull/256
+	* Fix @param type detection for variables with same prefix
+	  by @cweiske
+	  https://github.com/cweiske/jsonmapper/issues/242
+	* Version 6.0.0
+
 2026-02-22  Christian Weiske  <cweiske@cweiske.de>
 
 	* Fix PHP 8.4 issues by @mpesari
