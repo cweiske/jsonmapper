@@ -716,7 +716,7 @@ class JsonMapper
         } else {
             $reflectClass = new ReflectionClass($class);
             $constructor  = $reflectClass->getConstructor();
-            if (null === $constructor
+            if ($constructor === null
                 || $constructor->getNumberOfRequiredParameters() > 0
             ) {
                 return $reflectClass->newInstanceWithoutConstructor();
@@ -787,7 +787,7 @@ class JsonMapper
      */
     protected function isObjectOfSameType(string $type, mixed $value): bool
     {
-        if (false === is_object($value)) {
+        if (is_object($value) === false) {
             return false;
         }
 
