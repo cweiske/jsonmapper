@@ -86,4 +86,41 @@ class Enums_PHP81_Test extends \PHPUnit\Framework\TestCase
         $this->assertSame(\Enums\IntBackedEnum::FOO, $result->intBackedEnums[0]);
         $this->assertSame(\Enums\IntBackedEnum::BAR, $result->intBackedEnums[1]);
     }
+
+    public function testInvalidBackedEnumValueThrowsJsonMapperException(): void
+    {
+        $jm = new JsonMapper();
+        $jm->bStrictObjectTypeChecking = true;
+
+        $this->expectException(JsonMapper_Exception::class);
+        $this->expectExceptionMessage('Invalid value 99 for enum ');
+        $jm->map(
+            json_decode('{"stringBackedEnum": "foo", "intBackedEnum": 99}'),
+            new \Enums\ObjectWithEnum()
+        );
+    }
+
+    public function testWrongTypeForBackedEnumThrowsJsonMapperException(): void
+    {
+        $jm = new JsonMapper();
+        $jm->bStrictObjectTypeChecking = true;
+
+        $this->expectException(JsonMapper_Exception::class);
+        $jm->map(
+            json_decode('{"stringBackedEnum": "foo", "intBackedEnum": "abc"}'),
+            new \Enums\ObjectWithEnum()
+        );
+    }
+
+    public function testInvalidBackedEnumValueInArrayThrowsJsonMapperException(): void
+    {
+        $jm = new JsonMapper();
+        $jm->bStrictObjectTypeChecking = true;
+
+        $this->expectException(JsonMapper_Exception::class);
+        $jm->map(
+            json_decode('{"stringBackedEnums": ["foo", "nope"]}'),
+            new \Enums\ObjectWithEnumArray()
+        );
+    }
 }

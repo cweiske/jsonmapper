@@ -723,7 +723,16 @@ class JsonMapper
                 return $factory($jvalue);
             }
             if (is_subclass_of($class, \BackedEnum::class)) {
-                return $class::from($jvalue);
+                try {
+                    return $class::from($jvalue);
+                } catch (\ValueError | \TypeError $e) {
+                    throw new JsonMapper_Exception(
+                        'Invalid value ' . var_export($jvalue, true)
+                        . ' for enum ' . $class . ': ' . $e->getMessage(),
+                        0,
+                        $e
+                    );
+                }
             }
 
             return new $class($jvalue);
