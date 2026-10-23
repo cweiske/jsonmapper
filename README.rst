@@ -487,6 +487,24 @@ from the final object if they have not been in the JSON data:
     $jm->map(...);
 
 
+.. _prop-bcacheundefinedproperties:
+
+Caching of undefined properties
+===============================
+JsonMapper caches the inspection results of all JSON properties it has seen,
+including those that do not exist on the target class.
+When mapping untrusted input in a long-running process (e.g. Swoole, ReactPHP,
+RoadRunner or FrankenPHP), client-controlled property names would grow this
+cache without bounds.
+Disable caching of undefined properties in that case:
+
+.. code:: php
+
+    $jm = new JsonMapper();
+    $jm->bCacheUndefinedProperties = false;
+    $jm->map(...);
+
+
 .. _prop-bignorevisibility:
 
 Private properties and functions

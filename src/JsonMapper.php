@@ -69,6 +69,18 @@ class JsonMapper
     public bool $bRemoveUndefinedAttributes = false;
 
     /**
+     * Cache inspection results for JSON properties that do not exist
+     * on the target class.
+     *
+     * Disable this when mapping untrusted input in long-running processes
+     * (e.g. Swoole, ReactPHP, RoadRunner or FrankenPHP): the inspection
+     * cache is indexed by class name and JSON property name, so
+     * client-controlled property names would otherwise grow it without
+     * bounds for the whole process lifetime.
+     */
+    public bool $bCacheUndefinedProperties = true;
+
+    /**
      * Override class names that JsonMapper uses to create objects.
      * Useful when your setter methods accept abstract classes or interfaces.
      *
@@ -168,13 +180,16 @@ class JsonMapper
 
             // Store the property inspection results so we don't have to do it
             // again for subsequent objects of the same type
-            if (!isset($this->arInspectedClasses[$strClassName][$key])) {
-                $this->arInspectedClasses[$strClassName][$key]
-                    = $this->inspectProperty($rc, $key);
+            if (isset($this->arInspectedClasses[$strClassName][$key])) {
+                $inspection = $this->arInspectedClasses[$strClassName][$key];
+            } else {
+                $inspection = $this->inspectProperty($rc, $key);
+                if ($inspection[0] || $this->bCacheUndefinedProperties) {
+                    $this->arInspectedClasses[$strClassName][$key] = $inspection;
+                }
             }
 
-            list($hasProperty, $accessor, $type, $isNullable)
-                = $this->arInspectedClasses[$strClassName][$key];
+            list($hasProperty, $accessor, $type, $isNullable) = $inspection;
 
             if (!$hasProperty) {
                 if ($this->bExceptionOnUndefinedProperty) {
